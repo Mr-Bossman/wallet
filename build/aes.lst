@@ -1,0 +1,4094 @@
+ARM GAS  /tmp/cc0JglZb.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"aes.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.SubRoundKey,"ax",%progbits
+  18              		.align	1
+  19              		.global	SubRoundKey
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	SubRoundKey:
+  27              	.LVL0:
+  28              	.LFB6:
+  29              		.file 1 "Core/Src/aes.c"
+   1:Core/Src/aes.c **** #include "aes.h"
+   2:Core/Src/aes.c **** void SubRoundKey(unsigned char * state, unsigned char * roundKey) {
+  30              		.loc 1 2 67 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+   3:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+  35              		.loc 1 3 2 view .LVU1
+  36              	.LBB2:
+  37              		.loc 1 3 7 view .LVU2
+  38              		.loc 1 3 11 is_stmt 0 view .LVU3
+  39 0000 0023     		movs	r3, #0
+  40              	.LVL1:
+  41              		.loc 1 3 2 view .LVU4
+  42 0002 0F2B     		cmp	r3, #15
+  43 0004 0ADC     		bgt	.L7
+  44              	.LBE2:
+   2:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+  45              		.loc 1 2 67 view .LVU5
+  46 0006 10B4     		push	{r4}
+  47              	.LCFI0:
+  48              		.cfi_def_cfa_offset 4
+  49              		.cfi_offset 4, -4
+  50              	.L3:
+  51              	.LBB3:
+   4:Core/Src/aes.c **** 		state[i] ^= roundKey[i];
+  52              		.loc 1 4 3 is_stmt 1 discriminator 3 view .LVU6
+  53              		.loc 1 4 23 is_stmt 0 discriminator 3 view .LVU7
+ARM GAS  /tmp/cc0JglZb.s 			page 2
+
+
+  54 0008 CA5C     		ldrb	r2, [r1, r3]	@ zero_extendqisi2
+  55              		.loc 1 4 12 discriminator 3 view .LVU8
+  56 000a C45C     		ldrb	r4, [r0, r3]	@ zero_extendqisi2
+  57 000c 6240     		eors	r2, r2, r4
+  58 000e C254     		strb	r2, [r0, r3]
+   3:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+  59              		.loc 1 3 27 discriminator 3 view .LVU9
+  60 0010 0133     		adds	r3, r3, #1
+  61              	.LVL2:
+   3:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+  62              		.loc 1 3 2 discriminator 3 view .LVU10
+  63 0012 0F2B     		cmp	r3, #15
+  64 0014 F8DD     		ble	.L3
+  65              	.LBE3:
+   5:Core/Src/aes.c **** 	}
+   6:Core/Src/aes.c **** }
+  66              		.loc 1 6 1 view .LVU11
+  67 0016 5DF8044B 		ldr	r4, [sp], #4
+  68              	.LCFI1:
+  69              		.cfi_restore 4
+  70              		.cfi_def_cfa_offset 0
+  71 001a 7047     		bx	lr
+  72              	.L7:
+  73              		.loc 1 6 1 view .LVU12
+  74 001c 7047     		bx	lr
+  75              		.cfi_endproc
+  76              	.LFE6:
+  78              		.section	.text.AddRoundKey,"ax",%progbits
+  79              		.align	1
+  80              		.global	AddRoundKey
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  84              		.fpu fpv4-sp-d16
+  86              	AddRoundKey:
+  87              	.LVL3:
+  88              	.LFB7:
+   7:Core/Src/aes.c **** /* Serves as the initial round during encryption
+   8:Core/Src/aes.c ****  * AddRoundKey is simply an XOR of a 128-bit block with the 128-bit key.
+   9:Core/Src/aes.c ****  */
+  10:Core/Src/aes.c **** void AddRoundKey(unsigned char * state, unsigned char * roundKey) {
+  89              		.loc 1 10 67 is_stmt 1 view -0
+  90              		.cfi_startproc
+  91              		@ args = 0, pretend = 0, frame = 0
+  92              		@ frame_needed = 0, uses_anonymous_args = 0
+  93              		@ link register save eliminated.
+  11:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+  94              		.loc 1 11 2 view .LVU14
+  95              	.LBB4:
+  96              		.loc 1 11 7 view .LVU15
+  97              		.loc 1 11 11 is_stmt 0 view .LVU16
+  98 0000 0023     		movs	r3, #0
+  99              	.LVL4:
+ 100              		.loc 1 11 2 view .LVU17
+ 101 0002 0F2B     		cmp	r3, #15
+ 102 0004 0ADC     		bgt	.L14
+ 103              	.LBE4:
+ARM GAS  /tmp/cc0JglZb.s 			page 3
+
+
+  10:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 104              		.loc 1 10 67 view .LVU18
+ 105 0006 10B4     		push	{r4}
+ 106              	.LCFI2:
+ 107              		.cfi_def_cfa_offset 4
+ 108              		.cfi_offset 4, -4
+ 109              	.L10:
+ 110              	.LBB5:
+  12:Core/Src/aes.c **** 		state[i] ^= roundKey[i];
+ 111              		.loc 1 12 3 is_stmt 1 discriminator 3 view .LVU19
+ 112              		.loc 1 12 23 is_stmt 0 discriminator 3 view .LVU20
+ 113 0008 CA5C     		ldrb	r2, [r1, r3]	@ zero_extendqisi2
+ 114              		.loc 1 12 12 discriminator 3 view .LVU21
+ 115 000a C45C     		ldrb	r4, [r0, r3]	@ zero_extendqisi2
+ 116 000c 6240     		eors	r2, r2, r4
+ 117 000e C254     		strb	r2, [r0, r3]
+  11:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 118              		.loc 1 11 27 discriminator 3 view .LVU22
+ 119 0010 0133     		adds	r3, r3, #1
+ 120              	.LVL5:
+  11:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 121              		.loc 1 11 2 discriminator 3 view .LVU23
+ 122 0012 0F2B     		cmp	r3, #15
+ 123 0014 F8DD     		ble	.L10
+ 124              	.LBE5:
+  13:Core/Src/aes.c **** 	}
+  14:Core/Src/aes.c **** }
+ 125              		.loc 1 14 1 view .LVU24
+ 126 0016 5DF8044B 		ldr	r4, [sp], #4
+ 127              	.LCFI3:
+ 128              		.cfi_restore 4
+ 129              		.cfi_def_cfa_offset 0
+ 130 001a 7047     		bx	lr
+ 131              	.L14:
+ 132              		.loc 1 14 1 view .LVU25
+ 133 001c 7047     		bx	lr
+ 134              		.cfi_endproc
+ 135              	.LFE7:
+ 137              		.section	.text.ShiftRowsR,"ax",%progbits
+ 138              		.align	1
+ 139              		.global	ShiftRowsR
+ 140              		.syntax unified
+ 141              		.thumb
+ 142              		.thumb_func
+ 143              		.fpu fpv4-sp-d16
+ 145              	ShiftRowsR:
+ 146              	.LVL6:
+ 147              	.LFB8:
+  15:Core/Src/aes.c **** 
+  16:Core/Src/aes.c **** 
+  17:Core/Src/aes.c **** // Shifts rows right (rather than left) for decryption
+  18:Core/Src/aes.c **** void ShiftRowsR(unsigned char * state) {
+ 148              		.loc 1 18 40 is_stmt 1 view -0
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 16
+ 151              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152              		@ link register save eliminated.
+ARM GAS  /tmp/cc0JglZb.s 			page 4
+
+
+ 153              		.loc 1 18 40 is_stmt 0 view .LVU27
+ 154 0000 84B0     		sub	sp, sp, #16
+ 155              	.LCFI4:
+ 156              		.cfi_def_cfa_offset 16
+  19:Core/Src/aes.c **** 	unsigned char tmp[16];
+ 157              		.loc 1 19 2 is_stmt 1 view .LVU28
+  20:Core/Src/aes.c **** 
+  21:Core/Src/aes.c **** 	/* Column 1 */
+  22:Core/Src/aes.c **** 	tmp[0] = state[0];
+ 158              		.loc 1 22 2 view .LVU29
+ 159              		.loc 1 22 16 is_stmt 0 view .LVU30
+ 160 0002 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 161              		.loc 1 22 9 view .LVU31
+ 162 0004 8DF80030 		strb	r3, [sp]
+  23:Core/Src/aes.c **** 	tmp[1] = state[13];
+ 163              		.loc 1 23 2 is_stmt 1 view .LVU32
+ 164              		.loc 1 23 9 is_stmt 0 view .LVU33
+ 165 0008 437B     		ldrb	r3, [r0, #13]	@ zero_extendqisi2
+ 166 000a 8DF80130 		strb	r3, [sp, #1]
+  24:Core/Src/aes.c **** 	tmp[2] = state[10];
+ 167              		.loc 1 24 2 is_stmt 1 view .LVU34
+ 168              		.loc 1 24 9 is_stmt 0 view .LVU35
+ 169 000e 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 170 0010 8DF80230 		strb	r3, [sp, #2]
+  25:Core/Src/aes.c **** 	tmp[3] = state[7];
+ 171              		.loc 1 25 2 is_stmt 1 view .LVU36
+ 172              		.loc 1 25 9 is_stmt 0 view .LVU37
+ 173 0014 C379     		ldrb	r3, [r0, #7]	@ zero_extendqisi2
+ 174 0016 8DF80330 		strb	r3, [sp, #3]
+  26:Core/Src/aes.c **** 
+  27:Core/Src/aes.c **** 	/* Column 2 */
+  28:Core/Src/aes.c **** 	tmp[4] = state[4];
+ 175              		.loc 1 28 2 is_stmt 1 view .LVU38
+ 176              		.loc 1 28 9 is_stmt 0 view .LVU39
+ 177 001a 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 178 001c 8DF80430 		strb	r3, [sp, #4]
+  29:Core/Src/aes.c **** 	tmp[5] = state[1];
+ 179              		.loc 1 29 2 is_stmt 1 view .LVU40
+ 180              		.loc 1 29 9 is_stmt 0 view .LVU41
+ 181 0020 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 182 0022 8DF80530 		strb	r3, [sp, #5]
+  30:Core/Src/aes.c **** 	tmp[6] = state[14];
+ 183              		.loc 1 30 2 is_stmt 1 view .LVU42
+ 184              		.loc 1 30 9 is_stmt 0 view .LVU43
+ 185 0026 837B     		ldrb	r3, [r0, #14]	@ zero_extendqisi2
+ 186 0028 8DF80630 		strb	r3, [sp, #6]
+  31:Core/Src/aes.c **** 	tmp[7] = state[11];
+ 187              		.loc 1 31 2 is_stmt 1 view .LVU44
+ 188              		.loc 1 31 9 is_stmt 0 view .LVU45
+ 189 002c C37A     		ldrb	r3, [r0, #11]	@ zero_extendqisi2
+ 190 002e 8DF80730 		strb	r3, [sp, #7]
+  32:Core/Src/aes.c **** 
+  33:Core/Src/aes.c **** 	/* Column 3 */
+  34:Core/Src/aes.c **** 	tmp[8] = state[8];
+ 191              		.loc 1 34 2 is_stmt 1 view .LVU46
+ 192              		.loc 1 34 9 is_stmt 0 view .LVU47
+ 193 0032 037A     		ldrb	r3, [r0, #8]	@ zero_extendqisi2
+ARM GAS  /tmp/cc0JglZb.s 			page 5
+
+
+ 194 0034 8DF80830 		strb	r3, [sp, #8]
+  35:Core/Src/aes.c **** 	tmp[9] = state[5];
+ 195              		.loc 1 35 2 is_stmt 1 view .LVU48
+ 196              		.loc 1 35 9 is_stmt 0 view .LVU49
+ 197 0038 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 198 003a 8DF80930 		strb	r3, [sp, #9]
+  36:Core/Src/aes.c **** 	tmp[10] = state[2];
+ 199              		.loc 1 36 2 is_stmt 1 view .LVU50
+ 200              		.loc 1 36 10 is_stmt 0 view .LVU51
+ 201 003e 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 202 0040 8DF80A30 		strb	r3, [sp, #10]
+  37:Core/Src/aes.c **** 	tmp[11] = state[15];
+ 203              		.loc 1 37 2 is_stmt 1 view .LVU52
+ 204              		.loc 1 37 10 is_stmt 0 view .LVU53
+ 205 0044 C37B     		ldrb	r3, [r0, #15]	@ zero_extendqisi2
+ 206 0046 8DF80B30 		strb	r3, [sp, #11]
+  38:Core/Src/aes.c **** 
+  39:Core/Src/aes.c **** 	/* Column 4 */
+  40:Core/Src/aes.c **** 	tmp[12] = state[12];
+ 207              		.loc 1 40 2 is_stmt 1 view .LVU54
+ 208              		.loc 1 40 10 is_stmt 0 view .LVU55
+ 209 004a 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+ 210 004c 8DF80C30 		strb	r3, [sp, #12]
+  41:Core/Src/aes.c **** 	tmp[13] = state[9];
+ 211              		.loc 1 41 2 is_stmt 1 view .LVU56
+ 212              		.loc 1 41 10 is_stmt 0 view .LVU57
+ 213 0050 437A     		ldrb	r3, [r0, #9]	@ zero_extendqisi2
+ 214 0052 8DF80D30 		strb	r3, [sp, #13]
+  42:Core/Src/aes.c **** 	tmp[14] = state[6];
+ 215              		.loc 1 42 2 is_stmt 1 view .LVU58
+ 216              		.loc 1 42 10 is_stmt 0 view .LVU59
+ 217 0056 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 218 0058 8DF80E30 		strb	r3, [sp, #14]
+  43:Core/Src/aes.c **** 	tmp[15] = state[3];
+ 219              		.loc 1 43 2 is_stmt 1 view .LVU60
+ 220              		.loc 1 43 10 is_stmt 0 view .LVU61
+ 221 005c C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 222 005e 8DF80F30 		strb	r3, [sp, #15]
+  44:Core/Src/aes.c **** 
+  45:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 223              		.loc 1 45 2 is_stmt 1 view .LVU62
+ 224              	.LBB6:
+ 225              		.loc 1 45 7 view .LVU63
+ 226              	.LVL7:
+ 227              		.loc 1 45 11 is_stmt 0 view .LVU64
+ 228 0062 0023     		movs	r3, #0
+ 229              	.LVL8:
+ 230              	.L16:
+ 231              		.loc 1 45 2 discriminator 1 view .LVU65
+ 232 0064 0F2B     		cmp	r3, #15
+ 233 0066 06DC     		bgt	.L19
+  46:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 234              		.loc 1 46 3 is_stmt 1 discriminator 3 view .LVU66
+ 235              		.loc 1 46 17 is_stmt 0 discriminator 3 view .LVU67
+ 236 0068 04AA     		add	r2, sp, #16
+ 237 006a 1A44     		add	r2, r2, r3
+ 238 006c 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ARM GAS  /tmp/cc0JglZb.s 			page 6
+
+
+ 239              		.loc 1 46 12 discriminator 3 view .LVU68
+ 240 0070 C254     		strb	r2, [r0, r3]
+  45:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 241              		.loc 1 45 27 discriminator 3 view .LVU69
+ 242 0072 0133     		adds	r3, r3, #1
+ 243              	.LVL9:
+  45:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 244              		.loc 1 45 27 discriminator 3 view .LVU70
+ 245 0074 F6E7     		b	.L16
+ 246              	.L19:
+  45:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 247              		.loc 1 45 27 discriminator 3 view .LVU71
+ 248              	.LBE6:
+  47:Core/Src/aes.c **** 	}
+  48:Core/Src/aes.c **** }
+ 249              		.loc 1 48 1 view .LVU72
+ 250 0076 04B0     		add	sp, sp, #16
+ 251              	.LCFI5:
+ 252              		.cfi_def_cfa_offset 0
+ 253              		@ sp needed
+ 254 0078 7047     		bx	lr
+ 255              		.cfi_endproc
+ 256              	.LFE8:
+ 258              		.section	.text.SubBytesI,"ax",%progbits
+ 259              		.align	1
+ 260              		.global	SubBytesI
+ 261              		.syntax unified
+ 262              		.thumb
+ 263              		.thumb_func
+ 264              		.fpu fpv4-sp-d16
+ 266              	SubBytesI:
+ 267              	.LVL10:
+ 268              	.LFB9:
+  49:Core/Src/aes.c **** 
+  50:Core/Src/aes.c **** void SubBytesI(unsigned char * state) {
+ 269              		.loc 1 50 39 is_stmt 1 view -0
+ 270              		.cfi_startproc
+ 271              		@ args = 0, pretend = 0, frame = 0
+ 272              		@ frame_needed = 0, uses_anonymous_args = 0
+ 273              		@ link register save eliminated.
+  51:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) { // Perform substitution to each of the 16 bytes
+ 274              		.loc 1 51 2 view .LVU74
+ 275              	.LBB7:
+ 276              		.loc 1 51 7 view .LVU75
+ 277              		.loc 1 51 11 is_stmt 0 view .LVU76
+ 278 0000 0023     		movs	r3, #0
+ 279              	.LVL11:
+ 280              	.L21:
+ 281              		.loc 1 51 2 discriminator 1 view .LVU77
+ 282 0002 0F2B     		cmp	r3, #15
+ 283 0004 05DC     		bgt	.L23
+  52:Core/Src/aes.c **** 		state[i] = inv_s[state[i]];
+ 284              		.loc 1 52 3 is_stmt 1 discriminator 3 view .LVU78
+ 285              		.loc 1 52 25 is_stmt 0 discriminator 3 view .LVU79
+ 286 0006 C25C     		ldrb	r2, [r0, r3]	@ zero_extendqisi2
+ 287              		.loc 1 52 19 discriminator 3 view .LVU80
+ 288 0008 0249     		ldr	r1, .L24
+ARM GAS  /tmp/cc0JglZb.s 			page 7
+
+
+ 289 000a 8A5C     		ldrb	r2, [r1, r2]	@ zero_extendqisi2
+ 290              		.loc 1 52 12 discriminator 3 view .LVU81
+ 291 000c C254     		strb	r2, [r0, r3]
+  51:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) { // Perform substitution to each of the 16 bytes
+ 292              		.loc 1 51 27 discriminator 3 view .LVU82
+ 293 000e 0133     		adds	r3, r3, #1
+ 294              	.LVL12:
+  51:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) { // Perform substitution to each of the 16 bytes
+ 295              		.loc 1 51 27 discriminator 3 view .LVU83
+ 296 0010 F7E7     		b	.L21
+ 297              	.L23:
+  51:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) { // Perform substitution to each of the 16 bytes
+ 298              		.loc 1 51 27 discriminator 3 view .LVU84
+ 299              	.LBE7:
+  53:Core/Src/aes.c **** 	}
+  54:Core/Src/aes.c **** }
+ 300              		.loc 1 54 1 view .LVU85
+ 301 0012 7047     		bx	lr
+ 302              	.L25:
+ 303              		.align	2
+ 304              	.L24:
+ 305 0014 00000000 		.word	.LANCHOR0
+ 306              		.cfi_endproc
+ 307              	.LFE9:
+ 309              		.section	.text.SubBytesF,"ax",%progbits
+ 310              		.align	1
+ 311              		.global	SubBytesF
+ 312              		.syntax unified
+ 313              		.thumb
+ 314              		.thumb_func
+ 315              		.fpu fpv4-sp-d16
+ 317              	SubBytesF:
+ 318              	.LVL13:
+ 319              	.LFB10:
+  55:Core/Src/aes.c **** /* Perform substitution to each of the 16 bytes
+  56:Core/Src/aes.c ****  * Uses S-box as lookup table 
+  57:Core/Src/aes.c ****  */
+  58:Core/Src/aes.c **** void SubBytesF(unsigned char * state) {
+ 320              		.loc 1 58 39 is_stmt 1 view -0
+ 321              		.cfi_startproc
+ 322              		@ args = 0, pretend = 0, frame = 0
+ 323              		@ frame_needed = 0, uses_anonymous_args = 0
+ 324              		@ link register save eliminated.
+  59:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 325              		.loc 1 59 2 view .LVU87
+ 326              	.LBB8:
+ 327              		.loc 1 59 7 view .LVU88
+ 328              		.loc 1 59 11 is_stmt 0 view .LVU89
+ 329 0000 0023     		movs	r3, #0
+ 330              	.LVL14:
+ 331              	.L27:
+ 332              		.loc 1 59 2 discriminator 1 view .LVU90
+ 333 0002 0F2B     		cmp	r3, #15
+ 334 0004 05DC     		bgt	.L29
+  60:Core/Src/aes.c **** 		state[i] = s[state[i]];
+ 335              		.loc 1 60 3 is_stmt 1 discriminator 3 view .LVU91
+ 336              		.loc 1 60 21 is_stmt 0 discriminator 3 view .LVU92
+ARM GAS  /tmp/cc0JglZb.s 			page 8
+
+
+ 337 0006 C25C     		ldrb	r2, [r0, r3]	@ zero_extendqisi2
+ 338              		.loc 1 60 15 discriminator 3 view .LVU93
+ 339 0008 0249     		ldr	r1, .L30
+ 340 000a 8A5C     		ldrb	r2, [r1, r2]	@ zero_extendqisi2
+ 341              		.loc 1 60 12 discriminator 3 view .LVU94
+ 342 000c C254     		strb	r2, [r0, r3]
+  59:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 343              		.loc 1 59 27 discriminator 3 view .LVU95
+ 344 000e 0133     		adds	r3, r3, #1
+ 345              	.LVL15:
+  59:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 346              		.loc 1 59 27 discriminator 3 view .LVU96
+ 347 0010 F7E7     		b	.L27
+ 348              	.L29:
+  59:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 349              		.loc 1 59 27 discriminator 3 view .LVU97
+ 350              	.LBE8:
+  61:Core/Src/aes.c **** 	}
+  62:Core/Src/aes.c **** }
+ 351              		.loc 1 62 1 view .LVU98
+ 352 0012 7047     		bx	lr
+ 353              	.L31:
+ 354              		.align	2
+ 355              	.L30:
+ 356 0014 00000000 		.word	.LANCHOR1
+ 357              		.cfi_endproc
+ 358              	.LFE10:
+ 360              		.section	.text.ShiftRowsL,"ax",%progbits
+ 361              		.align	1
+ 362              		.global	ShiftRowsL
+ 363              		.syntax unified
+ 364              		.thumb
+ 365              		.thumb_func
+ 366              		.fpu fpv4-sp-d16
+ 368              	ShiftRowsL:
+ 369              	.LVL16:
+ 370              	.LFB11:
+  63:Core/Src/aes.c **** 
+  64:Core/Src/aes.c **** // Shift left, adds diffusion
+  65:Core/Src/aes.c **** void ShiftRowsL(unsigned char * state) {
+ 371              		.loc 1 65 40 is_stmt 1 view -0
+ 372              		.cfi_startproc
+ 373              		@ args = 0, pretend = 0, frame = 16
+ 374              		@ frame_needed = 0, uses_anonymous_args = 0
+ 375              		@ link register save eliminated.
+ 376              		.loc 1 65 40 is_stmt 0 view .LVU100
+ 377 0000 84B0     		sub	sp, sp, #16
+ 378              	.LCFI6:
+ 379              		.cfi_def_cfa_offset 16
+  66:Core/Src/aes.c **** 	unsigned char tmp[16];
+ 380              		.loc 1 66 2 is_stmt 1 view .LVU101
+  67:Core/Src/aes.c **** 
+  68:Core/Src/aes.c **** 	/* Column 1 */
+  69:Core/Src/aes.c **** 	tmp[0] = state[0];
+ 381              		.loc 1 69 2 view .LVU102
+ 382              		.loc 1 69 16 is_stmt 0 view .LVU103
+ 383 0002 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ARM GAS  /tmp/cc0JglZb.s 			page 9
+
+
+ 384              		.loc 1 69 9 view .LVU104
+ 385 0004 8DF80030 		strb	r3, [sp]
+  70:Core/Src/aes.c **** 	tmp[1] = state[5];
+ 386              		.loc 1 70 2 is_stmt 1 view .LVU105
+ 387              		.loc 1 70 9 is_stmt 0 view .LVU106
+ 388 0008 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 389 000a 8DF80130 		strb	r3, [sp, #1]
+  71:Core/Src/aes.c **** 	tmp[2] = state[10];
+ 390              		.loc 1 71 2 is_stmt 1 view .LVU107
+ 391              		.loc 1 71 9 is_stmt 0 view .LVU108
+ 392 000e 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 393 0010 8DF80230 		strb	r3, [sp, #2]
+  72:Core/Src/aes.c **** 	tmp[3] = state[15];
+ 394              		.loc 1 72 2 is_stmt 1 view .LVU109
+ 395              		.loc 1 72 9 is_stmt 0 view .LVU110
+ 396 0014 C37B     		ldrb	r3, [r0, #15]	@ zero_extendqisi2
+ 397 0016 8DF80330 		strb	r3, [sp, #3]
+  73:Core/Src/aes.c **** 	
+  74:Core/Src/aes.c **** 	/* Column 2 */
+  75:Core/Src/aes.c **** 	tmp[4] = state[4];
+ 398              		.loc 1 75 2 is_stmt 1 view .LVU111
+ 399              		.loc 1 75 9 is_stmt 0 view .LVU112
+ 400 001a 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 401 001c 8DF80430 		strb	r3, [sp, #4]
+  76:Core/Src/aes.c **** 	tmp[5] = state[9];
+ 402              		.loc 1 76 2 is_stmt 1 view .LVU113
+ 403              		.loc 1 76 9 is_stmt 0 view .LVU114
+ 404 0020 437A     		ldrb	r3, [r0, #9]	@ zero_extendqisi2
+ 405 0022 8DF80530 		strb	r3, [sp, #5]
+  77:Core/Src/aes.c **** 	tmp[6] = state[14];
+ 406              		.loc 1 77 2 is_stmt 1 view .LVU115
+ 407              		.loc 1 77 9 is_stmt 0 view .LVU116
+ 408 0026 837B     		ldrb	r3, [r0, #14]	@ zero_extendqisi2
+ 409 0028 8DF80630 		strb	r3, [sp, #6]
+  78:Core/Src/aes.c **** 	tmp[7] = state[3];
+ 410              		.loc 1 78 2 is_stmt 1 view .LVU117
+ 411              		.loc 1 78 9 is_stmt 0 view .LVU118
+ 412 002c C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 413 002e 8DF80730 		strb	r3, [sp, #7]
+  79:Core/Src/aes.c **** 
+  80:Core/Src/aes.c **** 	/* Column 3 */
+  81:Core/Src/aes.c **** 	tmp[8] = state[8];
+ 414              		.loc 1 81 2 is_stmt 1 view .LVU119
+ 415              		.loc 1 81 9 is_stmt 0 view .LVU120
+ 416 0032 037A     		ldrb	r3, [r0, #8]	@ zero_extendqisi2
+ 417 0034 8DF80830 		strb	r3, [sp, #8]
+  82:Core/Src/aes.c **** 	tmp[9] = state[13];
+ 418              		.loc 1 82 2 is_stmt 1 view .LVU121
+ 419              		.loc 1 82 9 is_stmt 0 view .LVU122
+ 420 0038 437B     		ldrb	r3, [r0, #13]	@ zero_extendqisi2
+ 421 003a 8DF80930 		strb	r3, [sp, #9]
+  83:Core/Src/aes.c **** 	tmp[10] = state[2];
+ 422              		.loc 1 83 2 is_stmt 1 view .LVU123
+ 423              		.loc 1 83 10 is_stmt 0 view .LVU124
+ 424 003e 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 425 0040 8DF80A30 		strb	r3, [sp, #10]
+  84:Core/Src/aes.c **** 	tmp[11] = state[7];
+ARM GAS  /tmp/cc0JglZb.s 			page 10
+
+
+ 426              		.loc 1 84 2 is_stmt 1 view .LVU125
+ 427              		.loc 1 84 10 is_stmt 0 view .LVU126
+ 428 0044 C379     		ldrb	r3, [r0, #7]	@ zero_extendqisi2
+ 429 0046 8DF80B30 		strb	r3, [sp, #11]
+  85:Core/Src/aes.c **** 	
+  86:Core/Src/aes.c **** 	/* Column 4 */
+  87:Core/Src/aes.c **** 	tmp[12] = state[12];
+ 430              		.loc 1 87 2 is_stmt 1 view .LVU127
+ 431              		.loc 1 87 10 is_stmt 0 view .LVU128
+ 432 004a 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+ 433 004c 8DF80C30 		strb	r3, [sp, #12]
+  88:Core/Src/aes.c **** 	tmp[13] = state[1];
+ 434              		.loc 1 88 2 is_stmt 1 view .LVU129
+ 435              		.loc 1 88 10 is_stmt 0 view .LVU130
+ 436 0050 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 437 0052 8DF80D30 		strb	r3, [sp, #13]
+  89:Core/Src/aes.c **** 	tmp[14] = state[6];
+ 438              		.loc 1 89 2 is_stmt 1 view .LVU131
+ 439              		.loc 1 89 10 is_stmt 0 view .LVU132
+ 440 0056 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+ 441 0058 8DF80E30 		strb	r3, [sp, #14]
+  90:Core/Src/aes.c **** 	tmp[15] = state[11];
+ 442              		.loc 1 90 2 is_stmt 1 view .LVU133
+ 443              		.loc 1 90 10 is_stmt 0 view .LVU134
+ 444 005c C37A     		ldrb	r3, [r0, #11]	@ zero_extendqisi2
+ 445 005e 8DF80F30 		strb	r3, [sp, #15]
+  91:Core/Src/aes.c **** 
+  92:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 446              		.loc 1 92 2 is_stmt 1 view .LVU135
+ 447              	.LBB9:
+ 448              		.loc 1 92 7 view .LVU136
+ 449              	.LVL17:
+ 450              		.loc 1 92 11 is_stmt 0 view .LVU137
+ 451 0062 0023     		movs	r3, #0
+ 452              	.LVL18:
+ 453              	.L33:
+ 454              		.loc 1 92 2 discriminator 1 view .LVU138
+ 455 0064 0F2B     		cmp	r3, #15
+ 456 0066 06DC     		bgt	.L36
+  93:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 457              		.loc 1 93 3 is_stmt 1 discriminator 3 view .LVU139
+ 458              		.loc 1 93 17 is_stmt 0 discriminator 3 view .LVU140
+ 459 0068 04AA     		add	r2, sp, #16
+ 460 006a 1A44     		add	r2, r2, r3
+ 461 006c 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 462              		.loc 1 93 12 discriminator 3 view .LVU141
+ 463 0070 C254     		strb	r2, [r0, r3]
+  92:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 464              		.loc 1 92 27 discriminator 3 view .LVU142
+ 465 0072 0133     		adds	r3, r3, #1
+ 466              	.LVL19:
+  92:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 467              		.loc 1 92 27 discriminator 3 view .LVU143
+ 468 0074 F6E7     		b	.L33
+ 469              	.L36:
+  92:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 470              		.loc 1 92 27 discriminator 3 view .LVU144
+ARM GAS  /tmp/cc0JglZb.s 			page 11
+
+
+ 471              	.LBE9:
+  94:Core/Src/aes.c **** 	}
+  95:Core/Src/aes.c **** }
+ 472              		.loc 1 95 1 view .LVU145
+ 473 0076 04B0     		add	sp, sp, #16
+ 474              	.LCFI7:
+ 475              		.cfi_def_cfa_offset 0
+ 476              		@ sp needed
+ 477 0078 7047     		bx	lr
+ 478              		.cfi_endproc
+ 479              	.LFE11:
+ 481              		.section	.text.MixColumns,"ax",%progbits
+ 482              		.align	1
+ 483              		.global	MixColumns
+ 484              		.syntax unified
+ 485              		.thumb
+ 486              		.thumb_func
+ 487              		.fpu fpv4-sp-d16
+ 489              	MixColumns:
+ 490              	.LVL20:
+ 491              	.LFB12:
+  96:Core/Src/aes.c **** 
+  97:Core/Src/aes.c ****  /* MixColumns uses mul2, mul3 look-up tables
+  98:Core/Src/aes.c ****   * Source of diffusion
+  99:Core/Src/aes.c ****   */
+ 100:Core/Src/aes.c **** void MixColumns(unsigned char * state) {
+ 492              		.loc 1 100 40 is_stmt 1 view -0
+ 493              		.cfi_startproc
+ 494              		@ args = 0, pretend = 0, frame = 16
+ 495              		@ frame_needed = 0, uses_anonymous_args = 0
+ 496              		.loc 1 100 40 is_stmt 0 view .LVU147
+ 497 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 498              	.LCFI8:
+ 499              		.cfi_def_cfa_offset 20
+ 500              		.cfi_offset 4, -20
+ 501              		.cfi_offset 5, -16
+ 502              		.cfi_offset 6, -12
+ 503              		.cfi_offset 7, -8
+ 504              		.cfi_offset 14, -4
+ 505 0002 85B0     		sub	sp, sp, #20
+ 506              	.LCFI9:
+ 507              		.cfi_def_cfa_offset 40
+ 101:Core/Src/aes.c **** 	unsigned char tmp[16];
+ 508              		.loc 1 101 2 is_stmt 1 view .LVU148
+ 102:Core/Src/aes.c **** 
+ 103:Core/Src/aes.c **** 	tmp[0] = (unsigned char) mul2[state[0]] ^ mul3[state[1]] ^ state[2] ^ state[3];
+ 509              		.loc 1 103 2 view .LVU149
+ 510              		.loc 1 103 37 is_stmt 0 view .LVU150
+ 511 0004 0778     		ldrb	r7, [r0]	@ zero_extendqisi2
+ 512              		.loc 1 103 31 view .LVU151
+ 513 0006 584B     		ldr	r3, .L42
+ 514 0008 D95D     		ldrb	r1, [r3, r7]	@ zero_extendqisi2
+ 515              		.loc 1 103 54 view .LVU152
+ 516 000a 4578     		ldrb	r5, [r0, #1]	@ zero_extendqisi2
+ 517              		.loc 1 103 48 view .LVU153
+ 518 000c 574A     		ldr	r2, .L42+4
+ 519 000e 12F805C0 		ldrb	ip, [r2, r5]	@ zero_extendqisi2
+ARM GAS  /tmp/cc0JglZb.s 			page 12
+
+
+ 520              		.loc 1 103 66 view .LVU154
+ 521 0012 8478     		ldrb	r4, [r0, #2]	@ zero_extendqisi2
+ 522              		.loc 1 103 77 view .LVU155
+ 523 0014 C678     		ldrb	r6, [r0, #3]	@ zero_extendqisi2
+ 524              		.loc 1 103 9 view .LVU156
+ 525 0016 81EA0C01 		eor	r1, r1, ip
+ 526 001a 6140     		eors	r1, r1, r4
+ 527 001c 7140     		eors	r1, r1, r6
+ 528 001e 8DF80010 		strb	r1, [sp]
+ 104:Core/Src/aes.c **** 	tmp[1] = (unsigned char) state[0] ^ mul2[state[1]] ^ mul3[state[2]] ^ state[3];
+ 529              		.loc 1 104 2 is_stmt 1 view .LVU157
+ 530              		.loc 1 104 42 is_stmt 0 view .LVU158
+ 531 0022 13F805C0 		ldrb	ip, [r3, r5]	@ zero_extendqisi2
+ 532              		.loc 1 104 59 view .LVU159
+ 533 0026 115D     		ldrb	r1, [r2, r4]	@ zero_extendqisi2
+ 534              		.loc 1 104 9 view .LVU160
+ 535 0028 87EA0C0C 		eor	ip, r7, ip
+ 536 002c 81EA0C01 		eor	r1, r1, ip
+ 537 0030 7140     		eors	r1, r1, r6
+ 538 0032 8DF80110 		strb	r1, [sp, #1]
+ 105:Core/Src/aes.c **** 	tmp[2] = (unsigned char) state[0] ^ state[1] ^ mul2[state[2]] ^ mul3[state[3]];
+ 539              		.loc 1 105 2 is_stmt 1 view .LVU161
+ 540              		.loc 1 105 53 is_stmt 0 view .LVU162
+ 541 0036 13F804C0 		ldrb	ip, [r3, r4]	@ zero_extendqisi2
+ 542              		.loc 1 105 70 view .LVU163
+ 543 003a 915D     		ldrb	r1, [r2, r6]	@ zero_extendqisi2
+ 544              		.loc 1 105 9 view .LVU164
+ 545 003c 87EA050E 		eor	lr, r7, r5
+ 546 0040 8CEA0E0C 		eor	ip, ip, lr
+ 547 0044 81EA0C01 		eor	r1, r1, ip
+ 548 0048 8DF80210 		strb	r1, [sp, #2]
+ 106:Core/Src/aes.c **** 	tmp[3] = (unsigned char) mul3[state[0]] ^ state[1] ^ state[2] ^ mul2[state[3]];
+ 549              		.loc 1 106 2 is_stmt 1 view .LVU165
+ 550              		.loc 1 106 31 is_stmt 0 view .LVU166
+ 551 004c D75D     		ldrb	r7, [r2, r7]	@ zero_extendqisi2
+ 552              		.loc 1 106 70 view .LVU167
+ 553 004e 995D     		ldrb	r1, [r3, r6]	@ zero_extendqisi2
+ 554              		.loc 1 106 9 view .LVU168
+ 555 0050 7D40     		eors	r5, r5, r7
+ 556 0052 6C40     		eors	r4, r4, r5
+ 557 0054 4C40     		eors	r4, r4, r1
+ 558 0056 8DF80340 		strb	r4, [sp, #3]
+ 107:Core/Src/aes.c **** 
+ 108:Core/Src/aes.c **** 	tmp[4] = (unsigned char)mul2[state[4]] ^ mul3[state[5]] ^ state[6] ^ state[7];
+ 559              		.loc 1 108 2 is_stmt 1 view .LVU169
+ 560              		.loc 1 108 36 is_stmt 0 view .LVU170
+ 561 005a 0779     		ldrb	r7, [r0, #4]	@ zero_extendqisi2
+ 562              		.loc 1 108 30 view .LVU171
+ 563 005c D95D     		ldrb	r1, [r3, r7]	@ zero_extendqisi2
+ 564              		.loc 1 108 53 view .LVU172
+ 565 005e 4579     		ldrb	r5, [r0, #5]	@ zero_extendqisi2
+ 566              		.loc 1 108 47 view .LVU173
+ 567 0060 12F805C0 		ldrb	ip, [r2, r5]	@ zero_extendqisi2
+ 568              		.loc 1 108 65 view .LVU174
+ 569 0064 8479     		ldrb	r4, [r0, #6]	@ zero_extendqisi2
+ 570              		.loc 1 108 76 view .LVU175
+ 571 0066 C679     		ldrb	r6, [r0, #7]	@ zero_extendqisi2
+ARM GAS  /tmp/cc0JglZb.s 			page 13
+
+
+ 572              		.loc 1 108 9 view .LVU176
+ 573 0068 81EA0C01 		eor	r1, r1, ip
+ 574 006c 6140     		eors	r1, r1, r4
+ 575 006e 7140     		eors	r1, r1, r6
+ 576 0070 8DF80410 		strb	r1, [sp, #4]
+ 109:Core/Src/aes.c **** 	tmp[5] = (unsigned char)state[4] ^ mul2[state[5]] ^ mul3[state[6]] ^ state[7];
+ 577              		.loc 1 109 2 is_stmt 1 view .LVU177
+ 578              		.loc 1 109 41 is_stmt 0 view .LVU178
+ 579 0074 13F805C0 		ldrb	ip, [r3, r5]	@ zero_extendqisi2
+ 580              		.loc 1 109 58 view .LVU179
+ 581 0078 115D     		ldrb	r1, [r2, r4]	@ zero_extendqisi2
+ 582              		.loc 1 109 9 view .LVU180
+ 583 007a 87EA0C0C 		eor	ip, r7, ip
+ 584 007e 81EA0C01 		eor	r1, r1, ip
+ 585 0082 7140     		eors	r1, r1, r6
+ 586 0084 8DF80510 		strb	r1, [sp, #5]
+ 110:Core/Src/aes.c **** 	tmp[6] = (unsigned char)state[4] ^ state[5] ^ mul2[state[6]] ^ mul3[state[7]];
+ 587              		.loc 1 110 2 is_stmt 1 view .LVU181
+ 588              		.loc 1 110 52 is_stmt 0 view .LVU182
+ 589 0088 13F804C0 		ldrb	ip, [r3, r4]	@ zero_extendqisi2
+ 590              		.loc 1 110 69 view .LVU183
+ 591 008c 915D     		ldrb	r1, [r2, r6]	@ zero_extendqisi2
+ 592              		.loc 1 110 9 view .LVU184
+ 593 008e 87EA050E 		eor	lr, r7, r5
+ 594 0092 8CEA0E0C 		eor	ip, ip, lr
+ 595 0096 81EA0C01 		eor	r1, r1, ip
+ 596 009a 8DF80610 		strb	r1, [sp, #6]
+ 111:Core/Src/aes.c **** 	tmp[7] = (unsigned char)mul3[state[4]] ^ state[5] ^ state[6] ^ mul2[state[7]];
+ 597              		.loc 1 111 2 is_stmt 1 view .LVU185
+ 598              		.loc 1 111 30 is_stmt 0 view .LVU186
+ 599 009e D75D     		ldrb	r7, [r2, r7]	@ zero_extendqisi2
+ 600              		.loc 1 111 69 view .LVU187
+ 601 00a0 995D     		ldrb	r1, [r3, r6]	@ zero_extendqisi2
+ 602              		.loc 1 111 9 view .LVU188
+ 603 00a2 7D40     		eors	r5, r5, r7
+ 604 00a4 6C40     		eors	r4, r4, r5
+ 605 00a6 4C40     		eors	r4, r4, r1
+ 606 00a8 8DF80740 		strb	r4, [sp, #7]
+ 112:Core/Src/aes.c **** 
+ 113:Core/Src/aes.c **** 	tmp[8] = (unsigned char)mul2[state[8]] ^ mul3[state[9]] ^ state[10] ^ state[11];
+ 607              		.loc 1 113 2 is_stmt 1 view .LVU189
+ 608              		.loc 1 113 36 is_stmt 0 view .LVU190
+ 609 00ac 077A     		ldrb	r7, [r0, #8]	@ zero_extendqisi2
+ 610              		.loc 1 113 30 view .LVU191
+ 611 00ae D95D     		ldrb	r1, [r3, r7]	@ zero_extendqisi2
+ 612              		.loc 1 113 53 view .LVU192
+ 613 00b0 457A     		ldrb	r5, [r0, #9]	@ zero_extendqisi2
+ 614              		.loc 1 113 47 view .LVU193
+ 615 00b2 12F805C0 		ldrb	ip, [r2, r5]	@ zero_extendqisi2
+ 616              		.loc 1 113 65 view .LVU194
+ 617 00b6 847A     		ldrb	r4, [r0, #10]	@ zero_extendqisi2
+ 618              		.loc 1 113 77 view .LVU195
+ 619 00b8 C67A     		ldrb	r6, [r0, #11]	@ zero_extendqisi2
+ 620              		.loc 1 113 9 view .LVU196
+ 621 00ba 81EA0C01 		eor	r1, r1, ip
+ 622 00be 6140     		eors	r1, r1, r4
+ 623 00c0 7140     		eors	r1, r1, r6
+ARM GAS  /tmp/cc0JglZb.s 			page 14
+
+
+ 624 00c2 8DF80810 		strb	r1, [sp, #8]
+ 114:Core/Src/aes.c **** 	tmp[9] = (unsigned char)state[8] ^ mul2[state[9]] ^ mul3[state[10]] ^ state[11];
+ 625              		.loc 1 114 2 is_stmt 1 view .LVU197
+ 626              		.loc 1 114 41 is_stmt 0 view .LVU198
+ 627 00c6 13F805C0 		ldrb	ip, [r3, r5]	@ zero_extendqisi2
+ 628              		.loc 1 114 58 view .LVU199
+ 629 00ca 115D     		ldrb	r1, [r2, r4]	@ zero_extendqisi2
+ 630              		.loc 1 114 9 view .LVU200
+ 631 00cc 87EA0C0C 		eor	ip, r7, ip
+ 632 00d0 81EA0C01 		eor	r1, r1, ip
+ 633 00d4 7140     		eors	r1, r1, r6
+ 634 00d6 8DF80910 		strb	r1, [sp, #9]
+ 115:Core/Src/aes.c **** 	tmp[10] = (unsigned char)state[8] ^ state[9] ^ mul2[state[10]] ^ mul3[state[11]];
+ 635              		.loc 1 115 2 is_stmt 1 view .LVU201
+ 636              		.loc 1 115 53 is_stmt 0 view .LVU202
+ 637 00da 13F804C0 		ldrb	ip, [r3, r4]	@ zero_extendqisi2
+ 638              		.loc 1 115 71 view .LVU203
+ 639 00de 915D     		ldrb	r1, [r2, r6]	@ zero_extendqisi2
+ 640              		.loc 1 115 10 view .LVU204
+ 641 00e0 87EA050E 		eor	lr, r7, r5
+ 642 00e4 8CEA0E0C 		eor	ip, ip, lr
+ 643 00e8 81EA0C01 		eor	r1, r1, ip
+ 644 00ec 8DF80A10 		strb	r1, [sp, #10]
+ 116:Core/Src/aes.c **** 	tmp[11] = (unsigned char)mul3[state[8]] ^ state[9] ^ state[10] ^ mul2[state[11]];
+ 645              		.loc 1 116 2 is_stmt 1 view .LVU205
+ 646              		.loc 1 116 31 is_stmt 0 view .LVU206
+ 647 00f0 D75D     		ldrb	r7, [r2, r7]	@ zero_extendqisi2
+ 648              		.loc 1 116 71 view .LVU207
+ 649 00f2 995D     		ldrb	r1, [r3, r6]	@ zero_extendqisi2
+ 650              		.loc 1 116 10 view .LVU208
+ 651 00f4 7D40     		eors	r5, r5, r7
+ 652 00f6 6C40     		eors	r4, r4, r5
+ 653 00f8 4C40     		eors	r4, r4, r1
+ 654 00fa 8DF80B40 		strb	r4, [sp, #11]
+ 117:Core/Src/aes.c **** 
+ 118:Core/Src/aes.c **** 	tmp[12] = (unsigned char)mul2[state[12]] ^ mul3[state[13]] ^ state[14] ^ state[15];
+ 655              		.loc 1 118 2 is_stmt 1 view .LVU209
+ 656              		.loc 1 118 37 is_stmt 0 view .LVU210
+ 657 00fe 077B     		ldrb	r7, [r0, #12]	@ zero_extendqisi2
+ 658              		.loc 1 118 31 view .LVU211
+ 659 0100 D95D     		ldrb	r1, [r3, r7]	@ zero_extendqisi2
+ 660              		.loc 1 118 55 view .LVU212
+ 661 0102 457B     		ldrb	r5, [r0, #13]	@ zero_extendqisi2
+ 662              		.loc 1 118 49 view .LVU213
+ 663 0104 12F805C0 		ldrb	ip, [r2, r5]	@ zero_extendqisi2
+ 664              		.loc 1 118 68 view .LVU214
+ 665 0108 847B     		ldrb	r4, [r0, #14]	@ zero_extendqisi2
+ 666              		.loc 1 118 80 view .LVU215
+ 667 010a C67B     		ldrb	r6, [r0, #15]	@ zero_extendqisi2
+ 668              		.loc 1 118 10 view .LVU216
+ 669 010c 81EA0C01 		eor	r1, r1, ip
+ 670 0110 6140     		eors	r1, r1, r4
+ 671 0112 7140     		eors	r1, r1, r6
+ 672 0114 8DF80C10 		strb	r1, [sp, #12]
+ 119:Core/Src/aes.c **** 	tmp[13] = (unsigned char)state[12] ^ mul2[state[13]] ^ mul3[state[14]] ^ state[15];
+ 673              		.loc 1 119 2 is_stmt 1 view .LVU217
+ 674              		.loc 1 119 43 is_stmt 0 view .LVU218
+ARM GAS  /tmp/cc0JglZb.s 			page 15
+
+
+ 675 0118 13F805C0 		ldrb	ip, [r3, r5]	@ zero_extendqisi2
+ 676              		.loc 1 119 61 view .LVU219
+ 677 011c 115D     		ldrb	r1, [r2, r4]	@ zero_extendqisi2
+ 678              		.loc 1 119 10 view .LVU220
+ 679 011e 87EA0C0C 		eor	ip, r7, ip
+ 680 0122 81EA0C01 		eor	r1, r1, ip
+ 681 0126 7140     		eors	r1, r1, r6
+ 682 0128 8DF80D10 		strb	r1, [sp, #13]
+ 120:Core/Src/aes.c **** 	tmp[14] = (unsigned char)state[12] ^ state[13] ^ mul2[state[14]] ^ mul3[state[15]];
+ 683              		.loc 1 120 2 is_stmt 1 view .LVU221
+ 684              		.loc 1 120 55 is_stmt 0 view .LVU222
+ 685 012c 13F804C0 		ldrb	ip, [r3, r4]	@ zero_extendqisi2
+ 686              		.loc 1 120 73 view .LVU223
+ 687 0130 915D     		ldrb	r1, [r2, r6]	@ zero_extendqisi2
+ 688              		.loc 1 120 10 view .LVU224
+ 689 0132 87EA050E 		eor	lr, r7, r5
+ 690 0136 8CEA0E0C 		eor	ip, ip, lr
+ 691 013a 81EA0C01 		eor	r1, r1, ip
+ 692 013e 8DF80E10 		strb	r1, [sp, #14]
+ 121:Core/Src/aes.c **** 	tmp[15] = (unsigned char)mul3[state[12]] ^ state[13] ^ state[14] ^ mul2[state[15]];
+ 693              		.loc 1 121 2 is_stmt 1 view .LVU225
+ 694              		.loc 1 121 31 is_stmt 0 view .LVU226
+ 695 0142 D25D     		ldrb	r2, [r2, r7]	@ zero_extendqisi2
+ 696              		.loc 1 121 73 view .LVU227
+ 697 0144 9B5D     		ldrb	r3, [r3, r6]	@ zero_extendqisi2
+ 698              		.loc 1 121 10 view .LVU228
+ 699 0146 5540     		eors	r5, r5, r2
+ 700 0148 6C40     		eors	r4, r4, r5
+ 701 014a 5C40     		eors	r4, r4, r3
+ 702 014c 8DF80F40 		strb	r4, [sp, #15]
+ 122:Core/Src/aes.c **** 
+ 123:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 703              		.loc 1 123 2 is_stmt 1 view .LVU229
+ 704              	.LBB10:
+ 705              		.loc 1 123 7 view .LVU230
+ 706              	.LVL21:
+ 707              		.loc 1 123 11 is_stmt 0 view .LVU231
+ 708 0150 0023     		movs	r3, #0
+ 709              	.LVL22:
+ 710              	.L38:
+ 711              		.loc 1 123 2 discriminator 1 view .LVU232
+ 712 0152 0F2B     		cmp	r3, #15
+ 713 0154 06DC     		bgt	.L41
+ 124:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 714              		.loc 1 124 3 is_stmt 1 discriminator 3 view .LVU233
+ 715              		.loc 1 124 17 is_stmt 0 discriminator 3 view .LVU234
+ 716 0156 04AA     		add	r2, sp, #16
+ 717 0158 1A44     		add	r2, r2, r3
+ 718 015a 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 719              		.loc 1 124 12 discriminator 3 view .LVU235
+ 720 015e C254     		strb	r2, [r0, r3]
+ 123:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 721              		.loc 1 123 27 discriminator 3 view .LVU236
+ 722 0160 0133     		adds	r3, r3, #1
+ 723              	.LVL23:
+ 123:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 724              		.loc 1 123 27 discriminator 3 view .LVU237
+ARM GAS  /tmp/cc0JglZb.s 			page 16
+
+
+ 725 0162 F6E7     		b	.L38
+ 726              	.L41:
+ 123:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 727              		.loc 1 123 27 discriminator 3 view .LVU238
+ 728              	.LBE10:
+ 125:Core/Src/aes.c **** 	}
+ 126:Core/Src/aes.c **** }
+ 729              		.loc 1 126 1 view .LVU239
+ 730 0164 05B0     		add	sp, sp, #20
+ 731              	.LCFI10:
+ 732              		.cfi_def_cfa_offset 20
+ 733              		@ sp needed
+ 734 0166 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 735              	.L43:
+ 736              		.align	2
+ 737              	.L42:
+ 738 0168 00000000 		.word	.LANCHOR2
+ 739 016c 00000000 		.word	.LANCHOR3
+ 740              		.cfi_endproc
+ 741              	.LFE12:
+ 743              		.section	.text.InverseMixColumns,"ax",%progbits
+ 744              		.align	1
+ 745              		.global	InverseMixColumns
+ 746              		.syntax unified
+ 747              		.thumb
+ 748              		.thumb_func
+ 749              		.fpu fpv4-sp-d16
+ 751              	InverseMixColumns:
+ 752              	.LVL24:
+ 753              	.LFB13:
+ 127:Core/Src/aes.c **** 
+ 128:Core/Src/aes.c **** /* InverseMixColumns uses mul9, mul11, mul13, mul14 look-up tables
+ 129:Core/Src/aes.c ****  * Unmixes the columns by reversing the effect of MixColumns in encryption
+ 130:Core/Src/aes.c ****  */
+ 131:Core/Src/aes.c **** void InverseMixColumns(unsigned char * state) {
+ 754              		.loc 1 131 47 is_stmt 1 view -0
+ 755              		.cfi_startproc
+ 756              		@ args = 0, pretend = 0, frame = 16
+ 757              		@ frame_needed = 0, uses_anonymous_args = 0
+ 758              		.loc 1 131 47 is_stmt 0 view .LVU241
+ 759 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 760              	.LCFI11:
+ 761              		.cfi_def_cfa_offset 32
+ 762              		.cfi_offset 4, -32
+ 763              		.cfi_offset 5, -28
+ 764              		.cfi_offset 6, -24
+ 765              		.cfi_offset 7, -20
+ 766              		.cfi_offset 8, -16
+ 767              		.cfi_offset 9, -12
+ 768              		.cfi_offset 10, -8
+ 769              		.cfi_offset 14, -4
+ 770 0004 84B0     		sub	sp, sp, #16
+ 771              	.LCFI12:
+ 772              		.cfi_def_cfa_offset 48
+ 132:Core/Src/aes.c **** 	unsigned char tmp[16];
+ 773              		.loc 1 132 2 is_stmt 1 view .LVU242
+ 133:Core/Src/aes.c **** 
+ARM GAS  /tmp/cc0JglZb.s 			page 17
+
+
+ 134:Core/Src/aes.c **** 	tmp[0] = (unsigned char)mul14[state[0]] ^ mul11[state[1]] ^ mul13[state[2]] ^ mul9[state[3]];
+ 774              		.loc 1 134 2 view .LVU243
+ 775              		.loc 1 134 37 is_stmt 0 view .LVU244
+ 776 0006 90F800C0 		ldrb	ip, [r0]	@ zero_extendqisi2
+ 777              		.loc 1 134 31 view .LVU245
+ 778 000a 874B     		ldr	r3, .L49
+ 779 000c 13F80C90 		ldrb	r9, [r3, ip]	@ zero_extendqisi2
+ 780              		.loc 1 134 55 view .LVU246
+ 781 0010 4778     		ldrb	r7, [r0, #1]	@ zero_extendqisi2
+ 782              		.loc 1 134 49 view .LVU247
+ 783 0012 864C     		ldr	r4, .L49+4
+ 784 0014 14F807A0 		ldrb	r10, [r4, r7]	@ zero_extendqisi2
+ 785              		.loc 1 134 73 view .LVU248
+ 786 0018 8678     		ldrb	r6, [r0, #2]	@ zero_extendqisi2
+ 787              		.loc 1 134 67 view .LVU249
+ 788 001a 8549     		ldr	r1, .L49+8
+ 789 001c 11F80680 		ldrb	r8, [r1, r6]	@ zero_extendqisi2
+ 790              		.loc 1 134 90 view .LVU250
+ 791 0020 C578     		ldrb	r5, [r0, #3]	@ zero_extendqisi2
+ 792              		.loc 1 134 84 view .LVU251
+ 793 0022 844A     		ldr	r2, .L49+12
+ 794 0024 12F805E0 		ldrb	lr, [r2, r5]	@ zero_extendqisi2
+ 795              		.loc 1 134 9 view .LVU252
+ 796 0028 89EA0A09 		eor	r9, r9, r10
+ 797 002c 88EA0908 		eor	r8, r8, r9
+ 798 0030 8EEA080E 		eor	lr, lr, r8
+ 799 0034 8DF800E0 		strb	lr, [sp]
+ 135:Core/Src/aes.c **** 	tmp[1] = (unsigned char)mul9[state[0]] ^ mul14[state[1]] ^ mul11[state[2]] ^ mul13[state[3]];
+ 800              		.loc 1 135 2 is_stmt 1 view .LVU253
+ 801              		.loc 1 135 30 is_stmt 0 view .LVU254
+ 802 0038 12F80C90 		ldrb	r9, [r2, ip]	@ zero_extendqisi2
+ 803              		.loc 1 135 48 view .LVU255
+ 804 003c 13F807A0 		ldrb	r10, [r3, r7]	@ zero_extendqisi2
+ 805              		.loc 1 135 66 view .LVU256
+ 806 0040 14F80680 		ldrb	r8, [r4, r6]	@ zero_extendqisi2
+ 807              		.loc 1 135 84 view .LVU257
+ 808 0044 11F805E0 		ldrb	lr, [r1, r5]	@ zero_extendqisi2
+ 809              		.loc 1 135 9 view .LVU258
+ 810 0048 89EA0A09 		eor	r9, r9, r10
+ 811 004c 88EA0908 		eor	r8, r8, r9
+ 812 0050 8EEA080E 		eor	lr, lr, r8
+ 813 0054 8DF801E0 		strb	lr, [sp, #1]
+ 136:Core/Src/aes.c **** 	tmp[2] = (unsigned char)mul13[state[0]] ^ mul9[state[1]] ^ mul14[state[2]] ^ mul11[state[3]];
+ 814              		.loc 1 136 2 is_stmt 1 view .LVU259
+ 815              		.loc 1 136 31 is_stmt 0 view .LVU260
+ 816 0058 11F80C90 		ldrb	r9, [r1, ip]	@ zero_extendqisi2
+ 817              		.loc 1 136 48 view .LVU261
+ 818 005c 12F807A0 		ldrb	r10, [r2, r7]	@ zero_extendqisi2
+ 819              		.loc 1 136 66 view .LVU262
+ 820 0060 13F80680 		ldrb	r8, [r3, r6]	@ zero_extendqisi2
+ 821              		.loc 1 136 84 view .LVU263
+ 822 0064 14F805E0 		ldrb	lr, [r4, r5]	@ zero_extendqisi2
+ 823              		.loc 1 136 9 view .LVU264
+ 824 0068 89EA0A09 		eor	r9, r9, r10
+ 825 006c 88EA0908 		eor	r8, r8, r9
+ 826 0070 8EEA080E 		eor	lr, lr, r8
+ 827 0074 8DF802E0 		strb	lr, [sp, #2]
+ARM GAS  /tmp/cc0JglZb.s 			page 18
+
+
+ 137:Core/Src/aes.c **** 	tmp[3] = (unsigned char)mul11[state[0]] ^ mul13[state[1]] ^ mul9[state[2]] ^ mul14[state[3]];
+ 828              		.loc 1 137 2 is_stmt 1 view .LVU265
+ 829              		.loc 1 137 31 is_stmt 0 view .LVU266
+ 830 0078 14F80CC0 		ldrb	ip, [r4, ip]	@ zero_extendqisi2
+ 831              		.loc 1 137 49 view .LVU267
+ 832 007c CF5D     		ldrb	r7, [r1, r7]	@ zero_extendqisi2
+ 833              		.loc 1 137 66 view .LVU268
+ 834 007e 965D     		ldrb	r6, [r2, r6]	@ zero_extendqisi2
+ 835              		.loc 1 137 84 view .LVU269
+ 836 0080 5D5D     		ldrb	r5, [r3, r5]	@ zero_extendqisi2
+ 837              		.loc 1 137 9 view .LVU270
+ 838 0082 8CEA0707 		eor	r7, ip, r7
+ 839 0086 7E40     		eors	r6, r6, r7
+ 840 0088 7540     		eors	r5, r5, r6
+ 841 008a 8DF80350 		strb	r5, [sp, #3]
+ 138:Core/Src/aes.c **** 
+ 139:Core/Src/aes.c **** 	tmp[4] = (unsigned char)mul14[state[4]] ^ mul11[state[5]] ^ mul13[state[6]] ^ mul9[state[7]];
+ 842              		.loc 1 139 2 is_stmt 1 view .LVU271
+ 843              		.loc 1 139 37 is_stmt 0 view .LVU272
+ 844 008e 90F804C0 		ldrb	ip, [r0, #4]	@ zero_extendqisi2
+ 845              		.loc 1 139 31 view .LVU273
+ 846 0092 13F80C90 		ldrb	r9, [r3, ip]	@ zero_extendqisi2
+ 847              		.loc 1 139 55 view .LVU274
+ 848 0096 4779     		ldrb	r7, [r0, #5]	@ zero_extendqisi2
+ 849              		.loc 1 139 49 view .LVU275
+ 850 0098 14F807A0 		ldrb	r10, [r4, r7]	@ zero_extendqisi2
+ 851              		.loc 1 139 73 view .LVU276
+ 852 009c 8679     		ldrb	r6, [r0, #6]	@ zero_extendqisi2
+ 853              		.loc 1 139 67 view .LVU277
+ 854 009e 11F80680 		ldrb	r8, [r1, r6]	@ zero_extendqisi2
+ 855              		.loc 1 139 90 view .LVU278
+ 856 00a2 C579     		ldrb	r5, [r0, #7]	@ zero_extendqisi2
+ 857              		.loc 1 139 84 view .LVU279
+ 858 00a4 12F805E0 		ldrb	lr, [r2, r5]	@ zero_extendqisi2
+ 859              		.loc 1 139 9 view .LVU280
+ 860 00a8 89EA0A09 		eor	r9, r9, r10
+ 861 00ac 88EA0908 		eor	r8, r8, r9
+ 862 00b0 8EEA080E 		eor	lr, lr, r8
+ 863 00b4 8DF804E0 		strb	lr, [sp, #4]
+ 140:Core/Src/aes.c **** 	tmp[5] = (unsigned char)mul9[state[4]] ^ mul14[state[5]] ^ mul11[state[6]] ^ mul13[state[7]];
+ 864              		.loc 1 140 2 is_stmt 1 view .LVU281
+ 865              		.loc 1 140 30 is_stmt 0 view .LVU282
+ 866 00b8 12F80C90 		ldrb	r9, [r2, ip]	@ zero_extendqisi2
+ 867              		.loc 1 140 48 view .LVU283
+ 868 00bc 13F807A0 		ldrb	r10, [r3, r7]	@ zero_extendqisi2
+ 869              		.loc 1 140 66 view .LVU284
+ 870 00c0 14F80680 		ldrb	r8, [r4, r6]	@ zero_extendqisi2
+ 871              		.loc 1 140 84 view .LVU285
+ 872 00c4 11F805E0 		ldrb	lr, [r1, r5]	@ zero_extendqisi2
+ 873              		.loc 1 140 9 view .LVU286
+ 874 00c8 89EA0A09 		eor	r9, r9, r10
+ 875 00cc 88EA0908 		eor	r8, r8, r9
+ 876 00d0 8EEA080E 		eor	lr, lr, r8
+ 877 00d4 8DF805E0 		strb	lr, [sp, #5]
+ 141:Core/Src/aes.c **** 	tmp[6] = (unsigned char)mul13[state[4]] ^ mul9[state[5]] ^ mul14[state[6]] ^ mul11[state[7]];
+ 878              		.loc 1 141 2 is_stmt 1 view .LVU287
+ 879              		.loc 1 141 31 is_stmt 0 view .LVU288
+ARM GAS  /tmp/cc0JglZb.s 			page 19
+
+
+ 880 00d8 11F80C90 		ldrb	r9, [r1, ip]	@ zero_extendqisi2
+ 881              		.loc 1 141 48 view .LVU289
+ 882 00dc 12F807A0 		ldrb	r10, [r2, r7]	@ zero_extendqisi2
+ 883              		.loc 1 141 66 view .LVU290
+ 884 00e0 13F80680 		ldrb	r8, [r3, r6]	@ zero_extendqisi2
+ 885              		.loc 1 141 84 view .LVU291
+ 886 00e4 14F805E0 		ldrb	lr, [r4, r5]	@ zero_extendqisi2
+ 887              		.loc 1 141 9 view .LVU292
+ 888 00e8 89EA0A09 		eor	r9, r9, r10
+ 889 00ec 88EA0908 		eor	r8, r8, r9
+ 890 00f0 8EEA080E 		eor	lr, lr, r8
+ 891 00f4 8DF806E0 		strb	lr, [sp, #6]
+ 142:Core/Src/aes.c **** 	tmp[7] = (unsigned char)mul11[state[4]] ^ mul13[state[5]] ^ mul9[state[6]] ^ mul14[state[7]];
+ 892              		.loc 1 142 2 is_stmt 1 view .LVU293
+ 893              		.loc 1 142 31 is_stmt 0 view .LVU294
+ 894 00f8 14F80CC0 		ldrb	ip, [r4, ip]	@ zero_extendqisi2
+ 895              		.loc 1 142 49 view .LVU295
+ 896 00fc CF5D     		ldrb	r7, [r1, r7]	@ zero_extendqisi2
+ 897              		.loc 1 142 66 view .LVU296
+ 898 00fe 965D     		ldrb	r6, [r2, r6]	@ zero_extendqisi2
+ 899              		.loc 1 142 84 view .LVU297
+ 900 0100 5D5D     		ldrb	r5, [r3, r5]	@ zero_extendqisi2
+ 901              		.loc 1 142 9 view .LVU298
+ 902 0102 8CEA0707 		eor	r7, ip, r7
+ 903 0106 7E40     		eors	r6, r6, r7
+ 904 0108 7540     		eors	r5, r5, r6
+ 905 010a 8DF80750 		strb	r5, [sp, #7]
+ 143:Core/Src/aes.c **** 
+ 144:Core/Src/aes.c **** 	tmp[8] = (unsigned char)mul14[state[8]] ^ mul11[state[9]] ^ mul13[state[10]] ^ mul9[state[11]];
+ 906              		.loc 1 144 2 is_stmt 1 view .LVU299
+ 907              		.loc 1 144 37 is_stmt 0 view .LVU300
+ 908 010e 90F808C0 		ldrb	ip, [r0, #8]	@ zero_extendqisi2
+ 909              		.loc 1 144 31 view .LVU301
+ 910 0112 13F80C90 		ldrb	r9, [r3, ip]	@ zero_extendqisi2
+ 911              		.loc 1 144 55 view .LVU302
+ 912 0116 477A     		ldrb	r7, [r0, #9]	@ zero_extendqisi2
+ 913              		.loc 1 144 49 view .LVU303
+ 914 0118 14F807A0 		ldrb	r10, [r4, r7]	@ zero_extendqisi2
+ 915              		.loc 1 144 73 view .LVU304
+ 916 011c 867A     		ldrb	r6, [r0, #10]	@ zero_extendqisi2
+ 917              		.loc 1 144 67 view .LVU305
+ 918 011e 11F80680 		ldrb	r8, [r1, r6]	@ zero_extendqisi2
+ 919              		.loc 1 144 91 view .LVU306
+ 920 0122 C57A     		ldrb	r5, [r0, #11]	@ zero_extendqisi2
+ 921              		.loc 1 144 85 view .LVU307
+ 922 0124 12F805E0 		ldrb	lr, [r2, r5]	@ zero_extendqisi2
+ 923              		.loc 1 144 9 view .LVU308
+ 924 0128 89EA0A09 		eor	r9, r9, r10
+ 925 012c 88EA0908 		eor	r8, r8, r9
+ 926 0130 8EEA080E 		eor	lr, lr, r8
+ 927 0134 8DF808E0 		strb	lr, [sp, #8]
+ 145:Core/Src/aes.c **** 	tmp[9] = (unsigned char)mul9[state[8]] ^ mul14[state[9]] ^ mul11[state[10]] ^ mul13[state[11]];
+ 928              		.loc 1 145 2 is_stmt 1 view .LVU309
+ 929              		.loc 1 145 30 is_stmt 0 view .LVU310
+ 930 0138 12F80C90 		ldrb	r9, [r2, ip]	@ zero_extendqisi2
+ 931              		.loc 1 145 48 view .LVU311
+ 932 013c 13F807A0 		ldrb	r10, [r3, r7]	@ zero_extendqisi2
+ARM GAS  /tmp/cc0JglZb.s 			page 20
+
+
+ 933              		.loc 1 145 66 view .LVU312
+ 934 0140 14F80680 		ldrb	r8, [r4, r6]	@ zero_extendqisi2
+ 935              		.loc 1 145 85 view .LVU313
+ 936 0144 11F805E0 		ldrb	lr, [r1, r5]	@ zero_extendqisi2
+ 937              		.loc 1 145 9 view .LVU314
+ 938 0148 89EA0A09 		eor	r9, r9, r10
+ 939 014c 88EA0908 		eor	r8, r8, r9
+ 940 0150 8EEA080E 		eor	lr, lr, r8
+ 941 0154 8DF809E0 		strb	lr, [sp, #9]
+ 146:Core/Src/aes.c **** 	tmp[10] = (unsigned char)mul13[state[8]] ^ mul9[state[9]] ^ mul14[state[10]] ^ mul11[state[11]];
+ 942              		.loc 1 146 2 is_stmt 1 view .LVU315
+ 943              		.loc 1 146 32 is_stmt 0 view .LVU316
+ 944 0158 11F80C90 		ldrb	r9, [r1, ip]	@ zero_extendqisi2
+ 945              		.loc 1 146 49 view .LVU317
+ 946 015c 12F807A0 		ldrb	r10, [r2, r7]	@ zero_extendqisi2
+ 947              		.loc 1 146 67 view .LVU318
+ 948 0160 13F80680 		ldrb	r8, [r3, r6]	@ zero_extendqisi2
+ 949              		.loc 1 146 86 view .LVU319
+ 950 0164 14F805E0 		ldrb	lr, [r4, r5]	@ zero_extendqisi2
+ 951              		.loc 1 146 10 view .LVU320
+ 952 0168 89EA0A09 		eor	r9, r9, r10
+ 953 016c 88EA0908 		eor	r8, r8, r9
+ 954 0170 8EEA080E 		eor	lr, lr, r8
+ 955 0174 8DF80AE0 		strb	lr, [sp, #10]
+ 147:Core/Src/aes.c **** 	tmp[11] = (unsigned char)mul11[state[8]] ^ mul13[state[9]] ^ mul9[state[10]] ^ mul14[state[11]];
+ 956              		.loc 1 147 2 is_stmt 1 view .LVU321
+ 957              		.loc 1 147 32 is_stmt 0 view .LVU322
+ 958 0178 14F80CC0 		ldrb	ip, [r4, ip]	@ zero_extendqisi2
+ 959              		.loc 1 147 50 view .LVU323
+ 960 017c CF5D     		ldrb	r7, [r1, r7]	@ zero_extendqisi2
+ 961              		.loc 1 147 67 view .LVU324
+ 962 017e 965D     		ldrb	r6, [r2, r6]	@ zero_extendqisi2
+ 963              		.loc 1 147 86 view .LVU325
+ 964 0180 5D5D     		ldrb	r5, [r3, r5]	@ zero_extendqisi2
+ 965              		.loc 1 147 10 view .LVU326
+ 966 0182 8CEA0707 		eor	r7, ip, r7
+ 967 0186 7E40     		eors	r6, r6, r7
+ 968 0188 7540     		eors	r5, r5, r6
+ 969 018a 8DF80B50 		strb	r5, [sp, #11]
+ 148:Core/Src/aes.c **** 
+ 149:Core/Src/aes.c **** 	tmp[12] = (unsigned char)mul14[state[12]] ^ mul11[state[13]] ^ mul13[state[14]] ^ mul9[state[15]];
+ 970              		.loc 1 149 2 is_stmt 1 view .LVU327
+ 971              		.loc 1 149 38 is_stmt 0 view .LVU328
+ 972 018e 90F80CC0 		ldrb	ip, [r0, #12]	@ zero_extendqisi2
+ 973              		.loc 1 149 32 view .LVU329
+ 974 0192 13F80C90 		ldrb	r9, [r3, ip]	@ zero_extendqisi2
+ 975              		.loc 1 149 57 view .LVU330
+ 976 0196 477B     		ldrb	r7, [r0, #13]	@ zero_extendqisi2
+ 977              		.loc 1 149 51 view .LVU331
+ 978 0198 14F807A0 		ldrb	r10, [r4, r7]	@ zero_extendqisi2
+ 979              		.loc 1 149 76 view .LVU332
+ 980 019c 867B     		ldrb	r6, [r0, #14]	@ zero_extendqisi2
+ 981              		.loc 1 149 70 view .LVU333
+ 982 019e 11F80680 		ldrb	r8, [r1, r6]	@ zero_extendqisi2
+ 983              		.loc 1 149 94 view .LVU334
+ 984 01a2 C57B     		ldrb	r5, [r0, #15]	@ zero_extendqisi2
+ 985              		.loc 1 149 88 view .LVU335
+ARM GAS  /tmp/cc0JglZb.s 			page 21
+
+
+ 986 01a4 12F805E0 		ldrb	lr, [r2, r5]	@ zero_extendqisi2
+ 987              		.loc 1 149 10 view .LVU336
+ 988 01a8 89EA0A09 		eor	r9, r9, r10
+ 989 01ac 88EA0908 		eor	r8, r8, r9
+ 990 01b0 8EEA080E 		eor	lr, lr, r8
+ 991 01b4 8DF80CE0 		strb	lr, [sp, #12]
+ 150:Core/Src/aes.c **** 	tmp[13] = (unsigned char)mul9[state[12]] ^ mul14[state[13]] ^ mul11[state[14]] ^ mul13[state[15]];
+ 992              		.loc 1 150 2 is_stmt 1 view .LVU337
+ 993              		.loc 1 150 31 is_stmt 0 view .LVU338
+ 994 01b8 12F80C90 		ldrb	r9, [r2, ip]	@ zero_extendqisi2
+ 995              		.loc 1 150 50 view .LVU339
+ 996 01bc 13F807A0 		ldrb	r10, [r3, r7]	@ zero_extendqisi2
+ 997              		.loc 1 150 69 view .LVU340
+ 998 01c0 14F80680 		ldrb	r8, [r4, r6]	@ zero_extendqisi2
+ 999              		.loc 1 150 88 view .LVU341
+ 1000 01c4 11F805E0 		ldrb	lr, [r1, r5]	@ zero_extendqisi2
+ 1001              		.loc 1 150 10 view .LVU342
+ 1002 01c8 89EA0A09 		eor	r9, r9, r10
+ 1003 01cc 88EA0908 		eor	r8, r8, r9
+ 1004 01d0 8EEA080E 		eor	lr, lr, r8
+ 1005 01d4 8DF80DE0 		strb	lr, [sp, #13]
+ 151:Core/Src/aes.c **** 	tmp[14] = (unsigned char)mul13[state[12]] ^ mul9[state[13]] ^ mul14[state[14]] ^ mul11[state[15]];
+ 1006              		.loc 1 151 2 is_stmt 1 view .LVU343
+ 1007              		.loc 1 151 32 is_stmt 0 view .LVU344
+ 1008 01d8 11F80C90 		ldrb	r9, [r1, ip]	@ zero_extendqisi2
+ 1009              		.loc 1 151 50 view .LVU345
+ 1010 01dc 12F807A0 		ldrb	r10, [r2, r7]	@ zero_extendqisi2
+ 1011              		.loc 1 151 69 view .LVU346
+ 1012 01e0 13F80680 		ldrb	r8, [r3, r6]	@ zero_extendqisi2
+ 1013              		.loc 1 151 88 view .LVU347
+ 1014 01e4 14F805E0 		ldrb	lr, [r4, r5]	@ zero_extendqisi2
+ 1015              		.loc 1 151 10 view .LVU348
+ 1016 01e8 89EA0A09 		eor	r9, r9, r10
+ 1017 01ec 88EA0908 		eor	r8, r8, r9
+ 1018 01f0 8EEA080E 		eor	lr, lr, r8
+ 1019 01f4 8DF80EE0 		strb	lr, [sp, #14]
+ 152:Core/Src/aes.c **** 	tmp[15] = (unsigned char)mul11[state[12]] ^ mul13[state[13]] ^ mul9[state[14]] ^ mul14[state[15]];
+ 1020              		.loc 1 152 2 is_stmt 1 view .LVU349
+ 1021              		.loc 1 152 32 is_stmt 0 view .LVU350
+ 1022 01f8 14F80C40 		ldrb	r4, [r4, ip]	@ zero_extendqisi2
+ 1023              		.loc 1 152 51 view .LVU351
+ 1024 01fc C95D     		ldrb	r1, [r1, r7]	@ zero_extendqisi2
+ 1025              		.loc 1 152 69 view .LVU352
+ 1026 01fe 925D     		ldrb	r2, [r2, r6]	@ zero_extendqisi2
+ 1027              		.loc 1 152 88 view .LVU353
+ 1028 0200 5B5D     		ldrb	r3, [r3, r5]	@ zero_extendqisi2
+ 1029              		.loc 1 152 10 view .LVU354
+ 1030 0202 6140     		eors	r1, r1, r4
+ 1031 0204 4A40     		eors	r2, r2, r1
+ 1032 0206 5340     		eors	r3, r3, r2
+ 1033 0208 8DF80F30 		strb	r3, [sp, #15]
+ 153:Core/Src/aes.c **** 
+ 154:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 1034              		.loc 1 154 2 is_stmt 1 view .LVU355
+ 1035              	.LBB11:
+ 1036              		.loc 1 154 7 view .LVU356
+ 1037              	.LVL25:
+ARM GAS  /tmp/cc0JglZb.s 			page 22
+
+
+ 1038              		.loc 1 154 11 is_stmt 0 view .LVU357
+ 1039 020c 0023     		movs	r3, #0
+ 1040              	.LVL26:
+ 1041              	.L45:
+ 1042              		.loc 1 154 2 discriminator 1 view .LVU358
+ 1043 020e 0F2B     		cmp	r3, #15
+ 1044 0210 06DC     		bgt	.L48
+ 155:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 1045              		.loc 1 155 3 is_stmt 1 discriminator 3 view .LVU359
+ 1046              		.loc 1 155 17 is_stmt 0 discriminator 3 view .LVU360
+ 1047 0212 04AA     		add	r2, sp, #16
+ 1048 0214 1A44     		add	r2, r2, r3
+ 1049 0216 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 1050              		.loc 1 155 12 discriminator 3 view .LVU361
+ 1051 021a C254     		strb	r2, [r0, r3]
+ 154:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 1052              		.loc 1 154 27 discriminator 3 view .LVU362
+ 1053 021c 0133     		adds	r3, r3, #1
+ 1054              	.LVL27:
+ 154:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 1055              		.loc 1 154 27 discriminator 3 view .LVU363
+ 1056 021e F6E7     		b	.L45
+ 1057              	.L48:
+ 154:Core/Src/aes.c **** 		state[i] = tmp[i];
+ 1058              		.loc 1 154 27 discriminator 3 view .LVU364
+ 1059              	.LBE11:
+ 156:Core/Src/aes.c **** 	}
+ 157:Core/Src/aes.c **** }
+ 1060              		.loc 1 157 1 view .LVU365
+ 1061 0220 04B0     		add	sp, sp, #16
+ 1062              	.LCFI13:
+ 1063              		.cfi_def_cfa_offset 32
+ 1064              		@ sp needed
+ 1065 0222 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1066              	.L50:
+ 1067 0226 00BF     		.align	2
+ 1068              	.L49:
+ 1069 0228 00000000 		.word	.LANCHOR4
+ 1070 022c 00000000 		.word	.LANCHOR5
+ 1071 0230 00000000 		.word	.LANCHOR6
+ 1072 0234 00000000 		.word	.LANCHOR7
+ 1073              		.cfi_endproc
+ 1074              	.LFE13:
+ 1076              		.section	.text.InitialRound,"ax",%progbits
+ 1077              		.align	1
+ 1078              		.global	InitialRound
+ 1079              		.syntax unified
+ 1080              		.thumb
+ 1081              		.thumb_func
+ 1082              		.fpu fpv4-sp-d16
+ 1084              	InitialRound:
+ 1085              	.LVL28:
+ 1086              	.LFB14:
+ 158:Core/Src/aes.c **** // Same as Round() but no InverseMixColumns
+ 159:Core/Src/aes.c **** void InitialRound(unsigned char * state, unsigned char * key) {
+ 1087              		.loc 1 159 63 is_stmt 1 view -0
+ 1088              		.cfi_startproc
+ARM GAS  /tmp/cc0JglZb.s 			page 23
+
+
+ 1089              		@ args = 0, pretend = 0, frame = 0
+ 1090              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1091              		.loc 1 159 63 is_stmt 0 view .LVU367
+ 1092 0000 10B5     		push	{r4, lr}
+ 1093              	.LCFI14:
+ 1094              		.cfi_def_cfa_offset 8
+ 1095              		.cfi_offset 4, -8
+ 1096              		.cfi_offset 14, -4
+ 1097 0002 0446     		mov	r4, r0
+ 160:Core/Src/aes.c **** 	SubRoundKey(state, key);
+ 1098              		.loc 1 160 2 is_stmt 1 view .LVU368
+ 1099 0004 FFF7FEFF 		bl	SubRoundKey
+ 1100              	.LVL29:
+ 161:Core/Src/aes.c **** 	ShiftRowsR(state);
+ 1101              		.loc 1 161 2 view .LVU369
+ 1102 0008 2046     		mov	r0, r4
+ 1103 000a FFF7FEFF 		bl	ShiftRowsR
+ 1104              	.LVL30:
+ 162:Core/Src/aes.c **** 	SubBytesI(state);
+ 1105              		.loc 1 162 2 view .LVU370
+ 1106 000e 2046     		mov	r0, r4
+ 1107 0010 FFF7FEFF 		bl	SubBytesI
+ 1108              	.LVL31:
+ 163:Core/Src/aes.c **** }
+ 1109              		.loc 1 163 1 is_stmt 0 view .LVU371
+ 1110 0014 10BD     		pop	{r4, pc}
+ 1111              		.loc 1 163 1 view .LVU372
+ 1112              		.cfi_endproc
+ 1113              	.LFE14:
+ 1115              		.section	.text.FinalRound,"ax",%progbits
+ 1116              		.align	1
+ 1117              		.global	FinalRound
+ 1118              		.syntax unified
+ 1119              		.thumb
+ 1120              		.thumb_func
+ 1121              		.fpu fpv4-sp-d16
+ 1123              	FinalRound:
+ 1124              	.LVL32:
+ 1125              	.LFB15:
+ 164:Core/Src/aes.c **** 
+ 165:Core/Src/aes.c ****  // Same as Round() except it doesn't mix columns
+ 166:Core/Src/aes.c **** void FinalRound(unsigned char * state, unsigned char * key) {
+ 1126              		.loc 1 166 61 is_stmt 1 view -0
+ 1127              		.cfi_startproc
+ 1128              		@ args = 0, pretend = 0, frame = 0
+ 1129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1130              		.loc 1 166 61 is_stmt 0 view .LVU374
+ 1131 0000 38B5     		push	{r3, r4, r5, lr}
+ 1132              	.LCFI15:
+ 1133              		.cfi_def_cfa_offset 16
+ 1134              		.cfi_offset 3, -16
+ 1135              		.cfi_offset 4, -12
+ 1136              		.cfi_offset 5, -8
+ 1137              		.cfi_offset 14, -4
+ 1138 0002 0446     		mov	r4, r0
+ 1139 0004 0D46     		mov	r5, r1
+ 167:Core/Src/aes.c **** 	SubBytesF(state);
+ARM GAS  /tmp/cc0JglZb.s 			page 24
+
+
+ 1140              		.loc 1 167 2 is_stmt 1 view .LVU375
+ 1141 0006 FFF7FEFF 		bl	SubBytesF
+ 1142              	.LVL33:
+ 168:Core/Src/aes.c **** 	ShiftRowsL(state);
+ 1143              		.loc 1 168 2 view .LVU376
+ 1144 000a 2046     		mov	r0, r4
+ 1145 000c FFF7FEFF 		bl	ShiftRowsL
+ 1146              	.LVL34:
+ 169:Core/Src/aes.c **** 	AddRoundKey(state, key);
+ 1147              		.loc 1 169 2 view .LVU377
+ 1148 0010 2946     		mov	r1, r5
+ 1149 0012 2046     		mov	r0, r4
+ 1150 0014 FFF7FEFF 		bl	AddRoundKey
+ 1151              	.LVL35:
+ 170:Core/Src/aes.c **** }
+ 1152              		.loc 1 170 1 is_stmt 0 view .LVU378
+ 1153 0018 38BD     		pop	{r3, r4, r5, pc}
+ 1154              		.loc 1 170 1 view .LVU379
+ 1155              		.cfi_endproc
+ 1156              	.LFE15:
+ 1158              		.section	.text.DRound,"ax",%progbits
+ 1159              		.align	1
+ 1160              		.global	DRound
+ 1161              		.syntax unified
+ 1162              		.thumb
+ 1163              		.thumb_func
+ 1164              		.fpu fpv4-sp-d16
+ 1166              	DRound:
+ 1167              	.LVL36:
+ 1168              	.LFB16:
+ 171:Core/Src/aes.c **** void DRound(unsigned char * state, unsigned char * key) {
+ 1169              		.loc 1 171 57 is_stmt 1 view -0
+ 1170              		.cfi_startproc
+ 1171              		@ args = 0, pretend = 0, frame = 0
+ 1172              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1173              		.loc 1 171 57 is_stmt 0 view .LVU381
+ 1174 0000 10B5     		push	{r4, lr}
+ 1175              	.LCFI16:
+ 1176              		.cfi_def_cfa_offset 8
+ 1177              		.cfi_offset 4, -8
+ 1178              		.cfi_offset 14, -4
+ 1179 0002 0446     		mov	r4, r0
+ 172:Core/Src/aes.c **** 	SubRoundKey(state, key);
+ 1180              		.loc 1 172 2 is_stmt 1 view .LVU382
+ 1181 0004 FFF7FEFF 		bl	SubRoundKey
+ 1182              	.LVL37:
+ 173:Core/Src/aes.c **** 	InverseMixColumns(state);
+ 1183              		.loc 1 173 2 view .LVU383
+ 1184 0008 2046     		mov	r0, r4
+ 1185 000a FFF7FEFF 		bl	InverseMixColumns
+ 1186              	.LVL38:
+ 174:Core/Src/aes.c **** 	ShiftRowsR(state);
+ 1187              		.loc 1 174 2 view .LVU384
+ 1188 000e 2046     		mov	r0, r4
+ 1189 0010 FFF7FEFF 		bl	ShiftRowsR
+ 1190              	.LVL39:
+ 175:Core/Src/aes.c **** 	SubBytesI(state);
+ARM GAS  /tmp/cc0JglZb.s 			page 25
+
+
+ 1191              		.loc 1 175 2 view .LVU385
+ 1192 0014 2046     		mov	r0, r4
+ 1193 0016 FFF7FEFF 		bl	SubBytesI
+ 1194              	.LVL40:
+ 176:Core/Src/aes.c **** }
+ 1195              		.loc 1 176 1 is_stmt 0 view .LVU386
+ 1196 001a 10BD     		pop	{r4, pc}
+ 1197              		.loc 1 176 1 view .LVU387
+ 1198              		.cfi_endproc
+ 1199              	.LFE16:
+ 1201              		.section	.text.ERound,"ax",%progbits
+ 1202              		.align	1
+ 1203              		.global	ERound
+ 1204              		.syntax unified
+ 1205              		.thumb
+ 1206              		.thumb_func
+ 1207              		.fpu fpv4-sp-d16
+ 1209              	ERound:
+ 1210              	.LVL41:
+ 1211              	.LFB17:
+ 177:Core/Src/aes.c **** 
+ 178:Core/Src/aes.c **** /* Each round operates on 128 bits at a time
+ 179:Core/Src/aes.c ****  * The number of rounds is defined in AESEncrypt()
+ 180:Core/Src/aes.c ****  */
+ 181:Core/Src/aes.c **** void ERound(unsigned char * state, unsigned char * key) {
+ 1212              		.loc 1 181 57 is_stmt 1 view -0
+ 1213              		.cfi_startproc
+ 1214              		@ args = 0, pretend = 0, frame = 0
+ 1215              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1216              		.loc 1 181 57 is_stmt 0 view .LVU389
+ 1217 0000 38B5     		push	{r3, r4, r5, lr}
+ 1218              	.LCFI17:
+ 1219              		.cfi_def_cfa_offset 16
+ 1220              		.cfi_offset 3, -16
+ 1221              		.cfi_offset 4, -12
+ 1222              		.cfi_offset 5, -8
+ 1223              		.cfi_offset 14, -4
+ 1224 0002 0446     		mov	r4, r0
+ 1225 0004 0D46     		mov	r5, r1
+ 182:Core/Src/aes.c **** 	SubBytesF(state);
+ 1226              		.loc 1 182 2 is_stmt 1 view .LVU390
+ 1227 0006 FFF7FEFF 		bl	SubBytesF
+ 1228              	.LVL42:
+ 183:Core/Src/aes.c **** 	ShiftRowsL(state);
+ 1229              		.loc 1 183 2 view .LVU391
+ 1230 000a 2046     		mov	r0, r4
+ 1231 000c FFF7FEFF 		bl	ShiftRowsL
+ 1232              	.LVL43:
+ 184:Core/Src/aes.c **** 	MixColumns(state);
+ 1233              		.loc 1 184 2 view .LVU392
+ 1234 0010 2046     		mov	r0, r4
+ 1235 0012 FFF7FEFF 		bl	MixColumns
+ 1236              	.LVL44:
+ 185:Core/Src/aes.c **** 	AddRoundKey(state, key);
+ 1237              		.loc 1 185 2 view .LVU393
+ 1238 0016 2946     		mov	r1, r5
+ 1239 0018 2046     		mov	r0, r4
+ARM GAS  /tmp/cc0JglZb.s 			page 26
+
+
+ 1240 001a FFF7FEFF 		bl	AddRoundKey
+ 1241              	.LVL45:
+ 186:Core/Src/aes.c **** }
+ 1242              		.loc 1 186 1 is_stmt 0 view .LVU394
+ 1243 001e 38BD     		pop	{r3, r4, r5, pc}
+ 1244              		.loc 1 186 1 view .LVU395
+ 1245              		.cfi_endproc
+ 1246              	.LFE17:
+ 1248              		.section	.text.AESEncrypt,"ax",%progbits
+ 1249              		.align	1
+ 1250              		.global	AESEncrypt
+ 1251              		.syntax unified
+ 1252              		.thumb
+ 1253              		.thumb_func
+ 1254              		.fpu fpv4-sp-d16
+ 1256              	AESEncrypt:
+ 1257              	.LVL46:
+ 1258              	.LFB18:
+ 187:Core/Src/aes.c **** /* The AES encryption function
+ 188:Core/Src/aes.c ****  * Organizes the confusion and diffusion steps into one function
+ 189:Core/Src/aes.c ****  */
+ 190:Core/Src/aes.c **** void AESEncrypt(unsigned char * message, unsigned char * expandedKey, unsigned char * encryptedMess
+ 1259              		.loc 1 190 105 is_stmt 1 view -0
+ 1260              		.cfi_startproc
+ 1261              		@ args = 0, pretend = 0, frame = 16
+ 1262              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1263              		.loc 1 190 105 is_stmt 0 view .LVU397
+ 1264 0000 70B5     		push	{r4, r5, r6, lr}
+ 1265              	.LCFI18:
+ 1266              		.cfi_def_cfa_offset 16
+ 1267              		.cfi_offset 4, -16
+ 1268              		.cfi_offset 5, -12
+ 1269              		.cfi_offset 6, -8
+ 1270              		.cfi_offset 14, -4
+ 1271 0002 84B0     		sub	sp, sp, #16
+ 1272              	.LCFI19:
+ 1273              		.cfi_def_cfa_offset 32
+ 1274 0004 0E46     		mov	r6, r1
+ 1275 0006 1546     		mov	r5, r2
+ 191:Core/Src/aes.c **** 	unsigned char state[16]; // Stores the first 16 bytes of original message
+ 1276              		.loc 1 191 2 is_stmt 1 view .LVU398
+ 192:Core/Src/aes.c **** 
+ 193:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 1277              		.loc 1 193 2 view .LVU399
+ 1278              	.LBB12:
+ 1279              		.loc 1 193 7 view .LVU400
+ 1280              	.LVL47:
+ 1281              		.loc 1 193 11 is_stmt 0 view .LVU401
+ 1282 0008 0023     		movs	r3, #0
+ 1283              	.LVL48:
+ 1284              	.L60:
+ 1285              		.loc 1 193 2 discriminator 1 view .LVU402
+ 1286 000a 0F2B     		cmp	r3, #15
+ 1287 000c 06DC     		bgt	.L67
+ 194:Core/Src/aes.c **** 		state[i] = message[i];
+ 1288              		.loc 1 194 3 is_stmt 1 discriminator 3 view .LVU403
+ 1289              		.loc 1 194 21 is_stmt 0 discriminator 3 view .LVU404
+ARM GAS  /tmp/cc0JglZb.s 			page 27
+
+
+ 1290 000e C15C     		ldrb	r1, [r0, r3]	@ zero_extendqisi2
+ 1291              		.loc 1 194 12 discriminator 3 view .LVU405
+ 1292 0010 04AA     		add	r2, sp, #16
+ 1293 0012 1A44     		add	r2, r2, r3
+ 1294 0014 02F8101C 		strb	r1, [r2, #-16]
+ 193:Core/Src/aes.c **** 		state[i] = message[i];
+ 1295              		.loc 1 193 27 discriminator 3 view .LVU406
+ 1296 0018 0133     		adds	r3, r3, #1
+ 1297              	.LVL49:
+ 193:Core/Src/aes.c **** 		state[i] = message[i];
+ 1298              		.loc 1 193 27 discriminator 3 view .LVU407
+ 1299 001a F6E7     		b	.L60
+ 1300              	.L67:
+ 193:Core/Src/aes.c **** 		state[i] = message[i];
+ 1301              		.loc 1 193 27 discriminator 3 view .LVU408
+ 1302              	.LBE12:
+ 195:Core/Src/aes.c **** 	}
+ 196:Core/Src/aes.c **** 
+ 197:Core/Src/aes.c **** 	int numberOfRounds = 9;
+ 1303              		.loc 1 197 2 is_stmt 1 view .LVU409
+ 1304              	.LVL50:
+ 198:Core/Src/aes.c **** 
+ 199:Core/Src/aes.c **** 	AddRoundKey(state, expandedKey); // Initial round
+ 1305              		.loc 1 199 2 view .LVU410
+ 1306 001c 3146     		mov	r1, r6
+ 1307 001e 6846     		mov	r0, sp
+ 1308              	.LVL51:
+ 1309              		.loc 1 199 2 is_stmt 0 view .LVU411
+ 1310 0020 FFF7FEFF 		bl	AddRoundKey
+ 1311              	.LVL52:
+ 200:Core/Src/aes.c **** 
+ 201:Core/Src/aes.c **** 	for (int i = 0; i < numberOfRounds; i++) {
+ 1312              		.loc 1 201 2 is_stmt 1 view .LVU412
+ 1313              	.LBB13:
+ 1314              		.loc 1 201 7 view .LVU413
+ 1315              		.loc 1 201 11 is_stmt 0 view .LVU414
+ 1316 0024 0024     		movs	r4, #0
+ 1317              		.loc 1 201 2 view .LVU415
+ 1318 0026 05E0     		b	.L62
+ 1319              	.LVL53:
+ 1320              	.L63:
+ 202:Core/Src/aes.c **** 		ERound(state, expandedKey + (16 * (i+1)));
+ 1321              		.loc 1 202 3 is_stmt 1 discriminator 3 view .LVU416
+ 1322              		.loc 1 202 39 is_stmt 0 discriminator 3 view .LVU417
+ 1323 0028 0134     		adds	r4, r4, #1
+ 1324              	.LVL54:
+ 1325              		.loc 1 202 3 discriminator 3 view .LVU418
+ 1326 002a 06EB0411 		add	r1, r6, r4, lsl #4
+ 1327 002e 6846     		mov	r0, sp
+ 1328 0030 FFF7FEFF 		bl	ERound
+ 1329              	.LVL55:
+ 1330              	.L62:
+ 201:Core/Src/aes.c **** 		ERound(state, expandedKey + (16 * (i+1)));
+ 1331              		.loc 1 201 2 discriminator 1 view .LVU419
+ 1332 0034 082C     		cmp	r4, #8
+ 1333 0036 F7DD     		ble	.L63
+ 1334              	.LBE13:
+ARM GAS  /tmp/cc0JglZb.s 			page 28
+
+
+ 203:Core/Src/aes.c **** 	}
+ 204:Core/Src/aes.c **** 
+ 205:Core/Src/aes.c **** 	FinalRound(state, expandedKey + 160);
+ 1335              		.loc 1 205 2 is_stmt 1 view .LVU420
+ 1336 0038 06F1A001 		add	r1, r6, #160
+ 1337 003c 6846     		mov	r0, sp
+ 1338 003e FFF7FEFF 		bl	FinalRound
+ 1339              	.LVL56:
+ 206:Core/Src/aes.c **** 
+ 207:Core/Src/aes.c **** 	// Copy encrypted state to buffer
+ 208:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 1340              		.loc 1 208 2 view .LVU421
+ 1341              	.LBB14:
+ 1342              		.loc 1 208 7 view .LVU422
+ 1343              		.loc 1 208 11 is_stmt 0 view .LVU423
+ 1344 0042 0023     		movs	r3, #0
+ 1345              	.LVL57:
+ 1346              	.L64:
+ 1347              		.loc 1 208 2 discriminator 1 view .LVU424
+ 1348 0044 0F2B     		cmp	r3, #15
+ 1349 0046 06DC     		bgt	.L68
+ 209:Core/Src/aes.c **** 		encryptedMessage[i] = state[i];
+ 1350              		.loc 1 209 3 is_stmt 1 discriminator 3 view .LVU425
+ 1351              		.loc 1 209 30 is_stmt 0 discriminator 3 view .LVU426
+ 1352 0048 04AA     		add	r2, sp, #16
+ 1353 004a 1A44     		add	r2, r2, r3
+ 1354 004c 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 1355              		.loc 1 209 23 discriminator 3 view .LVU427
+ 1356 0050 EA54     		strb	r2, [r5, r3]
+ 208:Core/Src/aes.c **** 		encryptedMessage[i] = state[i];
+ 1357              		.loc 1 208 27 discriminator 3 view .LVU428
+ 1358 0052 0133     		adds	r3, r3, #1
+ 1359              	.LVL58:
+ 208:Core/Src/aes.c **** 		encryptedMessage[i] = state[i];
+ 1360              		.loc 1 208 27 discriminator 3 view .LVU429
+ 1361 0054 F6E7     		b	.L64
+ 1362              	.L68:
+ 208:Core/Src/aes.c **** 		encryptedMessage[i] = state[i];
+ 1363              		.loc 1 208 27 discriminator 3 view .LVU430
+ 1364              	.LBE14:
+ 210:Core/Src/aes.c **** 	}
+ 211:Core/Src/aes.c **** }
+ 1365              		.loc 1 211 1 view .LVU431
+ 1366 0056 04B0     		add	sp, sp, #16
+ 1367              	.LCFI20:
+ 1368              		.cfi_def_cfa_offset 16
+ 1369              		@ sp needed
+ 1370 0058 70BD     		pop	{r4, r5, r6, pc}
+ 1371              		.loc 1 211 1 view .LVU432
+ 1372              		.cfi_endproc
+ 1373              	.LFE18:
+ 1375              		.section	.text.AESDecrypt,"ax",%progbits
+ 1376              		.align	1
+ 1377              		.global	AESDecrypt
+ 1378              		.syntax unified
+ 1379              		.thumb
+ 1380              		.thumb_func
+ARM GAS  /tmp/cc0JglZb.s 			page 29
+
+
+ 1381              		.fpu fpv4-sp-d16
+ 1383              	AESDecrypt:
+ 1384              	.LVL59:
+ 1385              	.LFB19:
+ 212:Core/Src/aes.c **** 
+ 213:Core/Src/aes.c **** void AESDecrypt(unsigned char * encryptedMessage, unsigned char * expandedKey, unsigned char * decr
+ 214:Core/Src/aes.c **** {
+ 1386              		.loc 1 214 1 is_stmt 1 view -0
+ 1387              		.cfi_startproc
+ 1388              		@ args = 0, pretend = 0, frame = 16
+ 1389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1390              		.loc 1 214 1 is_stmt 0 view .LVU434
+ 1391 0000 70B5     		push	{r4, r5, r6, lr}
+ 1392              	.LCFI21:
+ 1393              		.cfi_def_cfa_offset 16
+ 1394              		.cfi_offset 4, -16
+ 1395              		.cfi_offset 5, -12
+ 1396              		.cfi_offset 6, -8
+ 1397              		.cfi_offset 14, -4
+ 1398 0002 84B0     		sub	sp, sp, #16
+ 1399              	.LCFI22:
+ 1400              		.cfi_def_cfa_offset 32
+ 1401 0004 0E46     		mov	r6, r1
+ 1402 0006 1546     		mov	r5, r2
+ 215:Core/Src/aes.c **** 	unsigned char state[16]; // Stores the first 16 bytes of encrypted message
+ 1403              		.loc 1 215 2 is_stmt 1 view .LVU435
+ 216:Core/Src/aes.c **** 
+ 217:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 1404              		.loc 1 217 2 view .LVU436
+ 1405              	.LBB15:
+ 1406              		.loc 1 217 7 view .LVU437
+ 1407              	.LVL60:
+ 1408              		.loc 1 217 11 is_stmt 0 view .LVU438
+ 1409 0008 0023     		movs	r3, #0
+ 1410              	.LVL61:
+ 1411              	.L70:
+ 1412              		.loc 1 217 2 discriminator 1 view .LVU439
+ 1413 000a 0F2B     		cmp	r3, #15
+ 1414 000c 06DC     		bgt	.L77
+ 218:Core/Src/aes.c **** 		state[i] = encryptedMessage[i];
+ 1415              		.loc 1 218 3 is_stmt 1 discriminator 3 view .LVU440
+ 1416              		.loc 1 218 30 is_stmt 0 discriminator 3 view .LVU441
+ 1417 000e C15C     		ldrb	r1, [r0, r3]	@ zero_extendqisi2
+ 1418              		.loc 1 218 12 discriminator 3 view .LVU442
+ 1419 0010 04AA     		add	r2, sp, #16
+ 1420 0012 1A44     		add	r2, r2, r3
+ 1421 0014 02F8101C 		strb	r1, [r2, #-16]
+ 217:Core/Src/aes.c **** 		state[i] = encryptedMessage[i];
+ 1422              		.loc 1 217 27 discriminator 3 view .LVU443
+ 1423 0018 0133     		adds	r3, r3, #1
+ 1424              	.LVL62:
+ 217:Core/Src/aes.c **** 		state[i] = encryptedMessage[i];
+ 1425              		.loc 1 217 27 discriminator 3 view .LVU444
+ 1426 001a F6E7     		b	.L70
+ 1427              	.L77:
+ 217:Core/Src/aes.c **** 		state[i] = encryptedMessage[i];
+ 1428              		.loc 1 217 27 discriminator 3 view .LVU445
+ARM GAS  /tmp/cc0JglZb.s 			page 30
+
+
+ 1429              	.LBE15:
+ 219:Core/Src/aes.c **** 	}
+ 220:Core/Src/aes.c **** 
+ 221:Core/Src/aes.c **** 	InitialRound(state, expandedKey+160);
+ 1430              		.loc 1 221 2 is_stmt 1 view .LVU446
+ 1431 001c 06F1A001 		add	r1, r6, #160
+ 1432 0020 6846     		mov	r0, sp
+ 1433              	.LVL63:
+ 1434              		.loc 1 221 2 is_stmt 0 view .LVU447
+ 1435 0022 FFF7FEFF 		bl	InitialRound
+ 1436              	.LVL64:
+ 222:Core/Src/aes.c **** 
+ 223:Core/Src/aes.c **** 	int numberOfRounds = 9;
+ 1437              		.loc 1 223 2 is_stmt 1 view .LVU448
+ 224:Core/Src/aes.c **** 
+ 225:Core/Src/aes.c **** 	for (int i = 8; i >= 0; i--) {
+ 1438              		.loc 1 225 2 view .LVU449
+ 1439              	.LBB16:
+ 1440              		.loc 1 225 7 view .LVU450
+ 1441              		.loc 1 225 11 is_stmt 0 view .LVU451
+ 1442 0026 0824     		movs	r4, #8
+ 1443              		.loc 1 225 2 view .LVU452
+ 1444 0028 06E0     		b	.L72
+ 1445              	.LVL65:
+ 1446              	.L73:
+ 226:Core/Src/aes.c **** 		DRound(state, expandedKey + (16 * (i + 1)));
+ 1447              		.loc 1 226 3 is_stmt 1 discriminator 3 view .LVU453
+ 1448              		.loc 1 226 40 is_stmt 0 discriminator 3 view .LVU454
+ 1449 002a 611C     		adds	r1, r4, #1
+ 1450              		.loc 1 226 3 discriminator 3 view .LVU455
+ 1451 002c 06EB0111 		add	r1, r6, r1, lsl #4
+ 1452 0030 6846     		mov	r0, sp
+ 1453 0032 FFF7FEFF 		bl	DRound
+ 1454              	.LVL66:
+ 225:Core/Src/aes.c **** 		DRound(state, expandedKey + (16 * (i + 1)));
+ 1455              		.loc 1 225 27 discriminator 3 view .LVU456
+ 1456 0036 013C     		subs	r4, r4, #1
+ 1457              	.LVL67:
+ 1458              	.L72:
+ 225:Core/Src/aes.c **** 		DRound(state, expandedKey + (16 * (i + 1)));
+ 1459              		.loc 1 225 2 discriminator 1 view .LVU457
+ 1460 0038 002C     		cmp	r4, #0
+ 1461 003a F6DA     		bge	.L73
+ 1462              	.LBE16:
+ 227:Core/Src/aes.c **** 	}
+ 228:Core/Src/aes.c **** 
+ 229:Core/Src/aes.c **** 	SubRoundKey(state, expandedKey); // Final round
+ 1463              		.loc 1 229 2 is_stmt 1 view .LVU458
+ 1464 003c 3146     		mov	r1, r6
+ 1465 003e 6846     		mov	r0, sp
+ 1466 0040 FFF7FEFF 		bl	SubRoundKey
+ 1467              	.LVL68:
+ 230:Core/Src/aes.c **** 
+ 231:Core/Src/aes.c **** 	// Copy decrypted state to buffer
+ 232:Core/Src/aes.c **** 	for (int i = 0; i < 16; i++) {
+ 1468              		.loc 1 232 2 view .LVU459
+ 1469              	.LBB17:
+ARM GAS  /tmp/cc0JglZb.s 			page 31
+
+
+ 1470              		.loc 1 232 7 view .LVU460
+ 1471              		.loc 1 232 11 is_stmt 0 view .LVU461
+ 1472 0044 0023     		movs	r3, #0
+ 1473              	.LVL69:
+ 1474              	.L74:
+ 1475              		.loc 1 232 2 discriminator 1 view .LVU462
+ 1476 0046 0F2B     		cmp	r3, #15
+ 1477 0048 06DC     		bgt	.L78
+ 233:Core/Src/aes.c **** 		decryptedMessage[i] = state[i];
+ 1478              		.loc 1 233 3 is_stmt 1 discriminator 3 view .LVU463
+ 1479              		.loc 1 233 30 is_stmt 0 discriminator 3 view .LVU464
+ 1480 004a 04AA     		add	r2, sp, #16
+ 1481 004c 1A44     		add	r2, r2, r3
+ 1482 004e 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 1483              		.loc 1 233 23 discriminator 3 view .LVU465
+ 1484 0052 EA54     		strb	r2, [r5, r3]
+ 232:Core/Src/aes.c **** 		decryptedMessage[i] = state[i];
+ 1485              		.loc 1 232 27 discriminator 3 view .LVU466
+ 1486 0054 0133     		adds	r3, r3, #1
+ 1487              	.LVL70:
+ 232:Core/Src/aes.c **** 		decryptedMessage[i] = state[i];
+ 1488              		.loc 1 232 27 discriminator 3 view .LVU467
+ 1489 0056 F6E7     		b	.L74
+ 1490              	.L78:
+ 232:Core/Src/aes.c **** 		decryptedMessage[i] = state[i];
+ 1491              		.loc 1 232 27 discriminator 3 view .LVU468
+ 1492              	.LBE17:
+ 234:Core/Src/aes.c **** 	}
+ 235:Core/Src/aes.c **** }...
+ 1493              		.loc 1 235 1 view .LVU469
+ 1494 0058 04B0     		add	sp, sp, #16
+ 1495              	.LCFI23:
+ 1496              		.cfi_def_cfa_offset 16
+ 1497              		@ sp needed
+ 1498 005a 70BD     		pop	{r4, r5, r6, pc}
+ 1499              		.loc 1 235 1 view .LVU470
+ 1500              		.cfi_endproc
+ 1501              	.LFE19:
+ 1503              		.section	.rodata.inv_s,"a"
+ 1504              		.align	2
+ 1505              		.set	.LANCHOR0,. + 0
+ 1508              	inv_s:
+ 1509 0000 52       		.byte	82
+ 1510 0001 09       		.byte	9
+ 1511 0002 6A       		.byte	106
+ 1512 0003 D5       		.byte	-43
+ 1513 0004 30       		.byte	48
+ 1514 0005 36       		.byte	54
+ 1515 0006 A5       		.byte	-91
+ 1516 0007 38       		.byte	56
+ 1517 0008 BF       		.byte	-65
+ 1518 0009 40       		.byte	64
+ 1519 000a A3       		.byte	-93
+ 1520 000b 9E       		.byte	-98
+ 1521 000c 81       		.byte	-127
+ 1522 000d F3       		.byte	-13
+ 1523 000e D7       		.byte	-41
+ARM GAS  /tmp/cc0JglZb.s 			page 32
+
+
+ 1524 000f FB       		.byte	-5
+ 1525 0010 7C       		.byte	124
+ 1526 0011 E3       		.byte	-29
+ 1527 0012 39       		.byte	57
+ 1528 0013 82       		.byte	-126
+ 1529 0014 9B       		.byte	-101
+ 1530 0015 2F       		.byte	47
+ 1531 0016 FF       		.byte	-1
+ 1532 0017 87       		.byte	-121
+ 1533 0018 34       		.byte	52
+ 1534 0019 8E       		.byte	-114
+ 1535 001a 43       		.byte	67
+ 1536 001b 44       		.byte	68
+ 1537 001c C4       		.byte	-60
+ 1538 001d DE       		.byte	-34
+ 1539 001e E9       		.byte	-23
+ 1540 001f CB       		.byte	-53
+ 1541 0020 54       		.byte	84
+ 1542 0021 7B       		.byte	123
+ 1543 0022 94       		.byte	-108
+ 1544 0023 32       		.byte	50
+ 1545 0024 A6       		.byte	-90
+ 1546 0025 C2       		.byte	-62
+ 1547 0026 23       		.byte	35
+ 1548 0027 3D       		.byte	61
+ 1549 0028 EE       		.byte	-18
+ 1550 0029 4C       		.byte	76
+ 1551 002a 95       		.byte	-107
+ 1552 002b 0B       		.byte	11
+ 1553 002c 42       		.byte	66
+ 1554 002d FA       		.byte	-6
+ 1555 002e C3       		.byte	-61
+ 1556 002f 4E       		.byte	78
+ 1557 0030 08       		.byte	8
+ 1558 0031 2E       		.byte	46
+ 1559 0032 A1       		.byte	-95
+ 1560 0033 66       		.byte	102
+ 1561 0034 28       		.byte	40
+ 1562 0035 D9       		.byte	-39
+ 1563 0036 24       		.byte	36
+ 1564 0037 B2       		.byte	-78
+ 1565 0038 76       		.byte	118
+ 1566 0039 5B       		.byte	91
+ 1567 003a A2       		.byte	-94
+ 1568 003b 49       		.byte	73
+ 1569 003c 6D       		.byte	109
+ 1570 003d 8B       		.byte	-117
+ 1571 003e D1       		.byte	-47
+ 1572 003f 25       		.byte	37
+ 1573 0040 72       		.byte	114
+ 1574 0041 F8       		.byte	-8
+ 1575 0042 F6       		.byte	-10
+ 1576 0043 64       		.byte	100
+ 1577 0044 86       		.byte	-122
+ 1578 0045 68       		.byte	104
+ 1579 0046 98       		.byte	-104
+ 1580 0047 16       		.byte	22
+ARM GAS  /tmp/cc0JglZb.s 			page 33
+
+
+ 1581 0048 D4       		.byte	-44
+ 1582 0049 A4       		.byte	-92
+ 1583 004a 5C       		.byte	92
+ 1584 004b CC       		.byte	-52
+ 1585 004c 5D       		.byte	93
+ 1586 004d 65       		.byte	101
+ 1587 004e B6       		.byte	-74
+ 1588 004f 92       		.byte	-110
+ 1589 0050 6C       		.byte	108
+ 1590 0051 70       		.byte	112
+ 1591 0052 48       		.byte	72
+ 1592 0053 50       		.byte	80
+ 1593 0054 FD       		.byte	-3
+ 1594 0055 ED       		.byte	-19
+ 1595 0056 B9       		.byte	-71
+ 1596 0057 DA       		.byte	-38
+ 1597 0058 5E       		.byte	94
+ 1598 0059 15       		.byte	21
+ 1599 005a 46       		.byte	70
+ 1600 005b 57       		.byte	87
+ 1601 005c A7       		.byte	-89
+ 1602 005d 8D       		.byte	-115
+ 1603 005e 9D       		.byte	-99
+ 1604 005f 84       		.byte	-124
+ 1605 0060 90       		.byte	-112
+ 1606 0061 D8       		.byte	-40
+ 1607 0062 AB       		.byte	-85
+ 1608 0063 00       		.byte	0
+ 1609 0064 8C       		.byte	-116
+ 1610 0065 BC       		.byte	-68
+ 1611 0066 D3       		.byte	-45
+ 1612 0067 0A       		.byte	10
+ 1613 0068 F7       		.byte	-9
+ 1614 0069 E4       		.byte	-28
+ 1615 006a 58       		.byte	88
+ 1616 006b 05       		.byte	5
+ 1617 006c B8       		.byte	-72
+ 1618 006d B3       		.byte	-77
+ 1619 006e 45       		.byte	69
+ 1620 006f 06       		.byte	6
+ 1621 0070 D0       		.byte	-48
+ 1622 0071 2C       		.byte	44
+ 1623 0072 1E       		.byte	30
+ 1624 0073 8F       		.byte	-113
+ 1625 0074 CA       		.byte	-54
+ 1626 0075 3F       		.byte	63
+ 1627 0076 0F       		.byte	15
+ 1628 0077 02       		.byte	2
+ 1629 0078 C1       		.byte	-63
+ 1630 0079 AF       		.byte	-81
+ 1631 007a BD       		.byte	-67
+ 1632 007b 03       		.byte	3
+ 1633 007c 01       		.byte	1
+ 1634 007d 13       		.byte	19
+ 1635 007e 8A       		.byte	-118
+ 1636 007f 6B       		.byte	107
+ 1637 0080 3A       		.byte	58
+ARM GAS  /tmp/cc0JglZb.s 			page 34
+
+
+ 1638 0081 91       		.byte	-111
+ 1639 0082 11       		.byte	17
+ 1640 0083 41       		.byte	65
+ 1641 0084 4F       		.byte	79
+ 1642 0085 67       		.byte	103
+ 1643 0086 DC       		.byte	-36
+ 1644 0087 EA       		.byte	-22
+ 1645 0088 97       		.byte	-105
+ 1646 0089 F2       		.byte	-14
+ 1647 008a CF       		.byte	-49
+ 1648 008b CE       		.byte	-50
+ 1649 008c F0       		.byte	-16
+ 1650 008d B4       		.byte	-76
+ 1651 008e E6       		.byte	-26
+ 1652 008f 73       		.byte	115
+ 1653 0090 96       		.byte	-106
+ 1654 0091 AC       		.byte	-84
+ 1655 0092 74       		.byte	116
+ 1656 0093 22       		.byte	34
+ 1657 0094 E7       		.byte	-25
+ 1658 0095 AD       		.byte	-83
+ 1659 0096 35       		.byte	53
+ 1660 0097 85       		.byte	-123
+ 1661 0098 E2       		.byte	-30
+ 1662 0099 F9       		.byte	-7
+ 1663 009a 37       		.byte	55
+ 1664 009b E8       		.byte	-24
+ 1665 009c 1C       		.byte	28
+ 1666 009d 75       		.byte	117
+ 1667 009e DF       		.byte	-33
+ 1668 009f 6E       		.byte	110
+ 1669 00a0 47       		.byte	71
+ 1670 00a1 F1       		.byte	-15
+ 1671 00a2 1A       		.byte	26
+ 1672 00a3 71       		.byte	113
+ 1673 00a4 1D       		.byte	29
+ 1674 00a5 29       		.byte	41
+ 1675 00a6 C5       		.byte	-59
+ 1676 00a7 89       		.byte	-119
+ 1677 00a8 6F       		.byte	111
+ 1678 00a9 B7       		.byte	-73
+ 1679 00aa 62       		.byte	98
+ 1680 00ab 0E       		.byte	14
+ 1681 00ac AA       		.byte	-86
+ 1682 00ad 18       		.byte	24
+ 1683 00ae BE       		.byte	-66
+ 1684 00af 1B       		.byte	27
+ 1685 00b0 FC       		.byte	-4
+ 1686 00b1 56       		.byte	86
+ 1687 00b2 3E       		.byte	62
+ 1688 00b3 4B       		.byte	75
+ 1689 00b4 C6       		.byte	-58
+ 1690 00b5 D2       		.byte	-46
+ 1691 00b6 79       		.byte	121
+ 1692 00b7 20       		.byte	32
+ 1693 00b8 9A       		.byte	-102
+ 1694 00b9 DB       		.byte	-37
+ARM GAS  /tmp/cc0JglZb.s 			page 35
+
+
+ 1695 00ba C0       		.byte	-64
+ 1696 00bb FE       		.byte	-2
+ 1697 00bc 78       		.byte	120
+ 1698 00bd CD       		.byte	-51
+ 1699 00be 5A       		.byte	90
+ 1700 00bf F4       		.byte	-12
+ 1701 00c0 1F       		.byte	31
+ 1702 00c1 DD       		.byte	-35
+ 1703 00c2 A8       		.byte	-88
+ 1704 00c3 33       		.byte	51
+ 1705 00c4 88       		.byte	-120
+ 1706 00c5 07       		.byte	7
+ 1707 00c6 C7       		.byte	-57
+ 1708 00c7 31       		.byte	49
+ 1709 00c8 B1       		.byte	-79
+ 1710 00c9 12       		.byte	18
+ 1711 00ca 10       		.byte	16
+ 1712 00cb 59       		.byte	89
+ 1713 00cc 27       		.byte	39
+ 1714 00cd 80       		.byte	-128
+ 1715 00ce EC       		.byte	-20
+ 1716 00cf 5F       		.byte	95
+ 1717 00d0 60       		.byte	96
+ 1718 00d1 51       		.byte	81
+ 1719 00d2 7F       		.byte	127
+ 1720 00d3 A9       		.byte	-87
+ 1721 00d4 19       		.byte	25
+ 1722 00d5 B5       		.byte	-75
+ 1723 00d6 4A       		.byte	74
+ 1724 00d7 0D       		.byte	13
+ 1725 00d8 2D       		.byte	45
+ 1726 00d9 E5       		.byte	-27
+ 1727 00da 7A       		.byte	122
+ 1728 00db 9F       		.byte	-97
+ 1729 00dc 93       		.byte	-109
+ 1730 00dd C9       		.byte	-55
+ 1731 00de 9C       		.byte	-100
+ 1732 00df EF       		.byte	-17
+ 1733 00e0 A0       		.byte	-96
+ 1734 00e1 E0       		.byte	-32
+ 1735 00e2 3B       		.byte	59
+ 1736 00e3 4D       		.byte	77
+ 1737 00e4 AE       		.byte	-82
+ 1738 00e5 2A       		.byte	42
+ 1739 00e6 F5       		.byte	-11
+ 1740 00e7 B0       		.byte	-80
+ 1741 00e8 C8       		.byte	-56
+ 1742 00e9 EB       		.byte	-21
+ 1743 00ea BB       		.byte	-69
+ 1744 00eb 3C       		.byte	60
+ 1745 00ec 83       		.byte	-125
+ 1746 00ed 53       		.byte	83
+ 1747 00ee 99       		.byte	-103
+ 1748 00ef 61       		.byte	97
+ 1749 00f0 17       		.byte	23
+ 1750 00f1 2B       		.byte	43
+ 1751 00f2 04       		.byte	4
+ARM GAS  /tmp/cc0JglZb.s 			page 36
+
+
+ 1752 00f3 7E       		.byte	126
+ 1753 00f4 BA       		.byte	-70
+ 1754 00f5 77       		.byte	119
+ 1755 00f6 D6       		.byte	-42
+ 1756 00f7 26       		.byte	38
+ 1757 00f8 E1       		.byte	-31
+ 1758 00f9 69       		.byte	105
+ 1759 00fa 14       		.byte	20
+ 1760 00fb 63       		.byte	99
+ 1761 00fc 55       		.byte	85
+ 1762 00fd 21       		.byte	33
+ 1763 00fe 0C       		.byte	12
+ 1764 00ff 7D       		.byte	125
+ 1765              		.section	.rodata.mul11,"a"
+ 1766              		.align	2
+ 1767              		.set	.LANCHOR5,. + 0
+ 1770              	mul11:
+ 1771 0000 00       		.byte	0
+ 1772 0001 0B       		.byte	11
+ 1773 0002 16       		.byte	22
+ 1774 0003 1D       		.byte	29
+ 1775 0004 2C       		.byte	44
+ 1776 0005 27       		.byte	39
+ 1777 0006 3A       		.byte	58
+ 1778 0007 31       		.byte	49
+ 1779 0008 58       		.byte	88
+ 1780 0009 53       		.byte	83
+ 1781 000a 4E       		.byte	78
+ 1782 000b 45       		.byte	69
+ 1783 000c 74       		.byte	116
+ 1784 000d 7F       		.byte	127
+ 1785 000e 62       		.byte	98
+ 1786 000f 69       		.byte	105
+ 1787 0010 B0       		.byte	-80
+ 1788 0011 BB       		.byte	-69
+ 1789 0012 A6       		.byte	-90
+ 1790 0013 AD       		.byte	-83
+ 1791 0014 9C       		.byte	-100
+ 1792 0015 97       		.byte	-105
+ 1793 0016 8A       		.byte	-118
+ 1794 0017 81       		.byte	-127
+ 1795 0018 E8       		.byte	-24
+ 1796 0019 E3       		.byte	-29
+ 1797 001a FE       		.byte	-2
+ 1798 001b F5       		.byte	-11
+ 1799 001c C4       		.byte	-60
+ 1800 001d CF       		.byte	-49
+ 1801 001e D2       		.byte	-46
+ 1802 001f D9       		.byte	-39
+ 1803 0020 7B       		.byte	123
+ 1804 0021 70       		.byte	112
+ 1805 0022 6D       		.byte	109
+ 1806 0023 66       		.byte	102
+ 1807 0024 57       		.byte	87
+ 1808 0025 5C       		.byte	92
+ 1809 0026 41       		.byte	65
+ 1810 0027 4A       		.byte	74
+ARM GAS  /tmp/cc0JglZb.s 			page 37
+
+
+ 1811 0028 23       		.byte	35
+ 1812 0029 28       		.byte	40
+ 1813 002a 35       		.byte	53
+ 1814 002b 3E       		.byte	62
+ 1815 002c 0F       		.byte	15
+ 1816 002d 04       		.byte	4
+ 1817 002e 19       		.byte	25
+ 1818 002f 12       		.byte	18
+ 1819 0030 CB       		.byte	-53
+ 1820 0031 C0       		.byte	-64
+ 1821 0032 DD       		.byte	-35
+ 1822 0033 D6       		.byte	-42
+ 1823 0034 E7       		.byte	-25
+ 1824 0035 EC       		.byte	-20
+ 1825 0036 F1       		.byte	-15
+ 1826 0037 FA       		.byte	-6
+ 1827 0038 93       		.byte	-109
+ 1828 0039 98       		.byte	-104
+ 1829 003a 85       		.byte	-123
+ 1830 003b 8E       		.byte	-114
+ 1831 003c BF       		.byte	-65
+ 1832 003d B4       		.byte	-76
+ 1833 003e A9       		.byte	-87
+ 1834 003f A2       		.byte	-94
+ 1835 0040 F6       		.byte	-10
+ 1836 0041 FD       		.byte	-3
+ 1837 0042 E0       		.byte	-32
+ 1838 0043 EB       		.byte	-21
+ 1839 0044 DA       		.byte	-38
+ 1840 0045 D1       		.byte	-47
+ 1841 0046 CC       		.byte	-52
+ 1842 0047 C7       		.byte	-57
+ 1843 0048 AE       		.byte	-82
+ 1844 0049 A5       		.byte	-91
+ 1845 004a B8       		.byte	-72
+ 1846 004b B3       		.byte	-77
+ 1847 004c 82       		.byte	-126
+ 1848 004d 89       		.byte	-119
+ 1849 004e 94       		.byte	-108
+ 1850 004f 9F       		.byte	-97
+ 1851 0050 46       		.byte	70
+ 1852 0051 4D       		.byte	77
+ 1853 0052 50       		.byte	80
+ 1854 0053 5B       		.byte	91
+ 1855 0054 6A       		.byte	106
+ 1856 0055 61       		.byte	97
+ 1857 0056 7C       		.byte	124
+ 1858 0057 77       		.byte	119
+ 1859 0058 1E       		.byte	30
+ 1860 0059 15       		.byte	21
+ 1861 005a 08       		.byte	8
+ 1862 005b 03       		.byte	3
+ 1863 005c 32       		.byte	50
+ 1864 005d 39       		.byte	57
+ 1865 005e 24       		.byte	36
+ 1866 005f 2F       		.byte	47
+ 1867 0060 8D       		.byte	-115
+ARM GAS  /tmp/cc0JglZb.s 			page 38
+
+
+ 1868 0061 86       		.byte	-122
+ 1869 0062 9B       		.byte	-101
+ 1870 0063 90       		.byte	-112
+ 1871 0064 A1       		.byte	-95
+ 1872 0065 AA       		.byte	-86
+ 1873 0066 B7       		.byte	-73
+ 1874 0067 BC       		.byte	-68
+ 1875 0068 D5       		.byte	-43
+ 1876 0069 DE       		.byte	-34
+ 1877 006a C3       		.byte	-61
+ 1878 006b C8       		.byte	-56
+ 1879 006c F9       		.byte	-7
+ 1880 006d F2       		.byte	-14
+ 1881 006e EF       		.byte	-17
+ 1882 006f E4       		.byte	-28
+ 1883 0070 3D       		.byte	61
+ 1884 0071 36       		.byte	54
+ 1885 0072 2B       		.byte	43
+ 1886 0073 20       		.byte	32
+ 1887 0074 11       		.byte	17
+ 1888 0075 1A       		.byte	26
+ 1889 0076 07       		.byte	7
+ 1890 0077 0C       		.byte	12
+ 1891 0078 65       		.byte	101
+ 1892 0079 6E       		.byte	110
+ 1893 007a 73       		.byte	115
+ 1894 007b 78       		.byte	120
+ 1895 007c 49       		.byte	73
+ 1896 007d 42       		.byte	66
+ 1897 007e 5F       		.byte	95
+ 1898 007f 54       		.byte	84
+ 1899 0080 F7       		.byte	-9
+ 1900 0081 FC       		.byte	-4
+ 1901 0082 E1       		.byte	-31
+ 1902 0083 EA       		.byte	-22
+ 1903 0084 DB       		.byte	-37
+ 1904 0085 D0       		.byte	-48
+ 1905 0086 CD       		.byte	-51
+ 1906 0087 C6       		.byte	-58
+ 1907 0088 AF       		.byte	-81
+ 1908 0089 A4       		.byte	-92
+ 1909 008a B9       		.byte	-71
+ 1910 008b B2       		.byte	-78
+ 1911 008c 83       		.byte	-125
+ 1912 008d 88       		.byte	-120
+ 1913 008e 95       		.byte	-107
+ 1914 008f 9E       		.byte	-98
+ 1915 0090 47       		.byte	71
+ 1916 0091 4C       		.byte	76
+ 1917 0092 51       		.byte	81
+ 1918 0093 5A       		.byte	90
+ 1919 0094 6B       		.byte	107
+ 1920 0095 60       		.byte	96
+ 1921 0096 7D       		.byte	125
+ 1922 0097 76       		.byte	118
+ 1923 0098 1F       		.byte	31
+ 1924 0099 14       		.byte	20
+ARM GAS  /tmp/cc0JglZb.s 			page 39
+
+
+ 1925 009a 09       		.byte	9
+ 1926 009b 02       		.byte	2
+ 1927 009c 33       		.byte	51
+ 1928 009d 38       		.byte	56
+ 1929 009e 25       		.byte	37
+ 1930 009f 2E       		.byte	46
+ 1931 00a0 8C       		.byte	-116
+ 1932 00a1 87       		.byte	-121
+ 1933 00a2 9A       		.byte	-102
+ 1934 00a3 91       		.byte	-111
+ 1935 00a4 A0       		.byte	-96
+ 1936 00a5 AB       		.byte	-85
+ 1937 00a6 B6       		.byte	-74
+ 1938 00a7 BD       		.byte	-67
+ 1939 00a8 D4       		.byte	-44
+ 1940 00a9 DF       		.byte	-33
+ 1941 00aa C2       		.byte	-62
+ 1942 00ab C9       		.byte	-55
+ 1943 00ac F8       		.byte	-8
+ 1944 00ad F3       		.byte	-13
+ 1945 00ae EE       		.byte	-18
+ 1946 00af E5       		.byte	-27
+ 1947 00b0 3C       		.byte	60
+ 1948 00b1 37       		.byte	55
+ 1949 00b2 2A       		.byte	42
+ 1950 00b3 21       		.byte	33
+ 1951 00b4 10       		.byte	16
+ 1952 00b5 1B       		.byte	27
+ 1953 00b6 06       		.byte	6
+ 1954 00b7 0D       		.byte	13
+ 1955 00b8 64       		.byte	100
+ 1956 00b9 6F       		.byte	111
+ 1957 00ba 72       		.byte	114
+ 1958 00bb 79       		.byte	121
+ 1959 00bc 48       		.byte	72
+ 1960 00bd 43       		.byte	67
+ 1961 00be 5E       		.byte	94
+ 1962 00bf 55       		.byte	85
+ 1963 00c0 01       		.byte	1
+ 1964 00c1 0A       		.byte	10
+ 1965 00c2 17       		.byte	23
+ 1966 00c3 1C       		.byte	28
+ 1967 00c4 2D       		.byte	45
+ 1968 00c5 26       		.byte	38
+ 1969 00c6 3B       		.byte	59
+ 1970 00c7 30       		.byte	48
+ 1971 00c8 59       		.byte	89
+ 1972 00c9 52       		.byte	82
+ 1973 00ca 4F       		.byte	79
+ 1974 00cb 44       		.byte	68
+ 1975 00cc 75       		.byte	117
+ 1976 00cd 7E       		.byte	126
+ 1977 00ce 63       		.byte	99
+ 1978 00cf 68       		.byte	104
+ 1979 00d0 B1       		.byte	-79
+ 1980 00d1 BA       		.byte	-70
+ 1981 00d2 A7       		.byte	-89
+ARM GAS  /tmp/cc0JglZb.s 			page 40
+
+
+ 1982 00d3 AC       		.byte	-84
+ 1983 00d4 9D       		.byte	-99
+ 1984 00d5 96       		.byte	-106
+ 1985 00d6 8B       		.byte	-117
+ 1986 00d7 80       		.byte	-128
+ 1987 00d8 E9       		.byte	-23
+ 1988 00d9 E2       		.byte	-30
+ 1989 00da FF       		.byte	-1
+ 1990 00db F4       		.byte	-12
+ 1991 00dc C5       		.byte	-59
+ 1992 00dd CE       		.byte	-50
+ 1993 00de D3       		.byte	-45
+ 1994 00df D8       		.byte	-40
+ 1995 00e0 7A       		.byte	122
+ 1996 00e1 71       		.byte	113
+ 1997 00e2 6C       		.byte	108
+ 1998 00e3 67       		.byte	103
+ 1999 00e4 56       		.byte	86
+ 2000 00e5 5D       		.byte	93
+ 2001 00e6 40       		.byte	64
+ 2002 00e7 4B       		.byte	75
+ 2003 00e8 22       		.byte	34
+ 2004 00e9 29       		.byte	41
+ 2005 00ea 34       		.byte	52
+ 2006 00eb 3F       		.byte	63
+ 2007 00ec 0E       		.byte	14
+ 2008 00ed 05       		.byte	5
+ 2009 00ee 18       		.byte	24
+ 2010 00ef 13       		.byte	19
+ 2011 00f0 CA       		.byte	-54
+ 2012 00f1 C1       		.byte	-63
+ 2013 00f2 DC       		.byte	-36
+ 2014 00f3 D7       		.byte	-41
+ 2015 00f4 E6       		.byte	-26
+ 2016 00f5 ED       		.byte	-19
+ 2017 00f6 F0       		.byte	-16
+ 2018 00f7 FB       		.byte	-5
+ 2019 00f8 92       		.byte	-110
+ 2020 00f9 99       		.byte	-103
+ 2021 00fa 84       		.byte	-124
+ 2022 00fb 8F       		.byte	-113
+ 2023 00fc BE       		.byte	-66
+ 2024 00fd B5       		.byte	-75
+ 2025 00fe A8       		.byte	-88
+ 2026 00ff A3       		.byte	-93
+ 2027              		.section	.rodata.mul13,"a"
+ 2028              		.align	2
+ 2029              		.set	.LANCHOR6,. + 0
+ 2032              	mul13:
+ 2033 0000 00       		.byte	0
+ 2034 0001 0D       		.byte	13
+ 2035 0002 1A       		.byte	26
+ 2036 0003 17       		.byte	23
+ 2037 0004 34       		.byte	52
+ 2038 0005 39       		.byte	57
+ 2039 0006 2E       		.byte	46
+ 2040 0007 23       		.byte	35
+ARM GAS  /tmp/cc0JglZb.s 			page 41
+
+
+ 2041 0008 68       		.byte	104
+ 2042 0009 65       		.byte	101
+ 2043 000a 72       		.byte	114
+ 2044 000b 7F       		.byte	127
+ 2045 000c 5C       		.byte	92
+ 2046 000d 51       		.byte	81
+ 2047 000e 46       		.byte	70
+ 2048 000f 4B       		.byte	75
+ 2049 0010 D0       		.byte	-48
+ 2050 0011 DD       		.byte	-35
+ 2051 0012 CA       		.byte	-54
+ 2052 0013 C7       		.byte	-57
+ 2053 0014 E4       		.byte	-28
+ 2054 0015 E9       		.byte	-23
+ 2055 0016 FE       		.byte	-2
+ 2056 0017 F3       		.byte	-13
+ 2057 0018 B8       		.byte	-72
+ 2058 0019 B5       		.byte	-75
+ 2059 001a A2       		.byte	-94
+ 2060 001b AF       		.byte	-81
+ 2061 001c 8C       		.byte	-116
+ 2062 001d 81       		.byte	-127
+ 2063 001e 96       		.byte	-106
+ 2064 001f 9B       		.byte	-101
+ 2065 0020 BB       		.byte	-69
+ 2066 0021 B6       		.byte	-74
+ 2067 0022 A1       		.byte	-95
+ 2068 0023 AC       		.byte	-84
+ 2069 0024 8F       		.byte	-113
+ 2070 0025 82       		.byte	-126
+ 2071 0026 95       		.byte	-107
+ 2072 0027 98       		.byte	-104
+ 2073 0028 D3       		.byte	-45
+ 2074 0029 DE       		.byte	-34
+ 2075 002a C9       		.byte	-55
+ 2076 002b C4       		.byte	-60
+ 2077 002c E7       		.byte	-25
+ 2078 002d EA       		.byte	-22
+ 2079 002e FD       		.byte	-3
+ 2080 002f F0       		.byte	-16
+ 2081 0030 6B       		.byte	107
+ 2082 0031 66       		.byte	102
+ 2083 0032 71       		.byte	113
+ 2084 0033 7C       		.byte	124
+ 2085 0034 5F       		.byte	95
+ 2086 0035 52       		.byte	82
+ 2087 0036 45       		.byte	69
+ 2088 0037 48       		.byte	72
+ 2089 0038 03       		.byte	3
+ 2090 0039 0E       		.byte	14
+ 2091 003a 19       		.byte	25
+ 2092 003b 14       		.byte	20
+ 2093 003c 37       		.byte	55
+ 2094 003d 3A       		.byte	58
+ 2095 003e 2D       		.byte	45
+ 2096 003f 20       		.byte	32
+ 2097 0040 6D       		.byte	109
+ARM GAS  /tmp/cc0JglZb.s 			page 42
+
+
+ 2098 0041 60       		.byte	96
+ 2099 0042 77       		.byte	119
+ 2100 0043 7A       		.byte	122
+ 2101 0044 59       		.byte	89
+ 2102 0045 54       		.byte	84
+ 2103 0046 43       		.byte	67
+ 2104 0047 4E       		.byte	78
+ 2105 0048 05       		.byte	5
+ 2106 0049 08       		.byte	8
+ 2107 004a 1F       		.byte	31
+ 2108 004b 12       		.byte	18
+ 2109 004c 31       		.byte	49
+ 2110 004d 3C       		.byte	60
+ 2111 004e 2B       		.byte	43
+ 2112 004f 26       		.byte	38
+ 2113 0050 BD       		.byte	-67
+ 2114 0051 B0       		.byte	-80
+ 2115 0052 A7       		.byte	-89
+ 2116 0053 AA       		.byte	-86
+ 2117 0054 89       		.byte	-119
+ 2118 0055 84       		.byte	-124
+ 2119 0056 93       		.byte	-109
+ 2120 0057 9E       		.byte	-98
+ 2121 0058 D5       		.byte	-43
+ 2122 0059 D8       		.byte	-40
+ 2123 005a CF       		.byte	-49
+ 2124 005b C2       		.byte	-62
+ 2125 005c E1       		.byte	-31
+ 2126 005d EC       		.byte	-20
+ 2127 005e FB       		.byte	-5
+ 2128 005f F6       		.byte	-10
+ 2129 0060 D6       		.byte	-42
+ 2130 0061 DB       		.byte	-37
+ 2131 0062 CC       		.byte	-52
+ 2132 0063 C1       		.byte	-63
+ 2133 0064 E2       		.byte	-30
+ 2134 0065 EF       		.byte	-17
+ 2135 0066 F8       		.byte	-8
+ 2136 0067 F5       		.byte	-11
+ 2137 0068 BE       		.byte	-66
+ 2138 0069 B3       		.byte	-77
+ 2139 006a A4       		.byte	-92
+ 2140 006b A9       		.byte	-87
+ 2141 006c 8A       		.byte	-118
+ 2142 006d 87       		.byte	-121
+ 2143 006e 90       		.byte	-112
+ 2144 006f 9D       		.byte	-99
+ 2145 0070 06       		.byte	6
+ 2146 0071 0B       		.byte	11
+ 2147 0072 1C       		.byte	28
+ 2148 0073 11       		.byte	17
+ 2149 0074 32       		.byte	50
+ 2150 0075 3F       		.byte	63
+ 2151 0076 28       		.byte	40
+ 2152 0077 25       		.byte	37
+ 2153 0078 6E       		.byte	110
+ 2154 0079 63       		.byte	99
+ARM GAS  /tmp/cc0JglZb.s 			page 43
+
+
+ 2155 007a 74       		.byte	116
+ 2156 007b 79       		.byte	121
+ 2157 007c 5A       		.byte	90
+ 2158 007d 57       		.byte	87
+ 2159 007e 40       		.byte	64
+ 2160 007f 4D       		.byte	77
+ 2161 0080 DA       		.byte	-38
+ 2162 0081 D7       		.byte	-41
+ 2163 0082 C0       		.byte	-64
+ 2164 0083 CD       		.byte	-51
+ 2165 0084 EE       		.byte	-18
+ 2166 0085 E3       		.byte	-29
+ 2167 0086 F4       		.byte	-12
+ 2168 0087 F9       		.byte	-7
+ 2169 0088 B2       		.byte	-78
+ 2170 0089 BF       		.byte	-65
+ 2171 008a A8       		.byte	-88
+ 2172 008b A5       		.byte	-91
+ 2173 008c 86       		.byte	-122
+ 2174 008d 8B       		.byte	-117
+ 2175 008e 9C       		.byte	-100
+ 2176 008f 91       		.byte	-111
+ 2177 0090 0A       		.byte	10
+ 2178 0091 07       		.byte	7
+ 2179 0092 10       		.byte	16
+ 2180 0093 1D       		.byte	29
+ 2181 0094 3E       		.byte	62
+ 2182 0095 33       		.byte	51
+ 2183 0096 24       		.byte	36
+ 2184 0097 29       		.byte	41
+ 2185 0098 62       		.byte	98
+ 2186 0099 6F       		.byte	111
+ 2187 009a 78       		.byte	120
+ 2188 009b 75       		.byte	117
+ 2189 009c 56       		.byte	86
+ 2190 009d 5B       		.byte	91
+ 2191 009e 4C       		.byte	76
+ 2192 009f 41       		.byte	65
+ 2193 00a0 61       		.byte	97
+ 2194 00a1 6C       		.byte	108
+ 2195 00a2 7B       		.byte	123
+ 2196 00a3 76       		.byte	118
+ 2197 00a4 55       		.byte	85
+ 2198 00a5 58       		.byte	88
+ 2199 00a6 4F       		.byte	79
+ 2200 00a7 42       		.byte	66
+ 2201 00a8 09       		.byte	9
+ 2202 00a9 04       		.byte	4
+ 2203 00aa 13       		.byte	19
+ 2204 00ab 1E       		.byte	30
+ 2205 00ac 3D       		.byte	61
+ 2206 00ad 30       		.byte	48
+ 2207 00ae 27       		.byte	39
+ 2208 00af 2A       		.byte	42
+ 2209 00b0 B1       		.byte	-79
+ 2210 00b1 BC       		.byte	-68
+ 2211 00b2 AB       		.byte	-85
+ARM GAS  /tmp/cc0JglZb.s 			page 44
+
+
+ 2212 00b3 A6       		.byte	-90
+ 2213 00b4 85       		.byte	-123
+ 2214 00b5 88       		.byte	-120
+ 2215 00b6 9F       		.byte	-97
+ 2216 00b7 92       		.byte	-110
+ 2217 00b8 D9       		.byte	-39
+ 2218 00b9 D4       		.byte	-44
+ 2219 00ba C3       		.byte	-61
+ 2220 00bb CE       		.byte	-50
+ 2221 00bc ED       		.byte	-19
+ 2222 00bd E0       		.byte	-32
+ 2223 00be F7       		.byte	-9
+ 2224 00bf FA       		.byte	-6
+ 2225 00c0 B7       		.byte	-73
+ 2226 00c1 BA       		.byte	-70
+ 2227 00c2 AD       		.byte	-83
+ 2228 00c3 A0       		.byte	-96
+ 2229 00c4 83       		.byte	-125
+ 2230 00c5 8E       		.byte	-114
+ 2231 00c6 99       		.byte	-103
+ 2232 00c7 94       		.byte	-108
+ 2233 00c8 DF       		.byte	-33
+ 2234 00c9 D2       		.byte	-46
+ 2235 00ca C5       		.byte	-59
+ 2236 00cb C8       		.byte	-56
+ 2237 00cc EB       		.byte	-21
+ 2238 00cd E6       		.byte	-26
+ 2239 00ce F1       		.byte	-15
+ 2240 00cf FC       		.byte	-4
+ 2241 00d0 67       		.byte	103
+ 2242 00d1 6A       		.byte	106
+ 2243 00d2 7D       		.byte	125
+ 2244 00d3 70       		.byte	112
+ 2245 00d4 53       		.byte	83
+ 2246 00d5 5E       		.byte	94
+ 2247 00d6 49       		.byte	73
+ 2248 00d7 44       		.byte	68
+ 2249 00d8 0F       		.byte	15
+ 2250 00d9 02       		.byte	2
+ 2251 00da 15       		.byte	21
+ 2252 00db 18       		.byte	24
+ 2253 00dc 3B       		.byte	59
+ 2254 00dd 36       		.byte	54
+ 2255 00de 21       		.byte	33
+ 2256 00df 2C       		.byte	44
+ 2257 00e0 0C       		.byte	12
+ 2258 00e1 01       		.byte	1
+ 2259 00e2 16       		.byte	22
+ 2260 00e3 1B       		.byte	27
+ 2261 00e4 38       		.byte	56
+ 2262 00e5 35       		.byte	53
+ 2263 00e6 22       		.byte	34
+ 2264 00e7 2F       		.byte	47
+ 2265 00e8 64       		.byte	100
+ 2266 00e9 69       		.byte	105
+ 2267 00ea 7E       		.byte	126
+ 2268 00eb 73       		.byte	115
+ARM GAS  /tmp/cc0JglZb.s 			page 45
+
+
+ 2269 00ec 50       		.byte	80
+ 2270 00ed 5D       		.byte	93
+ 2271 00ee 4A       		.byte	74
+ 2272 00ef 47       		.byte	71
+ 2273 00f0 DC       		.byte	-36
+ 2274 00f1 D1       		.byte	-47
+ 2275 00f2 C6       		.byte	-58
+ 2276 00f3 CB       		.byte	-53
+ 2277 00f4 E8       		.byte	-24
+ 2278 00f5 E5       		.byte	-27
+ 2279 00f6 F2       		.byte	-14
+ 2280 00f7 FF       		.byte	-1
+ 2281 00f8 B4       		.byte	-76
+ 2282 00f9 B9       		.byte	-71
+ 2283 00fa AE       		.byte	-82
+ 2284 00fb A3       		.byte	-93
+ 2285 00fc 80       		.byte	-128
+ 2286 00fd 8D       		.byte	-115
+ 2287 00fe 9A       		.byte	-102
+ 2288 00ff 97       		.byte	-105
+ 2289              		.section	.rodata.mul14,"a"
+ 2290              		.align	2
+ 2291              		.set	.LANCHOR4,. + 0
+ 2294              	mul14:
+ 2295 0000 00       		.byte	0
+ 2296 0001 0E       		.byte	14
+ 2297 0002 1C       		.byte	28
+ 2298 0003 12       		.byte	18
+ 2299 0004 38       		.byte	56
+ 2300 0005 36       		.byte	54
+ 2301 0006 24       		.byte	36
+ 2302 0007 2A       		.byte	42
+ 2303 0008 70       		.byte	112
+ 2304 0009 7E       		.byte	126
+ 2305 000a 6C       		.byte	108
+ 2306 000b 62       		.byte	98
+ 2307 000c 48       		.byte	72
+ 2308 000d 46       		.byte	70
+ 2309 000e 54       		.byte	84
+ 2310 000f 5A       		.byte	90
+ 2311 0010 E0       		.byte	-32
+ 2312 0011 EE       		.byte	-18
+ 2313 0012 FC       		.byte	-4
+ 2314 0013 F2       		.byte	-14
+ 2315 0014 D8       		.byte	-40
+ 2316 0015 D6       		.byte	-42
+ 2317 0016 C4       		.byte	-60
+ 2318 0017 CA       		.byte	-54
+ 2319 0018 90       		.byte	-112
+ 2320 0019 9E       		.byte	-98
+ 2321 001a 8C       		.byte	-116
+ 2322 001b 82       		.byte	-126
+ 2323 001c A8       		.byte	-88
+ 2324 001d A6       		.byte	-90
+ 2325 001e B4       		.byte	-76
+ 2326 001f BA       		.byte	-70
+ 2327 0020 DB       		.byte	-37
+ARM GAS  /tmp/cc0JglZb.s 			page 46
+
+
+ 2328 0021 D5       		.byte	-43
+ 2329 0022 C7       		.byte	-57
+ 2330 0023 C9       		.byte	-55
+ 2331 0024 E3       		.byte	-29
+ 2332 0025 ED       		.byte	-19
+ 2333 0026 FF       		.byte	-1
+ 2334 0027 F1       		.byte	-15
+ 2335 0028 AB       		.byte	-85
+ 2336 0029 A5       		.byte	-91
+ 2337 002a B7       		.byte	-73
+ 2338 002b B9       		.byte	-71
+ 2339 002c 93       		.byte	-109
+ 2340 002d 9D       		.byte	-99
+ 2341 002e 8F       		.byte	-113
+ 2342 002f 81       		.byte	-127
+ 2343 0030 3B       		.byte	59
+ 2344 0031 35       		.byte	53
+ 2345 0032 27       		.byte	39
+ 2346 0033 29       		.byte	41
+ 2347 0034 03       		.byte	3
+ 2348 0035 0D       		.byte	13
+ 2349 0036 1F       		.byte	31
+ 2350 0037 11       		.byte	17
+ 2351 0038 4B       		.byte	75
+ 2352 0039 45       		.byte	69
+ 2353 003a 57       		.byte	87
+ 2354 003b 59       		.byte	89
+ 2355 003c 73       		.byte	115
+ 2356 003d 7D       		.byte	125
+ 2357 003e 6F       		.byte	111
+ 2358 003f 61       		.byte	97
+ 2359 0040 AD       		.byte	-83
+ 2360 0041 A3       		.byte	-93
+ 2361 0042 B1       		.byte	-79
+ 2362 0043 BF       		.byte	-65
+ 2363 0044 95       		.byte	-107
+ 2364 0045 9B       		.byte	-101
+ 2365 0046 89       		.byte	-119
+ 2366 0047 87       		.byte	-121
+ 2367 0048 DD       		.byte	-35
+ 2368 0049 D3       		.byte	-45
+ 2369 004a C1       		.byte	-63
+ 2370 004b CF       		.byte	-49
+ 2371 004c E5       		.byte	-27
+ 2372 004d EB       		.byte	-21
+ 2373 004e F9       		.byte	-7
+ 2374 004f F7       		.byte	-9
+ 2375 0050 4D       		.byte	77
+ 2376 0051 43       		.byte	67
+ 2377 0052 51       		.byte	81
+ 2378 0053 5F       		.byte	95
+ 2379 0054 75       		.byte	117
+ 2380 0055 7B       		.byte	123
+ 2381 0056 69       		.byte	105
+ 2382 0057 67       		.byte	103
+ 2383 0058 3D       		.byte	61
+ 2384 0059 33       		.byte	51
+ARM GAS  /tmp/cc0JglZb.s 			page 47
+
+
+ 2385 005a 21       		.byte	33
+ 2386 005b 2F       		.byte	47
+ 2387 005c 05       		.byte	5
+ 2388 005d 0B       		.byte	11
+ 2389 005e 19       		.byte	25
+ 2390 005f 17       		.byte	23
+ 2391 0060 76       		.byte	118
+ 2392 0061 78       		.byte	120
+ 2393 0062 6A       		.byte	106
+ 2394 0063 64       		.byte	100
+ 2395 0064 4E       		.byte	78
+ 2396 0065 40       		.byte	64
+ 2397 0066 52       		.byte	82
+ 2398 0067 5C       		.byte	92
+ 2399 0068 06       		.byte	6
+ 2400 0069 08       		.byte	8
+ 2401 006a 1A       		.byte	26
+ 2402 006b 14       		.byte	20
+ 2403 006c 3E       		.byte	62
+ 2404 006d 30       		.byte	48
+ 2405 006e 22       		.byte	34
+ 2406 006f 2C       		.byte	44
+ 2407 0070 96       		.byte	-106
+ 2408 0071 98       		.byte	-104
+ 2409 0072 8A       		.byte	-118
+ 2410 0073 84       		.byte	-124
+ 2411 0074 AE       		.byte	-82
+ 2412 0075 A0       		.byte	-96
+ 2413 0076 B2       		.byte	-78
+ 2414 0077 BC       		.byte	-68
+ 2415 0078 E6       		.byte	-26
+ 2416 0079 E8       		.byte	-24
+ 2417 007a FA       		.byte	-6
+ 2418 007b F4       		.byte	-12
+ 2419 007c DE       		.byte	-34
+ 2420 007d D0       		.byte	-48
+ 2421 007e C2       		.byte	-62
+ 2422 007f CC       		.byte	-52
+ 2423 0080 41       		.byte	65
+ 2424 0081 4F       		.byte	79
+ 2425 0082 5D       		.byte	93
+ 2426 0083 53       		.byte	83
+ 2427 0084 79       		.byte	121
+ 2428 0085 77       		.byte	119
+ 2429 0086 65       		.byte	101
+ 2430 0087 6B       		.byte	107
+ 2431 0088 31       		.byte	49
+ 2432 0089 3F       		.byte	63
+ 2433 008a 2D       		.byte	45
+ 2434 008b 23       		.byte	35
+ 2435 008c 09       		.byte	9
+ 2436 008d 07       		.byte	7
+ 2437 008e 15       		.byte	21
+ 2438 008f 1B       		.byte	27
+ 2439 0090 A1       		.byte	-95
+ 2440 0091 AF       		.byte	-81
+ 2441 0092 BD       		.byte	-67
+ARM GAS  /tmp/cc0JglZb.s 			page 48
+
+
+ 2442 0093 B3       		.byte	-77
+ 2443 0094 99       		.byte	-103
+ 2444 0095 97       		.byte	-105
+ 2445 0096 85       		.byte	-123
+ 2446 0097 8B       		.byte	-117
+ 2447 0098 D1       		.byte	-47
+ 2448 0099 DF       		.byte	-33
+ 2449 009a CD       		.byte	-51
+ 2450 009b C3       		.byte	-61
+ 2451 009c E9       		.byte	-23
+ 2452 009d E7       		.byte	-25
+ 2453 009e F5       		.byte	-11
+ 2454 009f FB       		.byte	-5
+ 2455 00a0 9A       		.byte	-102
+ 2456 00a1 94       		.byte	-108
+ 2457 00a2 86       		.byte	-122
+ 2458 00a3 88       		.byte	-120
+ 2459 00a4 A2       		.byte	-94
+ 2460 00a5 AC       		.byte	-84
+ 2461 00a6 BE       		.byte	-66
+ 2462 00a7 B0       		.byte	-80
+ 2463 00a8 EA       		.byte	-22
+ 2464 00a9 E4       		.byte	-28
+ 2465 00aa F6       		.byte	-10
+ 2466 00ab F8       		.byte	-8
+ 2467 00ac D2       		.byte	-46
+ 2468 00ad DC       		.byte	-36
+ 2469 00ae CE       		.byte	-50
+ 2470 00af C0       		.byte	-64
+ 2471 00b0 7A       		.byte	122
+ 2472 00b1 74       		.byte	116
+ 2473 00b2 66       		.byte	102
+ 2474 00b3 68       		.byte	104
+ 2475 00b4 42       		.byte	66
+ 2476 00b5 4C       		.byte	76
+ 2477 00b6 5E       		.byte	94
+ 2478 00b7 50       		.byte	80
+ 2479 00b8 0A       		.byte	10
+ 2480 00b9 04       		.byte	4
+ 2481 00ba 16       		.byte	22
+ 2482 00bb 18       		.byte	24
+ 2483 00bc 32       		.byte	50
+ 2484 00bd 3C       		.byte	60
+ 2485 00be 2E       		.byte	46
+ 2486 00bf 20       		.byte	32
+ 2487 00c0 EC       		.byte	-20
+ 2488 00c1 E2       		.byte	-30
+ 2489 00c2 F0       		.byte	-16
+ 2490 00c3 FE       		.byte	-2
+ 2491 00c4 D4       		.byte	-44
+ 2492 00c5 DA       		.byte	-38
+ 2493 00c6 C8       		.byte	-56
+ 2494 00c7 C6       		.byte	-58
+ 2495 00c8 9C       		.byte	-100
+ 2496 00c9 92       		.byte	-110
+ 2497 00ca 80       		.byte	-128
+ 2498 00cb 8E       		.byte	-114
+ARM GAS  /tmp/cc0JglZb.s 			page 49
+
+
+ 2499 00cc A4       		.byte	-92
+ 2500 00cd AA       		.byte	-86
+ 2501 00ce B8       		.byte	-72
+ 2502 00cf B6       		.byte	-74
+ 2503 00d0 0C       		.byte	12
+ 2504 00d1 02       		.byte	2
+ 2505 00d2 10       		.byte	16
+ 2506 00d3 1E       		.byte	30
+ 2507 00d4 34       		.byte	52
+ 2508 00d5 3A       		.byte	58
+ 2509 00d6 28       		.byte	40
+ 2510 00d7 26       		.byte	38
+ 2511 00d8 7C       		.byte	124
+ 2512 00d9 72       		.byte	114
+ 2513 00da 60       		.byte	96
+ 2514 00db 6E       		.byte	110
+ 2515 00dc 44       		.byte	68
+ 2516 00dd 4A       		.byte	74
+ 2517 00de 58       		.byte	88
+ 2518 00df 56       		.byte	86
+ 2519 00e0 37       		.byte	55
+ 2520 00e1 39       		.byte	57
+ 2521 00e2 2B       		.byte	43
+ 2522 00e3 25       		.byte	37
+ 2523 00e4 0F       		.byte	15
+ 2524 00e5 01       		.byte	1
+ 2525 00e6 13       		.byte	19
+ 2526 00e7 1D       		.byte	29
+ 2527 00e8 47       		.byte	71
+ 2528 00e9 49       		.byte	73
+ 2529 00ea 5B       		.byte	91
+ 2530 00eb 55       		.byte	85
+ 2531 00ec 7F       		.byte	127
+ 2532 00ed 71       		.byte	113
+ 2533 00ee 63       		.byte	99
+ 2534 00ef 6D       		.byte	109
+ 2535 00f0 D7       		.byte	-41
+ 2536 00f1 D9       		.byte	-39
+ 2537 00f2 CB       		.byte	-53
+ 2538 00f3 C5       		.byte	-59
+ 2539 00f4 EF       		.byte	-17
+ 2540 00f5 E1       		.byte	-31
+ 2541 00f6 F3       		.byte	-13
+ 2542 00f7 FD       		.byte	-3
+ 2543 00f8 A7       		.byte	-89
+ 2544 00f9 A9       		.byte	-87
+ 2545 00fa BB       		.byte	-69
+ 2546 00fb B5       		.byte	-75
+ 2547 00fc 9F       		.byte	-97
+ 2548 00fd 91       		.byte	-111
+ 2549 00fe 83       		.byte	-125
+ 2550 00ff 8D       		.byte	-115
+ 2551              		.section	.rodata.mul2,"a"
+ 2552              		.align	2
+ 2553              		.set	.LANCHOR2,. + 0
+ 2556              	mul2:
+ 2557 0000 00       		.byte	0
+ARM GAS  /tmp/cc0JglZb.s 			page 50
+
+
+ 2558 0001 02       		.byte	2
+ 2559 0002 04       		.byte	4
+ 2560 0003 06       		.byte	6
+ 2561 0004 08       		.byte	8
+ 2562 0005 0A       		.byte	10
+ 2563 0006 0C       		.byte	12
+ 2564 0007 0E       		.byte	14
+ 2565 0008 10       		.byte	16
+ 2566 0009 12       		.byte	18
+ 2567 000a 14       		.byte	20
+ 2568 000b 16       		.byte	22
+ 2569 000c 18       		.byte	24
+ 2570 000d 1A       		.byte	26
+ 2571 000e 1C       		.byte	28
+ 2572 000f 1E       		.byte	30
+ 2573 0010 20       		.byte	32
+ 2574 0011 22       		.byte	34
+ 2575 0012 24       		.byte	36
+ 2576 0013 26       		.byte	38
+ 2577 0014 28       		.byte	40
+ 2578 0015 2A       		.byte	42
+ 2579 0016 2C       		.byte	44
+ 2580 0017 2E       		.byte	46
+ 2581 0018 30       		.byte	48
+ 2582 0019 32       		.byte	50
+ 2583 001a 34       		.byte	52
+ 2584 001b 36       		.byte	54
+ 2585 001c 38       		.byte	56
+ 2586 001d 3A       		.byte	58
+ 2587 001e 3C       		.byte	60
+ 2588 001f 3E       		.byte	62
+ 2589 0020 40       		.byte	64
+ 2590 0021 42       		.byte	66
+ 2591 0022 44       		.byte	68
+ 2592 0023 46       		.byte	70
+ 2593 0024 48       		.byte	72
+ 2594 0025 4A       		.byte	74
+ 2595 0026 4C       		.byte	76
+ 2596 0027 4E       		.byte	78
+ 2597 0028 50       		.byte	80
+ 2598 0029 52       		.byte	82
+ 2599 002a 54       		.byte	84
+ 2600 002b 56       		.byte	86
+ 2601 002c 58       		.byte	88
+ 2602 002d 5A       		.byte	90
+ 2603 002e 5C       		.byte	92
+ 2604 002f 5E       		.byte	94
+ 2605 0030 60       		.byte	96
+ 2606 0031 62       		.byte	98
+ 2607 0032 64       		.byte	100
+ 2608 0033 66       		.byte	102
+ 2609 0034 68       		.byte	104
+ 2610 0035 6A       		.byte	106
+ 2611 0036 6C       		.byte	108
+ 2612 0037 6E       		.byte	110
+ 2613 0038 70       		.byte	112
+ 2614 0039 72       		.byte	114
+ARM GAS  /tmp/cc0JglZb.s 			page 51
+
+
+ 2615 003a 74       		.byte	116
+ 2616 003b 76       		.byte	118
+ 2617 003c 78       		.byte	120
+ 2618 003d 7A       		.byte	122
+ 2619 003e 7C       		.byte	124
+ 2620 003f 7E       		.byte	126
+ 2621 0040 80       		.byte	-128
+ 2622 0041 82       		.byte	-126
+ 2623 0042 84       		.byte	-124
+ 2624 0043 86       		.byte	-122
+ 2625 0044 88       		.byte	-120
+ 2626 0045 8A       		.byte	-118
+ 2627 0046 8C       		.byte	-116
+ 2628 0047 8E       		.byte	-114
+ 2629 0048 90       		.byte	-112
+ 2630 0049 92       		.byte	-110
+ 2631 004a 94       		.byte	-108
+ 2632 004b 96       		.byte	-106
+ 2633 004c 98       		.byte	-104
+ 2634 004d 9A       		.byte	-102
+ 2635 004e 9C       		.byte	-100
+ 2636 004f 9E       		.byte	-98
+ 2637 0050 A0       		.byte	-96
+ 2638 0051 A2       		.byte	-94
+ 2639 0052 A4       		.byte	-92
+ 2640 0053 A6       		.byte	-90
+ 2641 0054 A8       		.byte	-88
+ 2642 0055 AA       		.byte	-86
+ 2643 0056 AC       		.byte	-84
+ 2644 0057 AE       		.byte	-82
+ 2645 0058 B0       		.byte	-80
+ 2646 0059 B2       		.byte	-78
+ 2647 005a B4       		.byte	-76
+ 2648 005b B6       		.byte	-74
+ 2649 005c B8       		.byte	-72
+ 2650 005d BA       		.byte	-70
+ 2651 005e BC       		.byte	-68
+ 2652 005f BE       		.byte	-66
+ 2653 0060 C0       		.byte	-64
+ 2654 0061 C2       		.byte	-62
+ 2655 0062 C4       		.byte	-60
+ 2656 0063 C6       		.byte	-58
+ 2657 0064 C8       		.byte	-56
+ 2658 0065 CA       		.byte	-54
+ 2659 0066 CC       		.byte	-52
+ 2660 0067 CE       		.byte	-50
+ 2661 0068 D0       		.byte	-48
+ 2662 0069 D2       		.byte	-46
+ 2663 006a D4       		.byte	-44
+ 2664 006b D6       		.byte	-42
+ 2665 006c D8       		.byte	-40
+ 2666 006d DA       		.byte	-38
+ 2667 006e DC       		.byte	-36
+ 2668 006f DE       		.byte	-34
+ 2669 0070 E0       		.byte	-32
+ 2670 0071 E2       		.byte	-30
+ 2671 0072 E4       		.byte	-28
+ARM GAS  /tmp/cc0JglZb.s 			page 52
+
+
+ 2672 0073 E6       		.byte	-26
+ 2673 0074 E8       		.byte	-24
+ 2674 0075 EA       		.byte	-22
+ 2675 0076 EC       		.byte	-20
+ 2676 0077 EE       		.byte	-18
+ 2677 0078 F0       		.byte	-16
+ 2678 0079 F2       		.byte	-14
+ 2679 007a F4       		.byte	-12
+ 2680 007b F6       		.byte	-10
+ 2681 007c F8       		.byte	-8
+ 2682 007d FA       		.byte	-6
+ 2683 007e FC       		.byte	-4
+ 2684 007f FE       		.byte	-2
+ 2685 0080 1B       		.byte	27
+ 2686 0081 19       		.byte	25
+ 2687 0082 1F       		.byte	31
+ 2688 0083 1D       		.byte	29
+ 2689 0084 13       		.byte	19
+ 2690 0085 11       		.byte	17
+ 2691 0086 17       		.byte	23
+ 2692 0087 15       		.byte	21
+ 2693 0088 0B       		.byte	11
+ 2694 0089 09       		.byte	9
+ 2695 008a 0F       		.byte	15
+ 2696 008b 0D       		.byte	13
+ 2697 008c 03       		.byte	3
+ 2698 008d 01       		.byte	1
+ 2699 008e 07       		.byte	7
+ 2700 008f 05       		.byte	5
+ 2701 0090 3B       		.byte	59
+ 2702 0091 39       		.byte	57
+ 2703 0092 3F       		.byte	63
+ 2704 0093 3D       		.byte	61
+ 2705 0094 33       		.byte	51
+ 2706 0095 31       		.byte	49
+ 2707 0096 37       		.byte	55
+ 2708 0097 35       		.byte	53
+ 2709 0098 2B       		.byte	43
+ 2710 0099 29       		.byte	41
+ 2711 009a 2F       		.byte	47
+ 2712 009b 2D       		.byte	45
+ 2713 009c 23       		.byte	35
+ 2714 009d 21       		.byte	33
+ 2715 009e 27       		.byte	39
+ 2716 009f 25       		.byte	37
+ 2717 00a0 5B       		.byte	91
+ 2718 00a1 59       		.byte	89
+ 2719 00a2 5F       		.byte	95
+ 2720 00a3 5D       		.byte	93
+ 2721 00a4 53       		.byte	83
+ 2722 00a5 51       		.byte	81
+ 2723 00a6 57       		.byte	87
+ 2724 00a7 55       		.byte	85
+ 2725 00a8 4B       		.byte	75
+ 2726 00a9 49       		.byte	73
+ 2727 00aa 4F       		.byte	79
+ 2728 00ab 4D       		.byte	77
+ARM GAS  /tmp/cc0JglZb.s 			page 53
+
+
+ 2729 00ac 43       		.byte	67
+ 2730 00ad 41       		.byte	65
+ 2731 00ae 47       		.byte	71
+ 2732 00af 45       		.byte	69
+ 2733 00b0 7B       		.byte	123
+ 2734 00b1 79       		.byte	121
+ 2735 00b2 7F       		.byte	127
+ 2736 00b3 7D       		.byte	125
+ 2737 00b4 73       		.byte	115
+ 2738 00b5 71       		.byte	113
+ 2739 00b6 77       		.byte	119
+ 2740 00b7 75       		.byte	117
+ 2741 00b8 6B       		.byte	107
+ 2742 00b9 69       		.byte	105
+ 2743 00ba 6F       		.byte	111
+ 2744 00bb 6D       		.byte	109
+ 2745 00bc 63       		.byte	99
+ 2746 00bd 61       		.byte	97
+ 2747 00be 67       		.byte	103
+ 2748 00bf 65       		.byte	101
+ 2749 00c0 9B       		.byte	-101
+ 2750 00c1 99       		.byte	-103
+ 2751 00c2 9F       		.byte	-97
+ 2752 00c3 9D       		.byte	-99
+ 2753 00c4 93       		.byte	-109
+ 2754 00c5 91       		.byte	-111
+ 2755 00c6 97       		.byte	-105
+ 2756 00c7 95       		.byte	-107
+ 2757 00c8 8B       		.byte	-117
+ 2758 00c9 89       		.byte	-119
+ 2759 00ca 8F       		.byte	-113
+ 2760 00cb 8D       		.byte	-115
+ 2761 00cc 83       		.byte	-125
+ 2762 00cd 81       		.byte	-127
+ 2763 00ce 87       		.byte	-121
+ 2764 00cf 85       		.byte	-123
+ 2765 00d0 BB       		.byte	-69
+ 2766 00d1 B9       		.byte	-71
+ 2767 00d2 BF       		.byte	-65
+ 2768 00d3 BD       		.byte	-67
+ 2769 00d4 B3       		.byte	-77
+ 2770 00d5 B1       		.byte	-79
+ 2771 00d6 B7       		.byte	-73
+ 2772 00d7 B5       		.byte	-75
+ 2773 00d8 AB       		.byte	-85
+ 2774 00d9 A9       		.byte	-87
+ 2775 00da AF       		.byte	-81
+ 2776 00db AD       		.byte	-83
+ 2777 00dc A3       		.byte	-93
+ 2778 00dd A1       		.byte	-95
+ 2779 00de A7       		.byte	-89
+ 2780 00df A5       		.byte	-91
+ 2781 00e0 DB       		.byte	-37
+ 2782 00e1 D9       		.byte	-39
+ 2783 00e2 DF       		.byte	-33
+ 2784 00e3 DD       		.byte	-35
+ 2785 00e4 D3       		.byte	-45
+ARM GAS  /tmp/cc0JglZb.s 			page 54
+
+
+ 2786 00e5 D1       		.byte	-47
+ 2787 00e6 D7       		.byte	-41
+ 2788 00e7 D5       		.byte	-43
+ 2789 00e8 CB       		.byte	-53
+ 2790 00e9 C9       		.byte	-55
+ 2791 00ea CF       		.byte	-49
+ 2792 00eb CD       		.byte	-51
+ 2793 00ec C3       		.byte	-61
+ 2794 00ed C1       		.byte	-63
+ 2795 00ee C7       		.byte	-57
+ 2796 00ef C5       		.byte	-59
+ 2797 00f0 FB       		.byte	-5
+ 2798 00f1 F9       		.byte	-7
+ 2799 00f2 FF       		.byte	-1
+ 2800 00f3 FD       		.byte	-3
+ 2801 00f4 F3       		.byte	-13
+ 2802 00f5 F1       		.byte	-15
+ 2803 00f6 F7       		.byte	-9
+ 2804 00f7 F5       		.byte	-11
+ 2805 00f8 EB       		.byte	-21
+ 2806 00f9 E9       		.byte	-23
+ 2807 00fa EF       		.byte	-17
+ 2808 00fb ED       		.byte	-19
+ 2809 00fc E3       		.byte	-29
+ 2810 00fd E1       		.byte	-31
+ 2811 00fe E7       		.byte	-25
+ 2812 00ff E5       		.byte	-27
+ 2813              		.section	.rodata.mul3,"a"
+ 2814              		.align	2
+ 2815              		.set	.LANCHOR3,. + 0
+ 2818              	mul3:
+ 2819 0000 00       		.byte	0
+ 2820 0001 03       		.byte	3
+ 2821 0002 06       		.byte	6
+ 2822 0003 05       		.byte	5
+ 2823 0004 0C       		.byte	12
+ 2824 0005 0F       		.byte	15
+ 2825 0006 0A       		.byte	10
+ 2826 0007 09       		.byte	9
+ 2827 0008 18       		.byte	24
+ 2828 0009 1B       		.byte	27
+ 2829 000a 1E       		.byte	30
+ 2830 000b 1D       		.byte	29
+ 2831 000c 14       		.byte	20
+ 2832 000d 17       		.byte	23
+ 2833 000e 12       		.byte	18
+ 2834 000f 11       		.byte	17
+ 2835 0010 30       		.byte	48
+ 2836 0011 33       		.byte	51
+ 2837 0012 36       		.byte	54
+ 2838 0013 35       		.byte	53
+ 2839 0014 3C       		.byte	60
+ 2840 0015 3F       		.byte	63
+ 2841 0016 3A       		.byte	58
+ 2842 0017 39       		.byte	57
+ 2843 0018 28       		.byte	40
+ 2844 0019 2B       		.byte	43
+ARM GAS  /tmp/cc0JglZb.s 			page 55
+
+
+ 2845 001a 2E       		.byte	46
+ 2846 001b 2D       		.byte	45
+ 2847 001c 24       		.byte	36
+ 2848 001d 27       		.byte	39
+ 2849 001e 22       		.byte	34
+ 2850 001f 21       		.byte	33
+ 2851 0020 60       		.byte	96
+ 2852 0021 63       		.byte	99
+ 2853 0022 66       		.byte	102
+ 2854 0023 65       		.byte	101
+ 2855 0024 6C       		.byte	108
+ 2856 0025 6F       		.byte	111
+ 2857 0026 6A       		.byte	106
+ 2858 0027 69       		.byte	105
+ 2859 0028 78       		.byte	120
+ 2860 0029 7B       		.byte	123
+ 2861 002a 7E       		.byte	126
+ 2862 002b 7D       		.byte	125
+ 2863 002c 74       		.byte	116
+ 2864 002d 77       		.byte	119
+ 2865 002e 72       		.byte	114
+ 2866 002f 71       		.byte	113
+ 2867 0030 50       		.byte	80
+ 2868 0031 53       		.byte	83
+ 2869 0032 56       		.byte	86
+ 2870 0033 55       		.byte	85
+ 2871 0034 5C       		.byte	92
+ 2872 0035 5F       		.byte	95
+ 2873 0036 5A       		.byte	90
+ 2874 0037 59       		.byte	89
+ 2875 0038 48       		.byte	72
+ 2876 0039 4B       		.byte	75
+ 2877 003a 4E       		.byte	78
+ 2878 003b 4D       		.byte	77
+ 2879 003c 44       		.byte	68
+ 2880 003d 47       		.byte	71
+ 2881 003e 42       		.byte	66
+ 2882 003f 41       		.byte	65
+ 2883 0040 C0       		.byte	-64
+ 2884 0041 C3       		.byte	-61
+ 2885 0042 C6       		.byte	-58
+ 2886 0043 C5       		.byte	-59
+ 2887 0044 CC       		.byte	-52
+ 2888 0045 CF       		.byte	-49
+ 2889 0046 CA       		.byte	-54
+ 2890 0047 C9       		.byte	-55
+ 2891 0048 D8       		.byte	-40
+ 2892 0049 DB       		.byte	-37
+ 2893 004a DE       		.byte	-34
+ 2894 004b DD       		.byte	-35
+ 2895 004c D4       		.byte	-44
+ 2896 004d D7       		.byte	-41
+ 2897 004e D2       		.byte	-46
+ 2898 004f D1       		.byte	-47
+ 2899 0050 F0       		.byte	-16
+ 2900 0051 F3       		.byte	-13
+ 2901 0052 F6       		.byte	-10
+ARM GAS  /tmp/cc0JglZb.s 			page 56
+
+
+ 2902 0053 F5       		.byte	-11
+ 2903 0054 FC       		.byte	-4
+ 2904 0055 FF       		.byte	-1
+ 2905 0056 FA       		.byte	-6
+ 2906 0057 F9       		.byte	-7
+ 2907 0058 E8       		.byte	-24
+ 2908 0059 EB       		.byte	-21
+ 2909 005a EE       		.byte	-18
+ 2910 005b ED       		.byte	-19
+ 2911 005c E4       		.byte	-28
+ 2912 005d E7       		.byte	-25
+ 2913 005e E2       		.byte	-30
+ 2914 005f E1       		.byte	-31
+ 2915 0060 A0       		.byte	-96
+ 2916 0061 A3       		.byte	-93
+ 2917 0062 A6       		.byte	-90
+ 2918 0063 A5       		.byte	-91
+ 2919 0064 AC       		.byte	-84
+ 2920 0065 AF       		.byte	-81
+ 2921 0066 AA       		.byte	-86
+ 2922 0067 A9       		.byte	-87
+ 2923 0068 B8       		.byte	-72
+ 2924 0069 BB       		.byte	-69
+ 2925 006a BE       		.byte	-66
+ 2926 006b BD       		.byte	-67
+ 2927 006c B4       		.byte	-76
+ 2928 006d B7       		.byte	-73
+ 2929 006e B2       		.byte	-78
+ 2930 006f B1       		.byte	-79
+ 2931 0070 90       		.byte	-112
+ 2932 0071 93       		.byte	-109
+ 2933 0072 96       		.byte	-106
+ 2934 0073 95       		.byte	-107
+ 2935 0074 9C       		.byte	-100
+ 2936 0075 9F       		.byte	-97
+ 2937 0076 9A       		.byte	-102
+ 2938 0077 99       		.byte	-103
+ 2939 0078 88       		.byte	-120
+ 2940 0079 8B       		.byte	-117
+ 2941 007a 8E       		.byte	-114
+ 2942 007b 8D       		.byte	-115
+ 2943 007c 84       		.byte	-124
+ 2944 007d 87       		.byte	-121
+ 2945 007e 82       		.byte	-126
+ 2946 007f 81       		.byte	-127
+ 2947 0080 9B       		.byte	-101
+ 2948 0081 98       		.byte	-104
+ 2949 0082 9D       		.byte	-99
+ 2950 0083 9E       		.byte	-98
+ 2951 0084 97       		.byte	-105
+ 2952 0085 94       		.byte	-108
+ 2953 0086 91       		.byte	-111
+ 2954 0087 92       		.byte	-110
+ 2955 0088 83       		.byte	-125
+ 2956 0089 80       		.byte	-128
+ 2957 008a 85       		.byte	-123
+ 2958 008b 86       		.byte	-122
+ARM GAS  /tmp/cc0JglZb.s 			page 57
+
+
+ 2959 008c 8F       		.byte	-113
+ 2960 008d 8C       		.byte	-116
+ 2961 008e 89       		.byte	-119
+ 2962 008f 8A       		.byte	-118
+ 2963 0090 AB       		.byte	-85
+ 2964 0091 A8       		.byte	-88
+ 2965 0092 AD       		.byte	-83
+ 2966 0093 AE       		.byte	-82
+ 2967 0094 A7       		.byte	-89
+ 2968 0095 A4       		.byte	-92
+ 2969 0096 A1       		.byte	-95
+ 2970 0097 A2       		.byte	-94
+ 2971 0098 B3       		.byte	-77
+ 2972 0099 B0       		.byte	-80
+ 2973 009a B5       		.byte	-75
+ 2974 009b B6       		.byte	-74
+ 2975 009c BF       		.byte	-65
+ 2976 009d BC       		.byte	-68
+ 2977 009e B9       		.byte	-71
+ 2978 009f BA       		.byte	-70
+ 2979 00a0 FB       		.byte	-5
+ 2980 00a1 F8       		.byte	-8
+ 2981 00a2 FD       		.byte	-3
+ 2982 00a3 FE       		.byte	-2
+ 2983 00a4 F7       		.byte	-9
+ 2984 00a5 F4       		.byte	-12
+ 2985 00a6 F1       		.byte	-15
+ 2986 00a7 F2       		.byte	-14
+ 2987 00a8 E3       		.byte	-29
+ 2988 00a9 E0       		.byte	-32
+ 2989 00aa E5       		.byte	-27
+ 2990 00ab E6       		.byte	-26
+ 2991 00ac EF       		.byte	-17
+ 2992 00ad EC       		.byte	-20
+ 2993 00ae E9       		.byte	-23
+ 2994 00af EA       		.byte	-22
+ 2995 00b0 CB       		.byte	-53
+ 2996 00b1 C8       		.byte	-56
+ 2997 00b2 CD       		.byte	-51
+ 2998 00b3 CE       		.byte	-50
+ 2999 00b4 C7       		.byte	-57
+ 3000 00b5 C4       		.byte	-60
+ 3001 00b6 C1       		.byte	-63
+ 3002 00b7 C2       		.byte	-62
+ 3003 00b8 D3       		.byte	-45
+ 3004 00b9 D0       		.byte	-48
+ 3005 00ba D5       		.byte	-43
+ 3006 00bb D6       		.byte	-42
+ 3007 00bc DF       		.byte	-33
+ 3008 00bd DC       		.byte	-36
+ 3009 00be D9       		.byte	-39
+ 3010 00bf DA       		.byte	-38
+ 3011 00c0 5B       		.byte	91
+ 3012 00c1 58       		.byte	88
+ 3013 00c2 5D       		.byte	93
+ 3014 00c3 5E       		.byte	94
+ 3015 00c4 57       		.byte	87
+ARM GAS  /tmp/cc0JglZb.s 			page 58
+
+
+ 3016 00c5 54       		.byte	84
+ 3017 00c6 51       		.byte	81
+ 3018 00c7 52       		.byte	82
+ 3019 00c8 43       		.byte	67
+ 3020 00c9 40       		.byte	64
+ 3021 00ca 45       		.byte	69
+ 3022 00cb 46       		.byte	70
+ 3023 00cc 4F       		.byte	79
+ 3024 00cd 4C       		.byte	76
+ 3025 00ce 49       		.byte	73
+ 3026 00cf 4A       		.byte	74
+ 3027 00d0 6B       		.byte	107
+ 3028 00d1 68       		.byte	104
+ 3029 00d2 6D       		.byte	109
+ 3030 00d3 6E       		.byte	110
+ 3031 00d4 67       		.byte	103
+ 3032 00d5 64       		.byte	100
+ 3033 00d6 61       		.byte	97
+ 3034 00d7 62       		.byte	98
+ 3035 00d8 73       		.byte	115
+ 3036 00d9 70       		.byte	112
+ 3037 00da 75       		.byte	117
+ 3038 00db 76       		.byte	118
+ 3039 00dc 7F       		.byte	127
+ 3040 00dd 7C       		.byte	124
+ 3041 00de 79       		.byte	121
+ 3042 00df 7A       		.byte	122
+ 3043 00e0 3B       		.byte	59
+ 3044 00e1 38       		.byte	56
+ 3045 00e2 3D       		.byte	61
+ 3046 00e3 3E       		.byte	62
+ 3047 00e4 37       		.byte	55
+ 3048 00e5 34       		.byte	52
+ 3049 00e6 31       		.byte	49
+ 3050 00e7 32       		.byte	50
+ 3051 00e8 23       		.byte	35
+ 3052 00e9 20       		.byte	32
+ 3053 00ea 25       		.byte	37
+ 3054 00eb 26       		.byte	38
+ 3055 00ec 2F       		.byte	47
+ 3056 00ed 2C       		.byte	44
+ 3057 00ee 29       		.byte	41
+ 3058 00ef 2A       		.byte	42
+ 3059 00f0 0B       		.byte	11
+ 3060 00f1 08       		.byte	8
+ 3061 00f2 0D       		.byte	13
+ 3062 00f3 0E       		.byte	14
+ 3063 00f4 07       		.byte	7
+ 3064 00f5 04       		.byte	4
+ 3065 00f6 01       		.byte	1
+ 3066 00f7 02       		.byte	2
+ 3067 00f8 13       		.byte	19
+ 3068 00f9 10       		.byte	16
+ 3069 00fa 15       		.byte	21
+ 3070 00fb 16       		.byte	22
+ 3071 00fc 1F       		.byte	31
+ 3072 00fd 1C       		.byte	28
+ARM GAS  /tmp/cc0JglZb.s 			page 59
+
+
+ 3073 00fe 19       		.byte	25
+ 3074 00ff 1A       		.byte	26
+ 3075              		.section	.rodata.mul9,"a"
+ 3076              		.align	2
+ 3077              		.set	.LANCHOR7,. + 0
+ 3080              	mul9:
+ 3081 0000 00       		.byte	0
+ 3082 0001 09       		.byte	9
+ 3083 0002 12       		.byte	18
+ 3084 0003 1B       		.byte	27
+ 3085 0004 24       		.byte	36
+ 3086 0005 2D       		.byte	45
+ 3087 0006 36       		.byte	54
+ 3088 0007 3F       		.byte	63
+ 3089 0008 48       		.byte	72
+ 3090 0009 41       		.byte	65
+ 3091 000a 5A       		.byte	90
+ 3092 000b 53       		.byte	83
+ 3093 000c 6C       		.byte	108
+ 3094 000d 65       		.byte	101
+ 3095 000e 7E       		.byte	126
+ 3096 000f 77       		.byte	119
+ 3097 0010 90       		.byte	-112
+ 3098 0011 99       		.byte	-103
+ 3099 0012 82       		.byte	-126
+ 3100 0013 8B       		.byte	-117
+ 3101 0014 B4       		.byte	-76
+ 3102 0015 BD       		.byte	-67
+ 3103 0016 A6       		.byte	-90
+ 3104 0017 AF       		.byte	-81
+ 3105 0018 D8       		.byte	-40
+ 3106 0019 D1       		.byte	-47
+ 3107 001a CA       		.byte	-54
+ 3108 001b C3       		.byte	-61
+ 3109 001c FC       		.byte	-4
+ 3110 001d F5       		.byte	-11
+ 3111 001e EE       		.byte	-18
+ 3112 001f E7       		.byte	-25
+ 3113 0020 3B       		.byte	59
+ 3114 0021 32       		.byte	50
+ 3115 0022 29       		.byte	41
+ 3116 0023 20       		.byte	32
+ 3117 0024 1F       		.byte	31
+ 3118 0025 16       		.byte	22
+ 3119 0026 0D       		.byte	13
+ 3120 0027 04       		.byte	4
+ 3121 0028 73       		.byte	115
+ 3122 0029 7A       		.byte	122
+ 3123 002a 61       		.byte	97
+ 3124 002b 68       		.byte	104
+ 3125 002c 57       		.byte	87
+ 3126 002d 5E       		.byte	94
+ 3127 002e 45       		.byte	69
+ 3128 002f 4C       		.byte	76
+ 3129 0030 AB       		.byte	-85
+ 3130 0031 A2       		.byte	-94
+ 3131 0032 B9       		.byte	-71
+ARM GAS  /tmp/cc0JglZb.s 			page 60
+
+
+ 3132 0033 B0       		.byte	-80
+ 3133 0034 8F       		.byte	-113
+ 3134 0035 86       		.byte	-122
+ 3135 0036 9D       		.byte	-99
+ 3136 0037 94       		.byte	-108
+ 3137 0038 E3       		.byte	-29
+ 3138 0039 EA       		.byte	-22
+ 3139 003a F1       		.byte	-15
+ 3140 003b F8       		.byte	-8
+ 3141 003c C7       		.byte	-57
+ 3142 003d CE       		.byte	-50
+ 3143 003e D5       		.byte	-43
+ 3144 003f DC       		.byte	-36
+ 3145 0040 76       		.byte	118
+ 3146 0041 7F       		.byte	127
+ 3147 0042 64       		.byte	100
+ 3148 0043 6D       		.byte	109
+ 3149 0044 52       		.byte	82
+ 3150 0045 5B       		.byte	91
+ 3151 0046 40       		.byte	64
+ 3152 0047 49       		.byte	73
+ 3153 0048 3E       		.byte	62
+ 3154 0049 37       		.byte	55
+ 3155 004a 2C       		.byte	44
+ 3156 004b 25       		.byte	37
+ 3157 004c 1A       		.byte	26
+ 3158 004d 13       		.byte	19
+ 3159 004e 08       		.byte	8
+ 3160 004f 01       		.byte	1
+ 3161 0050 E6       		.byte	-26
+ 3162 0051 EF       		.byte	-17
+ 3163 0052 F4       		.byte	-12
+ 3164 0053 FD       		.byte	-3
+ 3165 0054 C2       		.byte	-62
+ 3166 0055 CB       		.byte	-53
+ 3167 0056 D0       		.byte	-48
+ 3168 0057 D9       		.byte	-39
+ 3169 0058 AE       		.byte	-82
+ 3170 0059 A7       		.byte	-89
+ 3171 005a BC       		.byte	-68
+ 3172 005b B5       		.byte	-75
+ 3173 005c 8A       		.byte	-118
+ 3174 005d 83       		.byte	-125
+ 3175 005e 98       		.byte	-104
+ 3176 005f 91       		.byte	-111
+ 3177 0060 4D       		.byte	77
+ 3178 0061 44       		.byte	68
+ 3179 0062 5F       		.byte	95
+ 3180 0063 56       		.byte	86
+ 3181 0064 69       		.byte	105
+ 3182 0065 60       		.byte	96
+ 3183 0066 7B       		.byte	123
+ 3184 0067 72       		.byte	114
+ 3185 0068 05       		.byte	5
+ 3186 0069 0C       		.byte	12
+ 3187 006a 17       		.byte	23
+ 3188 006b 1E       		.byte	30
+ARM GAS  /tmp/cc0JglZb.s 			page 61
+
+
+ 3189 006c 21       		.byte	33
+ 3190 006d 28       		.byte	40
+ 3191 006e 33       		.byte	51
+ 3192 006f 3A       		.byte	58
+ 3193 0070 DD       		.byte	-35
+ 3194 0071 D4       		.byte	-44
+ 3195 0072 CF       		.byte	-49
+ 3196 0073 C6       		.byte	-58
+ 3197 0074 F9       		.byte	-7
+ 3198 0075 F0       		.byte	-16
+ 3199 0076 EB       		.byte	-21
+ 3200 0077 E2       		.byte	-30
+ 3201 0078 95       		.byte	-107
+ 3202 0079 9C       		.byte	-100
+ 3203 007a 87       		.byte	-121
+ 3204 007b 8E       		.byte	-114
+ 3205 007c B1       		.byte	-79
+ 3206 007d B8       		.byte	-72
+ 3207 007e A3       		.byte	-93
+ 3208 007f AA       		.byte	-86
+ 3209 0080 EC       		.byte	-20
+ 3210 0081 E5       		.byte	-27
+ 3211 0082 FE       		.byte	-2
+ 3212 0083 F7       		.byte	-9
+ 3213 0084 C8       		.byte	-56
+ 3214 0085 C1       		.byte	-63
+ 3215 0086 DA       		.byte	-38
+ 3216 0087 D3       		.byte	-45
+ 3217 0088 A4       		.byte	-92
+ 3218 0089 AD       		.byte	-83
+ 3219 008a B6       		.byte	-74
+ 3220 008b BF       		.byte	-65
+ 3221 008c 80       		.byte	-128
+ 3222 008d 89       		.byte	-119
+ 3223 008e 92       		.byte	-110
+ 3224 008f 9B       		.byte	-101
+ 3225 0090 7C       		.byte	124
+ 3226 0091 75       		.byte	117
+ 3227 0092 6E       		.byte	110
+ 3228 0093 67       		.byte	103
+ 3229 0094 58       		.byte	88
+ 3230 0095 51       		.byte	81
+ 3231 0096 4A       		.byte	74
+ 3232 0097 43       		.byte	67
+ 3233 0098 34       		.byte	52
+ 3234 0099 3D       		.byte	61
+ 3235 009a 26       		.byte	38
+ 3236 009b 2F       		.byte	47
+ 3237 009c 10       		.byte	16
+ 3238 009d 19       		.byte	25
+ 3239 009e 02       		.byte	2
+ 3240 009f 0B       		.byte	11
+ 3241 00a0 D7       		.byte	-41
+ 3242 00a1 DE       		.byte	-34
+ 3243 00a2 C5       		.byte	-59
+ 3244 00a3 CC       		.byte	-52
+ 3245 00a4 F3       		.byte	-13
+ARM GAS  /tmp/cc0JglZb.s 			page 62
+
+
+ 3246 00a5 FA       		.byte	-6
+ 3247 00a6 E1       		.byte	-31
+ 3248 00a7 E8       		.byte	-24
+ 3249 00a8 9F       		.byte	-97
+ 3250 00a9 96       		.byte	-106
+ 3251 00aa 8D       		.byte	-115
+ 3252 00ab 84       		.byte	-124
+ 3253 00ac BB       		.byte	-69
+ 3254 00ad B2       		.byte	-78
+ 3255 00ae A9       		.byte	-87
+ 3256 00af A0       		.byte	-96
+ 3257 00b0 47       		.byte	71
+ 3258 00b1 4E       		.byte	78
+ 3259 00b2 55       		.byte	85
+ 3260 00b3 5C       		.byte	92
+ 3261 00b4 63       		.byte	99
+ 3262 00b5 6A       		.byte	106
+ 3263 00b6 71       		.byte	113
+ 3264 00b7 78       		.byte	120
+ 3265 00b8 0F       		.byte	15
+ 3266 00b9 06       		.byte	6
+ 3267 00ba 1D       		.byte	29
+ 3268 00bb 14       		.byte	20
+ 3269 00bc 2B       		.byte	43
+ 3270 00bd 22       		.byte	34
+ 3271 00be 39       		.byte	57
+ 3272 00bf 30       		.byte	48
+ 3273 00c0 9A       		.byte	-102
+ 3274 00c1 93       		.byte	-109
+ 3275 00c2 88       		.byte	-120
+ 3276 00c3 81       		.byte	-127
+ 3277 00c4 BE       		.byte	-66
+ 3278 00c5 B7       		.byte	-73
+ 3279 00c6 AC       		.byte	-84
+ 3280 00c7 A5       		.byte	-91
+ 3281 00c8 D2       		.byte	-46
+ 3282 00c9 DB       		.byte	-37
+ 3283 00ca C0       		.byte	-64
+ 3284 00cb C9       		.byte	-55
+ 3285 00cc F6       		.byte	-10
+ 3286 00cd FF       		.byte	-1
+ 3287 00ce E4       		.byte	-28
+ 3288 00cf ED       		.byte	-19
+ 3289 00d0 0A       		.byte	10
+ 3290 00d1 03       		.byte	3
+ 3291 00d2 18       		.byte	24
+ 3292 00d3 11       		.byte	17
+ 3293 00d4 2E       		.byte	46
+ 3294 00d5 27       		.byte	39
+ 3295 00d6 3C       		.byte	60
+ 3296 00d7 35       		.byte	53
+ 3297 00d8 42       		.byte	66
+ 3298 00d9 4B       		.byte	75
+ 3299 00da 50       		.byte	80
+ 3300 00db 59       		.byte	89
+ 3301 00dc 66       		.byte	102
+ 3302 00dd 6F       		.byte	111
+ARM GAS  /tmp/cc0JglZb.s 			page 63
+
+
+ 3303 00de 74       		.byte	116
+ 3304 00df 7D       		.byte	125
+ 3305 00e0 A1       		.byte	-95
+ 3306 00e1 A8       		.byte	-88
+ 3307 00e2 B3       		.byte	-77
+ 3308 00e3 BA       		.byte	-70
+ 3309 00e4 85       		.byte	-123
+ 3310 00e5 8C       		.byte	-116
+ 3311 00e6 97       		.byte	-105
+ 3312 00e7 9E       		.byte	-98
+ 3313 00e8 E9       		.byte	-23
+ 3314 00e9 E0       		.byte	-32
+ 3315 00ea FB       		.byte	-5
+ 3316 00eb F2       		.byte	-14
+ 3317 00ec CD       		.byte	-51
+ 3318 00ed C4       		.byte	-60
+ 3319 00ee DF       		.byte	-33
+ 3320 00ef D6       		.byte	-42
+ 3321 00f0 31       		.byte	49
+ 3322 00f1 38       		.byte	56
+ 3323 00f2 23       		.byte	35
+ 3324 00f3 2A       		.byte	42
+ 3325 00f4 15       		.byte	21
+ 3326 00f5 1C       		.byte	28
+ 3327 00f6 07       		.byte	7
+ 3328 00f7 0E       		.byte	14
+ 3329 00f8 79       		.byte	121
+ 3330 00f9 70       		.byte	112
+ 3331 00fa 6B       		.byte	107
+ 3332 00fb 62       		.byte	98
+ 3333 00fc 5D       		.byte	93
+ 3334 00fd 54       		.byte	84
+ 3335 00fe 4F       		.byte	79
+ 3336 00ff 46       		.byte	70
+ 3337              		.section	.rodata.s,"a"
+ 3338              		.align	2
+ 3339              		.set	.LANCHOR1,. + 0
+ 3342              	s:
+ 3343 0000 63       		.byte	99
+ 3344 0001 7C       		.byte	124
+ 3345 0002 77       		.byte	119
+ 3346 0003 7B       		.byte	123
+ 3347 0004 F2       		.byte	-14
+ 3348 0005 6B       		.byte	107
+ 3349 0006 6F       		.byte	111
+ 3350 0007 C5       		.byte	-59
+ 3351 0008 30       		.byte	48
+ 3352 0009 01       		.byte	1
+ 3353 000a 67       		.byte	103
+ 3354 000b 2B       		.byte	43
+ 3355 000c FE       		.byte	-2
+ 3356 000d D7       		.byte	-41
+ 3357 000e AB       		.byte	-85
+ 3358 000f 76       		.byte	118
+ 3359 0010 CA       		.byte	-54
+ 3360 0011 82       		.byte	-126
+ 3361 0012 C9       		.byte	-55
+ARM GAS  /tmp/cc0JglZb.s 			page 64
+
+
+ 3362 0013 7D       		.byte	125
+ 3363 0014 FA       		.byte	-6
+ 3364 0015 59       		.byte	89
+ 3365 0016 47       		.byte	71
+ 3366 0017 F0       		.byte	-16
+ 3367 0018 AD       		.byte	-83
+ 3368 0019 D4       		.byte	-44
+ 3369 001a A2       		.byte	-94
+ 3370 001b AF       		.byte	-81
+ 3371 001c 9C       		.byte	-100
+ 3372 001d A4       		.byte	-92
+ 3373 001e 72       		.byte	114
+ 3374 001f C0       		.byte	-64
+ 3375 0020 B7       		.byte	-73
+ 3376 0021 FD       		.byte	-3
+ 3377 0022 93       		.byte	-109
+ 3378 0023 26       		.byte	38
+ 3379 0024 36       		.byte	54
+ 3380 0025 3F       		.byte	63
+ 3381 0026 F7       		.byte	-9
+ 3382 0027 CC       		.byte	-52
+ 3383 0028 34       		.byte	52
+ 3384 0029 A5       		.byte	-91
+ 3385 002a E5       		.byte	-27
+ 3386 002b F1       		.byte	-15
+ 3387 002c 71       		.byte	113
+ 3388 002d D8       		.byte	-40
+ 3389 002e 31       		.byte	49
+ 3390 002f 15       		.byte	21
+ 3391 0030 04       		.byte	4
+ 3392 0031 C7       		.byte	-57
+ 3393 0032 23       		.byte	35
+ 3394 0033 C3       		.byte	-61
+ 3395 0034 18       		.byte	24
+ 3396 0035 96       		.byte	-106
+ 3397 0036 05       		.byte	5
+ 3398 0037 9A       		.byte	-102
+ 3399 0038 07       		.byte	7
+ 3400 0039 12       		.byte	18
+ 3401 003a 80       		.byte	-128
+ 3402 003b E2       		.byte	-30
+ 3403 003c EB       		.byte	-21
+ 3404 003d 27       		.byte	39
+ 3405 003e B2       		.byte	-78
+ 3406 003f 75       		.byte	117
+ 3407 0040 09       		.byte	9
+ 3408 0041 83       		.byte	-125
+ 3409 0042 2C       		.byte	44
+ 3410 0043 1A       		.byte	26
+ 3411 0044 1B       		.byte	27
+ 3412 0045 6E       		.byte	110
+ 3413 0046 5A       		.byte	90
+ 3414 0047 A0       		.byte	-96
+ 3415 0048 52       		.byte	82
+ 3416 0049 3B       		.byte	59
+ 3417 004a D6       		.byte	-42
+ 3418 004b B3       		.byte	-77
+ARM GAS  /tmp/cc0JglZb.s 			page 65
+
+
+ 3419 004c 29       		.byte	41
+ 3420 004d E3       		.byte	-29
+ 3421 004e 2F       		.byte	47
+ 3422 004f 84       		.byte	-124
+ 3423 0050 53       		.byte	83
+ 3424 0051 D1       		.byte	-47
+ 3425 0052 00       		.byte	0
+ 3426 0053 ED       		.byte	-19
+ 3427 0054 20       		.byte	32
+ 3428 0055 FC       		.byte	-4
+ 3429 0056 B1       		.byte	-79
+ 3430 0057 5B       		.byte	91
+ 3431 0058 6A       		.byte	106
+ 3432 0059 CB       		.byte	-53
+ 3433 005a BE       		.byte	-66
+ 3434 005b 39       		.byte	57
+ 3435 005c 4A       		.byte	74
+ 3436 005d 4C       		.byte	76
+ 3437 005e 58       		.byte	88
+ 3438 005f CF       		.byte	-49
+ 3439 0060 D0       		.byte	-48
+ 3440 0061 EF       		.byte	-17
+ 3441 0062 AA       		.byte	-86
+ 3442 0063 FB       		.byte	-5
+ 3443 0064 43       		.byte	67
+ 3444 0065 4D       		.byte	77
+ 3445 0066 33       		.byte	51
+ 3446 0067 85       		.byte	-123
+ 3447 0068 45       		.byte	69
+ 3448 0069 F9       		.byte	-7
+ 3449 006a 02       		.byte	2
+ 3450 006b 7F       		.byte	127
+ 3451 006c 50       		.byte	80
+ 3452 006d 3C       		.byte	60
+ 3453 006e 9F       		.byte	-97
+ 3454 006f A8       		.byte	-88
+ 3455 0070 51       		.byte	81
+ 3456 0071 A3       		.byte	-93
+ 3457 0072 40       		.byte	64
+ 3458 0073 8F       		.byte	-113
+ 3459 0074 92       		.byte	-110
+ 3460 0075 9D       		.byte	-99
+ 3461 0076 38       		.byte	56
+ 3462 0077 F5       		.byte	-11
+ 3463 0078 BC       		.byte	-68
+ 3464 0079 B6       		.byte	-74
+ 3465 007a DA       		.byte	-38
+ 3466 007b 21       		.byte	33
+ 3467 007c 10       		.byte	16
+ 3468 007d FF       		.byte	-1
+ 3469 007e F3       		.byte	-13
+ 3470 007f D2       		.byte	-46
+ 3471 0080 CD       		.byte	-51
+ 3472 0081 0C       		.byte	12
+ 3473 0082 13       		.byte	19
+ 3474 0083 EC       		.byte	-20
+ 3475 0084 5F       		.byte	95
+ARM GAS  /tmp/cc0JglZb.s 			page 66
+
+
+ 3476 0085 97       		.byte	-105
+ 3477 0086 44       		.byte	68
+ 3478 0087 17       		.byte	23
+ 3479 0088 C4       		.byte	-60
+ 3480 0089 A7       		.byte	-89
+ 3481 008a 7E       		.byte	126
+ 3482 008b 3D       		.byte	61
+ 3483 008c 64       		.byte	100
+ 3484 008d 5D       		.byte	93
+ 3485 008e 19       		.byte	25
+ 3486 008f 73       		.byte	115
+ 3487 0090 60       		.byte	96
+ 3488 0091 81       		.byte	-127
+ 3489 0092 4F       		.byte	79
+ 3490 0093 DC       		.byte	-36
+ 3491 0094 22       		.byte	34
+ 3492 0095 2A       		.byte	42
+ 3493 0096 90       		.byte	-112
+ 3494 0097 88       		.byte	-120
+ 3495 0098 46       		.byte	70
+ 3496 0099 EE       		.byte	-18
+ 3497 009a B8       		.byte	-72
+ 3498 009b 14       		.byte	20
+ 3499 009c DE       		.byte	-34
+ 3500 009d 5E       		.byte	94
+ 3501 009e 0B       		.byte	11
+ 3502 009f DB       		.byte	-37
+ 3503 00a0 E0       		.byte	-32
+ 3504 00a1 32       		.byte	50
+ 3505 00a2 3A       		.byte	58
+ 3506 00a3 0A       		.byte	10
+ 3507 00a4 49       		.byte	73
+ 3508 00a5 06       		.byte	6
+ 3509 00a6 24       		.byte	36
+ 3510 00a7 5C       		.byte	92
+ 3511 00a8 C2       		.byte	-62
+ 3512 00a9 D3       		.byte	-45
+ 3513 00aa AC       		.byte	-84
+ 3514 00ab 62       		.byte	98
+ 3515 00ac 91       		.byte	-111
+ 3516 00ad 95       		.byte	-107
+ 3517 00ae E4       		.byte	-28
+ 3518 00af 79       		.byte	121
+ 3519 00b0 E7       		.byte	-25
+ 3520 00b1 C8       		.byte	-56
+ 3521 00b2 37       		.byte	55
+ 3522 00b3 6D       		.byte	109
+ 3523 00b4 8D       		.byte	-115
+ 3524 00b5 D5       		.byte	-43
+ 3525 00b6 4E       		.byte	78
+ 3526 00b7 A9       		.byte	-87
+ 3527 00b8 6C       		.byte	108
+ 3528 00b9 56       		.byte	86
+ 3529 00ba F4       		.byte	-12
+ 3530 00bb EA       		.byte	-22
+ 3531 00bc 65       		.byte	101
+ 3532 00bd 7A       		.byte	122
+ARM GAS  /tmp/cc0JglZb.s 			page 67
+
+
+ 3533 00be AE       		.byte	-82
+ 3534 00bf 08       		.byte	8
+ 3535 00c0 BA       		.byte	-70
+ 3536 00c1 78       		.byte	120
+ 3537 00c2 25       		.byte	37
+ 3538 00c3 2E       		.byte	46
+ 3539 00c4 1C       		.byte	28
+ 3540 00c5 A6       		.byte	-90
+ 3541 00c6 B4       		.byte	-76
+ 3542 00c7 C6       		.byte	-58
+ 3543 00c8 E8       		.byte	-24
+ 3544 00c9 DD       		.byte	-35
+ 3545 00ca 74       		.byte	116
+ 3546 00cb 1F       		.byte	31
+ 3547 00cc 4B       		.byte	75
+ 3548 00cd BD       		.byte	-67
+ 3549 00ce 8B       		.byte	-117
+ 3550 00cf 8A       		.byte	-118
+ 3551 00d0 70       		.byte	112
+ 3552 00d1 3E       		.byte	62
+ 3553 00d2 B5       		.byte	-75
+ 3554 00d3 66       		.byte	102
+ 3555 00d4 48       		.byte	72
+ 3556 00d5 03       		.byte	3
+ 3557 00d6 F6       		.byte	-10
+ 3558 00d7 0E       		.byte	14
+ 3559 00d8 61       		.byte	97
+ 3560 00d9 35       		.byte	53
+ 3561 00da 57       		.byte	87
+ 3562 00db B9       		.byte	-71
+ 3563 00dc 86       		.byte	-122
+ 3564 00dd C1       		.byte	-63
+ 3565 00de 1D       		.byte	29
+ 3566 00df 9E       		.byte	-98
+ 3567 00e0 E1       		.byte	-31
+ 3568 00e1 F8       		.byte	-8
+ 3569 00e2 98       		.byte	-104
+ 3570 00e3 11       		.byte	17
+ 3571 00e4 69       		.byte	105
+ 3572 00e5 D9       		.byte	-39
+ 3573 00e6 8E       		.byte	-114
+ 3574 00e7 94       		.byte	-108
+ 3575 00e8 9B       		.byte	-101
+ 3576 00e9 1E       		.byte	30
+ 3577 00ea 87       		.byte	-121
+ 3578 00eb E9       		.byte	-23
+ 3579 00ec CE       		.byte	-50
+ 3580 00ed 55       		.byte	85
+ 3581 00ee 28       		.byte	40
+ 3582 00ef DF       		.byte	-33
+ 3583 00f0 8C       		.byte	-116
+ 3584 00f1 A1       		.byte	-95
+ 3585 00f2 89       		.byte	-119
+ 3586 00f3 0D       		.byte	13
+ 3587 00f4 BF       		.byte	-65
+ 3588 00f5 E6       		.byte	-26
+ 3589 00f6 42       		.byte	66
+ARM GAS  /tmp/cc0JglZb.s 			page 68
+
+
+ 3590 00f7 68       		.byte	104
+ 3591 00f8 41       		.byte	65
+ 3592 00f9 99       		.byte	-103
+ 3593 00fa 2D       		.byte	45
+ 3594 00fb 0F       		.byte	15
+ 3595 00fc B0       		.byte	-80
+ 3596 00fd 54       		.byte	84
+ 3597 00fe BB       		.byte	-69
+ 3598 00ff 16       		.byte	22
+ 3599              		.text
+ 3600              	.Letext0:
+ 3601              		.file 2 "/usr/lib/gcc/arm-none-eabi/8.3.1/include/stddef.h"
+ 3602              		.file 3 "/usr/include/newlib/sys/_types.h"
+ 3603              		.file 4 "/usr/include/newlib/sys/reent.h"
+ 3604              		.file 5 "/usr/include/newlib/sys/lock.h"
+ 3605              		.file 6 "Core/Inc/structures.h"
+ARM GAS  /tmp/cc0JglZb.s 			page 69
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 aes.c
+     /tmp/cc0JglZb.s:18     .text.SubRoundKey:0000000000000000 $t
+     /tmp/cc0JglZb.s:26     .text.SubRoundKey:0000000000000000 SubRoundKey
+     /tmp/cc0JglZb.s:79     .text.AddRoundKey:0000000000000000 $t
+     /tmp/cc0JglZb.s:86     .text.AddRoundKey:0000000000000000 AddRoundKey
+     /tmp/cc0JglZb.s:138    .text.ShiftRowsR:0000000000000000 $t
+     /tmp/cc0JglZb.s:145    .text.ShiftRowsR:0000000000000000 ShiftRowsR
+     /tmp/cc0JglZb.s:259    .text.SubBytesI:0000000000000000 $t
+     /tmp/cc0JglZb.s:266    .text.SubBytesI:0000000000000000 SubBytesI
+     /tmp/cc0JglZb.s:305    .text.SubBytesI:0000000000000014 $d
+     /tmp/cc0JglZb.s:310    .text.SubBytesF:0000000000000000 $t
+     /tmp/cc0JglZb.s:317    .text.SubBytesF:0000000000000000 SubBytesF
+     /tmp/cc0JglZb.s:356    .text.SubBytesF:0000000000000014 $d
+     /tmp/cc0JglZb.s:361    .text.ShiftRowsL:0000000000000000 $t
+     /tmp/cc0JglZb.s:368    .text.ShiftRowsL:0000000000000000 ShiftRowsL
+     /tmp/cc0JglZb.s:482    .text.MixColumns:0000000000000000 $t
+     /tmp/cc0JglZb.s:489    .text.MixColumns:0000000000000000 MixColumns
+     /tmp/cc0JglZb.s:738    .text.MixColumns:0000000000000168 $d
+     /tmp/cc0JglZb.s:744    .text.InverseMixColumns:0000000000000000 $t
+     /tmp/cc0JglZb.s:751    .text.InverseMixColumns:0000000000000000 InverseMixColumns
+     /tmp/cc0JglZb.s:1069   .text.InverseMixColumns:0000000000000228 $d
+     /tmp/cc0JglZb.s:1077   .text.InitialRound:0000000000000000 $t
+     /tmp/cc0JglZb.s:1084   .text.InitialRound:0000000000000000 InitialRound
+     /tmp/cc0JglZb.s:1116   .text.FinalRound:0000000000000000 $t
+     /tmp/cc0JglZb.s:1123   .text.FinalRound:0000000000000000 FinalRound
+     /tmp/cc0JglZb.s:1159   .text.DRound:0000000000000000 $t
+     /tmp/cc0JglZb.s:1166   .text.DRound:0000000000000000 DRound
+     /tmp/cc0JglZb.s:1202   .text.ERound:0000000000000000 $t
+     /tmp/cc0JglZb.s:1209   .text.ERound:0000000000000000 ERound
+     /tmp/cc0JglZb.s:1249   .text.AESEncrypt:0000000000000000 $t
+     /tmp/cc0JglZb.s:1256   .text.AESEncrypt:0000000000000000 AESEncrypt
+     /tmp/cc0JglZb.s:1376   .text.AESDecrypt:0000000000000000 $t
+     /tmp/cc0JglZb.s:1383   .text.AESDecrypt:0000000000000000 AESDecrypt
+     /tmp/cc0JglZb.s:1504   .rodata.inv_s:0000000000000000 $d
+     /tmp/cc0JglZb.s:1508   .rodata.inv_s:0000000000000000 inv_s
+     /tmp/cc0JglZb.s:1766   .rodata.mul11:0000000000000000 $d
+     /tmp/cc0JglZb.s:1770   .rodata.mul11:0000000000000000 mul11
+     /tmp/cc0JglZb.s:2028   .rodata.mul13:0000000000000000 $d
+     /tmp/cc0JglZb.s:2032   .rodata.mul13:0000000000000000 mul13
+     /tmp/cc0JglZb.s:2290   .rodata.mul14:0000000000000000 $d
+     /tmp/cc0JglZb.s:2294   .rodata.mul14:0000000000000000 mul14
+     /tmp/cc0JglZb.s:2552   .rodata.mul2:0000000000000000 $d
+     /tmp/cc0JglZb.s:2556   .rodata.mul2:0000000000000000 mul2
+     /tmp/cc0JglZb.s:2814   .rodata.mul3:0000000000000000 $d
+     /tmp/cc0JglZb.s:2818   .rodata.mul3:0000000000000000 mul3
+     /tmp/cc0JglZb.s:3076   .rodata.mul9:0000000000000000 $d
+     /tmp/cc0JglZb.s:3080   .rodata.mul9:0000000000000000 mul9
+     /tmp/cc0JglZb.s:3338   .rodata.s:0000000000000000 $d
+     /tmp/cc0JglZb.s:3342   .rodata.s:0000000000000000 s
+
+NO UNDEFINED SYMBOLS
