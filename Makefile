@@ -36,6 +36,7 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
+Core/Src/run.c \
 Core/Src/retarget.c \
 Core/Src/main.c \
 Core/Src/encrypt.c \

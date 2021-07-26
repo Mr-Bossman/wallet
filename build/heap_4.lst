@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccFip38R.s 			page 1
+ARM GAS  /tmp/ccnN7CPU.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
   29:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c ****  * A sample implementation of pvPortMalloc() and vPortFree() that combines
   30:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c ****  * (coalescences) adjacent memory blocks as they are freed, and in so doing
   31:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c ****  * limits memory fragmentation.
-ARM GAS  /tmp/ccFip38R.s 			page 2
+ARM GAS  /tmp/ccnN7CPU.s 			page 2
 
 
   32:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c ****  *
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
   86:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c ****  * Called automatically to setup the required heap structures the first time
   87:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c ****  * pvPortMalloc() is called.
   88:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c ****  */
-ARM GAS  /tmp/ccFip38R.s 			page 3
+ARM GAS  /tmp/ccnN7CPU.s 			page 3
 
 
   89:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** static void prvHeapInit( void );
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  143:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 				xWantedSize += xHeapStructSize;
  144:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 
  145:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 				/* Ensure that blocks are always aligned to the required number
-ARM GAS  /tmp/ccFip38R.s 			page 4
+ARM GAS  /tmp/ccnN7CPU.s 			page 4
 
 
  146:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 				of bytes. */
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  200:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 						pxNewBlockLink->xBlockSize = pxBlock->xBlockSize - xWantedSize;
  201:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 						pxBlock->xBlockSize = xWantedSize;
  202:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 
-ARM GAS  /tmp/ccFip38R.s 			page 5
+ARM GAS  /tmp/ccnN7CPU.s 			page 5
 
 
  203:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 						/* Insert the new block into the list of free blocks. */
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  257:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 		}
  258:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	}
  259:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	#endif
-ARM GAS  /tmp/ccFip38R.s 			page 6
+ARM GAS  /tmp/ccnN7CPU.s 			page 6
 
 
  260:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  314:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 
  315:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** size_t xPortGetFreeHeapSize( void )
  316:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** {
-ARM GAS  /tmp/ccFip38R.s 			page 7
+ARM GAS  /tmp/ccnN7CPU.s 			page 7
 
 
  317:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	return xFreeBytesRemaining;
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
   52 000a 21F00701 		bic	r1, r1, #7
   53              	.LVL3:
  347:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 		xTotalHeapSize -= uxAddress - ( size_t ) ucHeap;
-ARM GAS  /tmp/ccFip38R.s 			page 8
+ARM GAS  /tmp/ccnN7CPU.s 			page 8
 
 
   54              		.loc 1 347 3 is_stmt 1 view .LVU13
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
   91 002c 0948     		ldr	r0, .L4+8
   92 002e 0360     		str	r3, [r0]
  363:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	pxEnd->xBlockSize = 0;
-ARM GAS  /tmp/ccFip38R.s 			page 9
+ARM GAS  /tmp/ccnN7CPU.s 			page 9
 
 
   93              		.loc 1 363 2 is_stmt 1 view .LVU30
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  132 0050 00000000 		.word	.LANCHOR0
  133 0054 00000000 		.word	.LANCHOR1
  134 0058 00000000 		.word	.LANCHOR2
-ARM GAS  /tmp/ccFip38R.s 			page 10
+ARM GAS  /tmp/ccnN7CPU.s 			page 10
 
 
  135 005c 00000000 		.word	.LANCHOR3
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  391:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	}
  392:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 
  393:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	/* Do the block being inserted, and the block it is being inserted after
-ARM GAS  /tmp/ccFip38R.s 			page 11
+ARM GAS  /tmp/ccnN7CPU.s 			page 11
 
 
  394:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	make a contiguous block of memory? */
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  202              		.loc 1 424 36 is_stmt 0 view .LVU71
  203 001e 0360     		str	r3, [r0]
  204              	.L11:
-ARM GAS  /tmp/ccFip38R.s 			page 12
+ARM GAS  /tmp/ccnN7CPU.s 			page 12
 
 
  425:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	}
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  411:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 		{
  239              		.loc 1 411 3 is_stmt 1 view .LVU83
  411:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 		{
-ARM GAS  /tmp/ccFip38R.s 			page 13
+ARM GAS  /tmp/ccnN7CPU.s 			page 13
 
 
  240              		.loc 1 411 35 is_stmt 0 view .LVU84
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  285              		.cfi_startproc
  286              		@ args = 0, pretend = 0, frame = 0
  287              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /tmp/ccFip38R.s 			page 14
+ARM GAS  /tmp/ccnN7CPU.s 			page 14
 
 
  116:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  147:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 				{
  326              		.loc 1 147 7 is_stmt 0 view .LVU112
  327 001a 14F0070F 		tst	r4, #7
-ARM GAS  /tmp/ccFip38R.s 			page 15
+ARM GAS  /tmp/ccnN7CPU.s 			page 15
 
 
  328 001e 11D0     		beq	.L22
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
   35:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** 
   36:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------
   37:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h ****  * Port specific definitions.
-ARM GAS  /tmp/ccFip38R.s 			page 16
+ARM GAS  /tmp/ccnN7CPU.s 			page 16
 
 
   38:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h ****  *
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
   92:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** #define portEND_SWITCHING_ISR( xSwitchRequired ) if( xSwitchRequired != pdFALSE ) portYIELD()
   93:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** #define portYIELD_FROM_ISR( x ) portEND_SWITCHING_ISR( x )
   94:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
-ARM GAS  /tmp/ccFip38R.s 			page 17
+ARM GAS  /tmp/ccnN7CPU.s 			page 17
 
 
   95:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** 
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  149:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** 	#define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities ) uxTopPriority = ( 31UL - ( ui
  150:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** 
  151:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** #endif /* configUSE_PORT_OPTIMISED_TASK_SELECTION */
-ARM GAS  /tmp/ccFip38R.s 			page 18
+ARM GAS  /tmp/ccnN7CPU.s 			page 18
 
 
  152:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h **** 
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  353              	
  354              	@ 0 "" 2
  355              	.LVL29:
-ARM GAS  /tmp/ccFip38R.s 			page 19
+ARM GAS  /tmp/ccnN7CPU.s 			page 19
 
 
  356              		.thumb
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  396              	.LVL34:
  172:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 				}
  397              		.loc 1 172 14 view .LVU136
-ARM GAS  /tmp/ccFip38R.s 			page 20
+ARM GAS  /tmp/ccnN7CPU.s 			page 20
 
 
  398 0058 1546     		mov	r5, r2
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  189:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 					{
  436              		.loc 1 189 8 view .LVU153
  437 007a 102B     		cmp	r3, #16
-ARM GAS  /tmp/ccFip38R.s 			page 21
+ARM GAS  /tmp/ccnN7CPU.s 			page 21
 
 
  438 007c 10D9     		bls	.L26
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  204:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 					}
  479              		.loc 1 204 7 is_stmt 1 discriminator 2 view .LVU169
  480 009c FFF7FEFF 		bl	prvInsertBlockIntoFreeList
-ARM GAS  /tmp/ccFip38R.s 			page 22
+ARM GAS  /tmp/ccnN7CPU.s 			page 22
 
 
  481              	.LVL40:
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  519 00c6 0133     		adds	r3, r3, #1
  520 00c8 1360     		str	r3, [r2]
  521 00ca 02E0     		b	.L21
-ARM GAS  /tmp/ccFip38R.s 			page 23
+ARM GAS  /tmp/ccnN7CPU.s 			page 23
 
 
  522              	.LVL41:
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  564              		.loc 1 261 2 discriminator 5 view .LVU199
  565 00ec FEE7     		b	.L31
  566              	.LVL45:
-ARM GAS  /tmp/ccFip38R.s 			page 24
+ARM GAS  /tmp/ccnN7CPU.s 			page 24
 
 
  567              	.L34:
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  614 0000 0028     		cmp	r0, #0
  615 0002 34D0     		beq	.L48
  267:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** uint8_t *puc = ( uint8_t * ) pv;
-ARM GAS  /tmp/ccFip38R.s 			page 25
+ARM GAS  /tmp/ccnN7CPU.s 			page 25
 
 
  616              		.loc 1 267 1 view .LVU209
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  661              	.L43:
  281:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 		configASSERT( pxLink->pxNextFreeBlock == NULL );
  662              		.loc 1 281 67 discriminator 2 view .LVU221
-ARM GAS  /tmp/ccFip38R.s 			page 26
+ARM GAS  /tmp/ccnN7CPU.s 			page 26
 
 
  282:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  295:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 					traceFREE( pv, pxLink->xBlockSize );
  704              		.loc 1 295 6 view .LVU237
  295:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 					traceFREE( pv, pxLink->xBlockSize );
-ARM GAS  /tmp/ccFip38R.s 			page 27
+ARM GAS  /tmp/ccnN7CPU.s 			page 27
 
 
  705              		.loc 1 295 35 is_stmt 0 view .LVU238
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  750              		.align	1
  751              		.global	xPortGetFreeHeapSize
  752              		.syntax unified
-ARM GAS  /tmp/ccFip38R.s 			page 28
+ARM GAS  /tmp/ccnN7CPU.s 			page 28
 
 
  753              		.thumb
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  805              		.global	vPortInitialiseBlocks
  806              		.syntax unified
  807              		.thumb
-ARM GAS  /tmp/ccFip38R.s 			page 29
+ARM GAS  /tmp/ccnN7CPU.s 			page 29
 
 
  808              		.thumb_func
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  448:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	{
  449:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 		pxBlock = xStart.pxNextFreeBlock;
  855              		.loc 1 449 3 view .LVU262
-ARM GAS  /tmp/ccFip38R.s 			page 30
+ARM GAS  /tmp/ccnN7CPU.s 			page 30
 
 
  856              		.loc 1 449 11 is_stmt 0 view .LVU263
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  882              	.LVL64:
  883              	.L64:
  455:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 			{
-ARM GAS  /tmp/ccFip38R.s 			page 31
+ARM GAS  /tmp/ccnN7CPU.s 			page 31
 
 
  884              		.loc 1 455 4 is_stmt 1 view .LVU273
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  479:Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c **** 	pxHeapStats->xSizeOfLargestFreeBlockInBytes = xMaxSize;
  921              		.loc 1 479 2 view .LVU288
  922              		.loc 1 479 46 is_stmt 0 view .LVU289
-ARM GAS  /tmp/ccFip38R.s 			page 32
+ARM GAS  /tmp/ccnN7CPU.s 			page 32
 
 
  923 0040 7D60     		str	r5, [r7, #4]
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  965 0070 00000000 		.word	.LANCHOR3
  966 0074 00000000 		.word	.LANCHOR5
  967 0078 00000000 		.word	.LANCHOR6
-ARM GAS  /tmp/ccFip38R.s 			page 33
+ARM GAS  /tmp/ccnN7CPU.s 			page 33
 
 
  968 007c 00000000 		.word	.LANCHOR2
@@ -1978,54 +1978,54 @@ ARM GAS  /tmp/ccFip38R.s 			page 1
  1034              		.file 8 "/usr/lib/gcc/arm-none-eabi/8.3.1/include/stdint.h"
  1035              		.file 9 "Core/Inc/FreeRTOSConfig.h"
  1036              		.file 10 "Middlewares/Third_Party/FreeRTOS/Source/include/portable.h"
-ARM GAS  /tmp/ccFip38R.s 			page 34
+ARM GAS  /tmp/ccnN7CPU.s 			page 34
 
 
  1037              		.file 11 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
-ARM GAS  /tmp/ccFip38R.s 			page 35
+ARM GAS  /tmp/ccnN7CPU.s 			page 35
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 heap_4.c
-     /tmp/ccFip38R.s:18     .text.prvHeapInit:0000000000000000 $t
-     /tmp/ccFip38R.s:25     .text.prvHeapInit:0000000000000000 prvHeapInit
-     /tmp/ccFip38R.s:131    .text.prvHeapInit:000000000000004c $d
-     /tmp/ccFip38R.s:983    .bss.ucHeap:0000000000000000 ucHeap
-     /tmp/ccFip38R.s:141    .text.prvInsertBlockIntoFreeList:0000000000000000 $t
-     /tmp/ccFip38R.s:147    .text.prvInsertBlockIntoFreeList:0000000000000000 prvInsertBlockIntoFreeList
-     /tmp/ccFip38R.s:268    .text.prvInsertBlockIntoFreeList:0000000000000050 $d
-     /tmp/ccFip38R.s:274    .text.pvPortMalloc:0000000000000000 $t
-     /tmp/ccFip38R.s:281    .text.pvPortMalloc:0000000000000000 pvPortMalloc
-     /tmp/ccFip38R.s:586    .text.pvPortMalloc:00000000000000fc $d
-     /tmp/ccFip38R.s:596    .text.vPortFree:0000000000000000 $t
-     /tmp/ccFip38R.s:603    .text.vPortFree:0000000000000000 vPortFree
-     /tmp/ccFip38R.s:743    .text.vPortFree:0000000000000070 $d
-     /tmp/ccFip38R.s:750    .text.xPortGetFreeHeapSize:0000000000000000 $t
-     /tmp/ccFip38R.s:757    .text.xPortGetFreeHeapSize:0000000000000000 xPortGetFreeHeapSize
-     /tmp/ccFip38R.s:772    .text.xPortGetFreeHeapSize:0000000000000008 $d
-     /tmp/ccFip38R.s:777    .text.xPortGetMinimumEverFreeHeapSize:0000000000000000 $t
-     /tmp/ccFip38R.s:784    .text.xPortGetMinimumEverFreeHeapSize:0000000000000000 xPortGetMinimumEverFreeHeapSize
-     /tmp/ccFip38R.s:799    .text.xPortGetMinimumEverFreeHeapSize:0000000000000008 $d
-     /tmp/ccFip38R.s:804    .text.vPortInitialiseBlocks:0000000000000000 $t
-     /tmp/ccFip38R.s:811    .text.vPortInitialiseBlocks:0000000000000000 vPortInitialiseBlocks
-     /tmp/ccFip38R.s:824    .text.vPortGetHeapStats:0000000000000000 $t
-     /tmp/ccFip38R.s:831    .text.vPortGetHeapStats:0000000000000000 vPortGetHeapStats
-     /tmp/ccFip38R.s:963    .text.vPortGetHeapStats:0000000000000068 $d
-     /tmp/ccFip38R.s:973    .bss.pxEnd:0000000000000000 $d
-     /tmp/ccFip38R.s:977    .bss.pxEnd:0000000000000000 pxEnd
-     /tmp/ccFip38R.s:980    .bss.ucHeap:0000000000000000 $d
-     /tmp/ccFip38R.s:986    .bss.xBlockAllocatedBit:0000000000000000 $d
-     /tmp/ccFip38R.s:990    .bss.xBlockAllocatedBit:0000000000000000 xBlockAllocatedBit
-     /tmp/ccFip38R.s:993    .bss.xFreeBytesRemaining:0000000000000000 $d
-     /tmp/ccFip38R.s:997    .bss.xFreeBytesRemaining:0000000000000000 xFreeBytesRemaining
-     /tmp/ccFip38R.s:1000   .bss.xMinimumEverFreeBytesRemaining:0000000000000000 $d
-     /tmp/ccFip38R.s:1004   .bss.xMinimumEverFreeBytesRemaining:0000000000000000 xMinimumEverFreeBytesRemaining
-     /tmp/ccFip38R.s:1007   .bss.xNumberOfSuccessfulAllocations:0000000000000000 $d
-     /tmp/ccFip38R.s:1011   .bss.xNumberOfSuccessfulAllocations:0000000000000000 xNumberOfSuccessfulAllocations
-     /tmp/ccFip38R.s:1014   .bss.xNumberOfSuccessfulFrees:0000000000000000 $d
-     /tmp/ccFip38R.s:1018   .bss.xNumberOfSuccessfulFrees:0000000000000000 xNumberOfSuccessfulFrees
-     /tmp/ccFip38R.s:1021   .bss.xStart:0000000000000000 $d
-     /tmp/ccFip38R.s:1025   .bss.xStart:0000000000000000 xStart
+     /tmp/ccnN7CPU.s:18     .text.prvHeapInit:0000000000000000 $t
+     /tmp/ccnN7CPU.s:25     .text.prvHeapInit:0000000000000000 prvHeapInit
+     /tmp/ccnN7CPU.s:131    .text.prvHeapInit:000000000000004c $d
+     /tmp/ccnN7CPU.s:983    .bss.ucHeap:0000000000000000 ucHeap
+     /tmp/ccnN7CPU.s:141    .text.prvInsertBlockIntoFreeList:0000000000000000 $t
+     /tmp/ccnN7CPU.s:147    .text.prvInsertBlockIntoFreeList:0000000000000000 prvInsertBlockIntoFreeList
+     /tmp/ccnN7CPU.s:268    .text.prvInsertBlockIntoFreeList:0000000000000050 $d
+     /tmp/ccnN7CPU.s:274    .text.pvPortMalloc:0000000000000000 $t
+     /tmp/ccnN7CPU.s:281    .text.pvPortMalloc:0000000000000000 pvPortMalloc
+     /tmp/ccnN7CPU.s:586    .text.pvPortMalloc:00000000000000fc $d
+     /tmp/ccnN7CPU.s:596    .text.vPortFree:0000000000000000 $t
+     /tmp/ccnN7CPU.s:603    .text.vPortFree:0000000000000000 vPortFree
+     /tmp/ccnN7CPU.s:743    .text.vPortFree:0000000000000070 $d
+     /tmp/ccnN7CPU.s:750    .text.xPortGetFreeHeapSize:0000000000000000 $t
+     /tmp/ccnN7CPU.s:757    .text.xPortGetFreeHeapSize:0000000000000000 xPortGetFreeHeapSize
+     /tmp/ccnN7CPU.s:772    .text.xPortGetFreeHeapSize:0000000000000008 $d
+     /tmp/ccnN7CPU.s:777    .text.xPortGetMinimumEverFreeHeapSize:0000000000000000 $t
+     /tmp/ccnN7CPU.s:784    .text.xPortGetMinimumEverFreeHeapSize:0000000000000000 xPortGetMinimumEverFreeHeapSize
+     /tmp/ccnN7CPU.s:799    .text.xPortGetMinimumEverFreeHeapSize:0000000000000008 $d
+     /tmp/ccnN7CPU.s:804    .text.vPortInitialiseBlocks:0000000000000000 $t
+     /tmp/ccnN7CPU.s:811    .text.vPortInitialiseBlocks:0000000000000000 vPortInitialiseBlocks
+     /tmp/ccnN7CPU.s:824    .text.vPortGetHeapStats:0000000000000000 $t
+     /tmp/ccnN7CPU.s:831    .text.vPortGetHeapStats:0000000000000000 vPortGetHeapStats
+     /tmp/ccnN7CPU.s:963    .text.vPortGetHeapStats:0000000000000068 $d
+     /tmp/ccnN7CPU.s:973    .bss.pxEnd:0000000000000000 $d
+     /tmp/ccnN7CPU.s:977    .bss.pxEnd:0000000000000000 pxEnd
+     /tmp/ccnN7CPU.s:980    .bss.ucHeap:0000000000000000 $d
+     /tmp/ccnN7CPU.s:986    .bss.xBlockAllocatedBit:0000000000000000 $d
+     /tmp/ccnN7CPU.s:990    .bss.xBlockAllocatedBit:0000000000000000 xBlockAllocatedBit
+     /tmp/ccnN7CPU.s:993    .bss.xFreeBytesRemaining:0000000000000000 $d
+     /tmp/ccnN7CPU.s:997    .bss.xFreeBytesRemaining:0000000000000000 xFreeBytesRemaining
+     /tmp/ccnN7CPU.s:1000   .bss.xMinimumEverFreeBytesRemaining:0000000000000000 $d
+     /tmp/ccnN7CPU.s:1004   .bss.xMinimumEverFreeBytesRemaining:0000000000000000 xMinimumEverFreeBytesRemaining
+     /tmp/ccnN7CPU.s:1007   .bss.xNumberOfSuccessfulAllocations:0000000000000000 $d
+     /tmp/ccnN7CPU.s:1011   .bss.xNumberOfSuccessfulAllocations:0000000000000000 xNumberOfSuccessfulAllocations
+     /tmp/ccnN7CPU.s:1014   .bss.xNumberOfSuccessfulFrees:0000000000000000 $d
+     /tmp/ccnN7CPU.s:1018   .bss.xNumberOfSuccessfulFrees:0000000000000000 xNumberOfSuccessfulFrees
+     /tmp/ccnN7CPU.s:1021   .bss.xStart:0000000000000000 $d
+     /tmp/ccnN7CPU.s:1025   .bss.xStart:0000000000000000 xStart
 
 UNDEFINED SYMBOLS
 vTaskSuspendAll

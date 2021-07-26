@@ -1,0 +1,1645 @@
+ARM GAS  /tmp/ccdAYkXc.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"run.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.get_privkey,"ax",%progbits
+  18              		.align	1
+  19              		.global	get_privkey
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	get_privkey:
+  27              	.LVL0:
+  28              	.LFB6:
+  29              		.file 1 "Core/Src/run.c"
+   1:Core/Src/run.c **** #include <stdio.h>
+   2:Core/Src/run.c **** #include <string.h>
+   3:Core/Src/run.c **** #include "aes.h"
+   4:Core/Src/run.c **** #include "sha256.h"
+   5:Core/Src/run.c **** #include "encrypt.h"
+   6:Core/Src/run.c **** #include "secp256k1.h"
+   7:Core/Src/run.c **** #include "secp256k1_recovery.h"
+   8:Core/Src/run.c **** 
+   9:Core/Src/run.c **** 
+  10:Core/Src/run.c **** 
+  11:Core/Src/run.c **** typedef struct encrypted_data {
+  12:Core/Src/run.c ****     uint8_t sum[32];
+  13:Core/Src/run.c ****     uint8_t enc_priv[32];
+  14:Core/Src/run.c ****     uint8_t pub[33];
+  15:Core/Src/run.c **** } encrypted_data;
+  16:Core/Src/run.c **** 
+  17:Core/Src/run.c **** 
+  18:Core/Src/run.c **** 
+  19:Core/Src/run.c **** encrypted_data dat;
+  20:Core/Src/run.c **** 
+  21:Core/Src/run.c **** 
+  22:Core/Src/run.c **** 
+  23:Core/Src/run.c **** void get_privkey(encrypted_data* in,uint8_t* pass,uint8_t priv[32]){
+  30              		.loc 1 23 68 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 23 68 is_stmt 0 view .LVU1
+  35 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ARM GAS  /tmp/ccdAYkXc.s 			page 2
+
+
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 24
+  38              		.cfi_offset 3, -24
+  39              		.cfi_offset 4, -20
+  40              		.cfi_offset 5, -16
+  41              		.cfi_offset 6, -12
+  42              		.cfi_offset 7, -8
+  43              		.cfi_offset 14, -4
+  44 0002 0346     		mov	r3, r0
+  45 0004 1046     		mov	r0, r2
+  46              	.LVL1:
+  24:Core/Src/run.c ****   memcpy(priv,in->enc_priv,32);
+  47              		.loc 1 24 3 is_stmt 1 view .LVU2
+  48              		.loc 1 24 17 is_stmt 0 view .LVU3
+  49 0006 1A46     		mov	r2, r3
+  50              	.LVL2:
+  51              		.loc 1 24 3 view .LVU4
+  52 0008 52F8207F 		ldr	r7, [r2, #32]!	@ unaligned
+  53 000c 5668     		ldr	r6, [r2, #4]	@ unaligned
+  54 000e 9568     		ldr	r5, [r2, #8]	@ unaligned
+  55 0010 D468     		ldr	r4, [r2, #12]	@ unaligned
+  56 0012 0760     		str	r7, [r0]	@ unaligned
+  57 0014 4660     		str	r6, [r0, #4]	@ unaligned
+  58 0016 8560     		str	r5, [r0, #8]	@ unaligned
+  59 0018 C460     		str	r4, [r0, #12]	@ unaligned
+  60 001a 1769     		ldr	r7, [r2, #16]	@ unaligned
+  61 001c 5669     		ldr	r6, [r2, #20]	@ unaligned
+  62 001e 9569     		ldr	r5, [r2, #24]	@ unaligned
+  63 0020 D469     		ldr	r4, [r2, #28]	@ unaligned
+  64 0022 0761     		str	r7, [r0, #16]	@ unaligned
+  65 0024 4661     		str	r6, [r0, #20]	@ unaligned
+  66 0026 8561     		str	r5, [r0, #24]	@ unaligned
+  67 0028 C461     		str	r4, [r0, #28]	@ unaligned
+  25:Core/Src/run.c ****   decrypt(priv,32,(uint8_t*)pass,in->sum);
+  68              		.loc 1 25 3 is_stmt 1 view .LVU5
+  69 002a 0A46     		mov	r2, r1
+  70 002c 2021     		movs	r1, #32
+  71              	.LVL3:
+  72              		.loc 1 25 3 is_stmt 0 view .LVU6
+  73 002e FFF7FEFF 		bl	decrypt
+  74              	.LVL4:
+  26:Core/Src/run.c **** }
+  75              		.loc 1 26 1 view .LVU7
+  76 0032 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+  77              		.cfi_endproc
+  78              	.LFE6:
+  80              		.section	.text.save_privkey,"ax",%progbits
+  81              		.align	1
+  82              		.global	save_privkey
+  83              		.syntax unified
+  84              		.thumb
+  85              		.thumb_func
+  86              		.fpu fpv4-sp-d16
+  88              	save_privkey:
+  89              	.LVL5:
+  90              	.LFB7:
+  27:Core/Src/run.c **** 
+ARM GAS  /tmp/ccdAYkXc.s 			page 3
+
+
+  28:Core/Src/run.c **** void save_privkey(uint8_t* seed,uint8_t* pass,encrypted_data* out){
+  91              		.loc 1 28 67 is_stmt 1 view -0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 136
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+  95              		.loc 1 28 67 is_stmt 0 view .LVU9
+  96 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  97              	.LCFI1:
+  98              		.cfi_def_cfa_offset 20
+  99              		.cfi_offset 4, -20
+ 100              		.cfi_offset 5, -16
+ 101              		.cfi_offset 6, -12
+ 102              		.cfi_offset 7, -8
+ 103              		.cfi_offset 14, -4
+ 104 0002 A5B0     		sub	sp, sp, #148
+ 105              	.LCFI2:
+ 106              		.cfi_def_cfa_offset 168
+ 107 0004 0E46     		mov	r6, r1
+ 108 0006 1546     		mov	r5, r2
+  29:Core/Src/run.c ****     uint8_t priv[32];
+ 109              		.loc 1 29 5 is_stmt 1 view .LVU10
+  30:Core/Src/run.c ****     uint8_t sum[32];
+ 110              		.loc 1 30 5 view .LVU11
+  31:Core/Src/run.c ****     SHA256((uint8_t*)seed,priv);
+ 111              		.loc 1 31 5 view .LVU12
+ 112 0008 1CA9     		add	r1, sp, #112
+ 113              	.LVL6:
+ 114              		.loc 1 31 5 is_stmt 0 view .LVU13
+ 115 000a FFF7FEFF 		bl	SHA256
+ 116              	.LVL7:
+  32:Core/Src/run.c ****     for(int i = 0; i < 32;i++)printf("%02x",priv[i]);
+ 117              		.loc 1 32 5 is_stmt 1 view .LVU14
+ 118              	.LBB2:
+ 119              		.loc 1 32 9 view .LVU15
+ 120              		.loc 1 32 13 is_stmt 0 view .LVU16
+ 121 000e 0024     		movs	r4, #0
+ 122              	.LVL8:
+ 123              	.L4:
+ 124              		.loc 1 32 5 discriminator 1 view .LVU17
+ 125 0010 1F2C     		cmp	r4, #31
+ 126 0012 08DC     		bgt	.L9
+ 127              		.loc 1 32 31 is_stmt 1 discriminator 3 view .LVU18
+ 128              		.loc 1 32 49 is_stmt 0 discriminator 3 view .LVU19
+ 129 0014 24AB     		add	r3, sp, #144
+ 130 0016 2344     		add	r3, r3, r4
+ 131              		.loc 1 32 31 discriminator 3 view .LVU20
+ 132 0018 13F8201C 		ldrb	r1, [r3, #-32]	@ zero_extendqisi2
+ 133 001c 2548     		ldr	r0, .L11
+ 134 001e FFF7FEFF 		bl	printf
+ 135              	.LVL9:
+ 136              		.loc 1 32 28 discriminator 3 view .LVU21
+ 137 0022 0134     		adds	r4, r4, #1
+ 138              	.LVL10:
+ 139              		.loc 1 32 28 discriminator 3 view .LVU22
+ 140 0024 F4E7     		b	.L4
+ 141              	.L9:
+ 142              		.loc 1 32 28 discriminator 3 view .LVU23
+ARM GAS  /tmp/ccdAYkXc.s 			page 4
+
+
+ 143              	.LBE2:
+  33:Core/Src/run.c ****     printf("\n");
+ 144              		.loc 1 33 5 is_stmt 1 view .LVU24
+ 145 0026 0A20     		movs	r0, #10
+ 146 0028 FFF7FEFF 		bl	putchar
+ 147              	.LVL11:
+  34:Core/Src/run.c ****     secp256k1_context* ctx;
+ 148              		.loc 1 34 5 view .LVU25
+  35:Core/Src/run.c ****     secp256k1_pubkey pub;
+ 149              		.loc 1 35 5 view .LVU26
+  36:Core/Src/run.c ****     ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
+ 150              		.loc 1 36 5 view .LVU27
+ 151              		.loc 1 36 11 is_stmt 0 view .LVU28
+ 152 002c 40F20120 		movw	r0, #513
+ 153 0030 FFF7FEFF 		bl	secp256k1_context_create
+ 154              	.LVL12:
+ 155 0034 0746     		mov	r7, r0
+ 156              	.LVL13:
+  37:Core/Src/run.c ****     secp256k1_ec_pubkey_create(ctx,&pub,priv);
+ 157              		.loc 1 37 5 is_stmt 1 view .LVU29
+ 158 0036 1CAA     		add	r2, sp, #112
+ 159 0038 04A9     		add	r1, sp, #16
+ 160 003a FFF7FEFF 		bl	secp256k1_ec_pubkey_create
+ 161              	.LVL14:
+  38:Core/Src/run.c ****     unsigned int sz = 33;
+ 162              		.loc 1 38 5 view .LVU30
+ 163              		.loc 1 38 18 is_stmt 0 view .LVU31
+ 164 003e 2123     		movs	r3, #33
+ 165 0040 0393     		str	r3, [sp, #12]
+  39:Core/Src/run.c ****     secp256k1_ec_pubkey_serialize(ctx,out->pub,&sz,&pub,SECP256K1_EC_COMPRESSED);
+ 166              		.loc 1 39 5 is_stmt 1 view .LVU32
+ 167 0042 4FF48173 		mov	r3, #258
+ 168 0046 0093     		str	r3, [sp]
+ 169 0048 04AB     		add	r3, sp, #16
+ 170 004a 03AA     		add	r2, sp, #12
+ 171 004c 05F14001 		add	r1, r5, #64
+ 172 0050 3846     		mov	r0, r7
+ 173 0052 FFF7FEFF 		bl	secp256k1_ec_pubkey_serialize
+ 174              	.LVL15:
+  40:Core/Src/run.c **** 
+  41:Core/Src/run.c ****     for(int i = 0; i < 33;i++)printf("%02x",out->pub[i]);
+ 175              		.loc 1 41 5 view .LVU33
+ 176              	.LBB3:
+ 177              		.loc 1 41 9 view .LVU34
+ 178              		.loc 1 41 13 is_stmt 0 view .LVU35
+ 179 0056 0024     		movs	r4, #0
+ 180              	.LVL16:
+ 181              	.L6:
+ 182              		.loc 1 41 5 discriminator 1 view .LVU36
+ 183 0058 202C     		cmp	r4, #32
+ 184 005a 07DC     		bgt	.L10
+ 185              		.loc 1 41 31 is_stmt 1 discriminator 3 view .LVU37
+ 186              		.loc 1 41 53 is_stmt 0 discriminator 3 view .LVU38
+ 187 005c 2B19     		adds	r3, r5, r4
+ 188              		.loc 1 41 31 discriminator 3 view .LVU39
+ 189 005e 93F84010 		ldrb	r1, [r3, #64]	@ zero_extendqisi2
+ 190 0062 1448     		ldr	r0, .L11
+ARM GAS  /tmp/ccdAYkXc.s 			page 5
+
+
+ 191 0064 FFF7FEFF 		bl	printf
+ 192              	.LVL17:
+ 193              		.loc 1 41 28 discriminator 3 view .LVU40
+ 194 0068 0134     		adds	r4, r4, #1
+ 195              	.LVL18:
+ 196              		.loc 1 41 28 discriminator 3 view .LVU41
+ 197 006a F5E7     		b	.L6
+ 198              	.L10:
+ 199              		.loc 1 41 28 discriminator 3 view .LVU42
+ 200              	.LBE3:
+  42:Core/Src/run.c ****     printf("\n");
+ 201              		.loc 1 42 5 is_stmt 1 view .LVU43
+ 202 006c 0A20     		movs	r0, #10
+ 203 006e FFF7FEFF 		bl	putchar
+ 204              	.LVL19:
+  43:Core/Src/run.c ****     
+  44:Core/Src/run.c ****     encrypt_raw((uint8_t*)priv,32,(uint8_t*)pass,sum);
+ 205              		.loc 1 44 5 view .LVU44
+ 206 0072 14AB     		add	r3, sp, #80
+ 207 0074 3246     		mov	r2, r6
+ 208 0076 2021     		movs	r1, #32
+ 209 0078 1CA8     		add	r0, sp, #112
+ 210 007a FFF7FEFF 		bl	encrypt_raw
+ 211              	.LVL20:
+  45:Core/Src/run.c ****     memcpy(out->sum,sum,32);
+ 212              		.loc 1 45 5 view .LVU45
+ 213 007e 14AC     		add	r4, sp, #80
+ 214              	.LVL21:
+ 215              		.loc 1 45 5 is_stmt 0 view .LVU46
+ 216 0080 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 217 0082 2860     		str	r0, [r5]	@ unaligned
+ 218 0084 6960     		str	r1, [r5, #4]	@ unaligned
+ 219 0086 AA60     		str	r2, [r5, #8]	@ unaligned
+ 220 0088 EB60     		str	r3, [r5, #12]	@ unaligned
+ 221 008a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 222 008c 2861     		str	r0, [r5, #16]	@ unaligned
+ 223 008e 6961     		str	r1, [r5, #20]	@ unaligned
+ 224 0090 AA61     		str	r2, [r5, #24]	@ unaligned
+ 225 0092 EB61     		str	r3, [r5, #28]	@ unaligned
+  46:Core/Src/run.c ****     memcpy(out->enc_priv,priv,32);
+ 226              		.loc 1 46 5 is_stmt 1 view .LVU47
+ 227 0094 1CAC     		add	r4, sp, #112
+ 228 0096 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 229 0098 2862     		str	r0, [r5, #32]	@ unaligned
+ 230 009a 6962     		str	r1, [r5, #36]	@ unaligned
+ 231 009c AA62     		str	r2, [r5, #40]	@ unaligned
+ 232 009e EB62     		str	r3, [r5, #44]	@ unaligned
+ 233 00a0 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 234 00a2 2863     		str	r0, [r5, #48]	@ unaligned
+ 235 00a4 6963     		str	r1, [r5, #52]	@ unaligned
+ 236 00a6 AA63     		str	r2, [r5, #56]	@ unaligned
+ 237 00a8 EB63     		str	r3, [r5, #60]	@ unaligned
+  47:Core/Src/run.c ****     secp256k1_context_destroy(ctx);
+ 238              		.loc 1 47 5 view .LVU48
+ 239 00aa 3846     		mov	r0, r7
+ 240 00ac FFF7FEFF 		bl	secp256k1_context_destroy
+ 241              	.LVL22:
+ARM GAS  /tmp/ccdAYkXc.s 			page 6
+
+
+  48:Core/Src/run.c **** }
+ 242              		.loc 1 48 1 is_stmt 0 view .LVU49
+ 243 00b0 25B0     		add	sp, sp, #148
+ 244              	.LCFI3:
+ 245              		.cfi_def_cfa_offset 20
+ 246              		@ sp needed
+ 247 00b2 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 248              	.LVL23:
+ 249              	.L12:
+ 250              		.loc 1 48 1 view .LVU50
+ 251              		.align	2
+ 252              	.L11:
+ 253 00b4 00000000 		.word	.LC0
+ 254              		.cfi_endproc
+ 255              	.LFE7:
+ 257              		.section	.text.sign,"ax",%progbits
+ 258              		.align	1
+ 259              		.global	sign
+ 260              		.syntax unified
+ 261              		.thumb
+ 262              		.thumb_func
+ 263              		.fpu fpv4-sp-d16
+ 265              	sign:
+ 266              	.LVL24:
+ 267              	.LFB8:
+  49:Core/Src/run.c **** 
+  50:Core/Src/run.c **** void sign(uint8_t* message,uint8_t priv[32],uint8_t sigg[72]){
+ 268              		.loc 1 50 62 is_stmt 1 view -0
+ 269              		.cfi_startproc
+ 270              		@ args = 0, pretend = 0, frame = 104
+ 271              		@ frame_needed = 0, uses_anonymous_args = 0
+ 272              		.loc 1 50 62 is_stmt 0 view .LVU52
+ 273 0000 70B5     		push	{r4, r5, r6, lr}
+ 274              	.LCFI4:
+ 275              		.cfi_def_cfa_offset 16
+ 276              		.cfi_offset 4, -16
+ 277              		.cfi_offset 5, -12
+ 278              		.cfi_offset 6, -8
+ 279              		.cfi_offset 14, -4
+ 280 0002 9CB0     		sub	sp, sp, #112
+ 281              	.LCFI5:
+ 282              		.cfi_def_cfa_offset 128
+ 283 0004 0E46     		mov	r6, r1
+ 284 0006 1546     		mov	r5, r2
+  51:Core/Src/run.c ****   uint8_t hash[32];
+ 285              		.loc 1 51 3 is_stmt 1 view .LVU53
+  52:Core/Src/run.c ****   SHA256((uint8_t*)message,hash);
+ 286              		.loc 1 52 3 view .LVU54
+ 287 0008 14A9     		add	r1, sp, #80
+ 288              	.LVL25:
+ 289              		.loc 1 52 3 is_stmt 0 view .LVU55
+ 290 000a FFF7FEFF 		bl	SHA256
+ 291              	.LVL26:
+  53:Core/Src/run.c ****   unsigned int sz = 72;
+ 292              		.loc 1 53 3 is_stmt 1 view .LVU56
+ 293              		.loc 1 53 16 is_stmt 0 view .LVU57
+ 294 000e 4823     		movs	r3, #72
+ARM GAS  /tmp/ccdAYkXc.s 			page 7
+
+
+ 295 0010 1393     		str	r3, [sp, #76]
+  54:Core/Src/run.c ****   secp256k1_ecdsa_signature sig;
+ 296              		.loc 1 54 3 is_stmt 1 view .LVU58
+  55:Core/Src/run.c ****   secp256k1_context* secp256k1_context_sign;
+ 297              		.loc 1 55 3 view .LVU59
+  56:Core/Src/run.c ****   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
+ 298              		.loc 1 56 3 view .LVU60
+ 299              		.loc 1 56 28 is_stmt 0 view .LVU61
+ 300 0012 40F20120 		movw	r0, #513
+ 301 0016 FFF7FEFF 		bl	secp256k1_context_create
+ 302              	.LVL27:
+ 303 001a 0446     		mov	r4, r0
+ 304              	.LVL28:
+  57:Core/Src/run.c ****   secp256k1_ecdsa_sign(secp256k1_context_sign, &sig, hash, priv, secp256k1_nonce_function_rfc6979, 
+ 305              		.loc 1 57 3 is_stmt 1 view .LVU62
+ 306 001c 0023     		movs	r3, #0
+ 307 001e 0193     		str	r3, [sp, #4]
+ 308 0020 074B     		ldr	r3, .L15
+ 309 0022 1B68     		ldr	r3, [r3]
+ 310 0024 0093     		str	r3, [sp]
+ 311 0026 3346     		mov	r3, r6
+ 312 0028 14AA     		add	r2, sp, #80
+ 313 002a 03A9     		add	r1, sp, #12
+ 314 002c FFF7FEFF 		bl	secp256k1_ecdsa_sign
+ 315              	.LVL29:
+  58:Core/Src/run.c ****   secp256k1_ecdsa_signature_serialize_der(secp256k1_context_sign,sigg,&sz,&sig);
+ 316              		.loc 1 58 3 view .LVU63
+ 317 0030 03AB     		add	r3, sp, #12
+ 318 0032 13AA     		add	r2, sp, #76
+ 319 0034 2946     		mov	r1, r5
+ 320 0036 2046     		mov	r0, r4
+ 321 0038 FFF7FEFF 		bl	secp256k1_ecdsa_signature_serialize_der
+ 322              	.LVL30:
+  59:Core/Src/run.c ****   }
+ 323              		.loc 1 59 3 is_stmt 0 view .LVU64
+ 324 003c 1CB0     		add	sp, sp, #112
+ 325              	.LCFI6:
+ 326              		.cfi_def_cfa_offset 16
+ 327              		@ sp needed
+ 328 003e 70BD     		pop	{r4, r5, r6, pc}
+ 329              	.LVL31:
+ 330              	.L16:
+ 331              		.loc 1 59 3 view .LVU65
+ 332              		.align	2
+ 333              	.L15:
+ 334 0040 00000000 		.word	secp256k1_nonce_function_rfc6979
+ 335              		.cfi_endproc
+ 336              	.LFE8:
+ 338              		.section	.text.signh,"ax",%progbits
+ 339              		.align	1
+ 340              		.global	signh
+ 341              		.syntax unified
+ 342              		.thumb
+ 343              		.thumb_func
+ 344              		.fpu fpv4-sp-d16
+ 346              	signh:
+ 347              	.LVL32:
+ARM GAS  /tmp/ccdAYkXc.s 			page 8
+
+
+ 348              	.LFB9:
+  60:Core/Src/run.c **** 
+  61:Core/Src/run.c **** /*
+  62:Core/Src/run.c ****     uint8_t p[32];
+  63:Core/Src/run.c ****     osDelay(1000);
+  64:Core/Src/run.c **** 
+  65:Core/Src/run.c ****     SHA256((uint8_t*)"bruh",p);
+  66:Core/Src/run.c ****     for(int i = 0; i < 32;i++)printf("%02x",p[i]);
+  67:Core/Src/run.c ****     printf("\n");
+  68:Core/Src/run.c ****     secp256k1_ecdsa_signature sig;
+  69:Core/Src/run.c ****     uint8_t t[72];
+  70:Core/Src/run.c ****     secp256k1_context* secp256k1_context_sign;
+  71:Core/Src/run.c ****     secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
+  72:Core/Src/run.c ****     int ret = secp256k1_ecdsa_sign(secp256k1_context_sign, &sig, p, p, secp256k1_nonce_function_rfc
+  73:Core/Src/run.c ****     int sz = 72;
+  74:Core/Src/run.c ****     secp256k1_ecdsa_signature_serialize_der(secp256k1_context_sign,t,&sz,&sig);
+  75:Core/Src/run.c ****     for(int i = 0; i < 72;i++)printf("%02x%s",t[i],(!((i+1)%8))?"\n":"");
+  76:Core/Src/run.c ****     */
+  77:Core/Src/run.c **** void signh(uint8_t hash[32],uint8_t priv[32],uint8_t sig[64]){
+ 349              		.loc 1 77 62 is_stmt 1 view -0
+ 350              		.cfi_startproc
+ 351              		@ args = 0, pretend = 0, frame = 0
+ 352              		@ frame_needed = 0, uses_anonymous_args = 0
+ 353              		@ link register save eliminated.
+  78:Core/Src/run.c ****   //sign
+  79:Core/Src/run.c **** }
+ 354              		.loc 1 79 1 view .LVU67
+ 355 0000 7047     		bx	lr
+ 356              		.cfi_endproc
+ 357              	.LFE9:
+ 359              		.section	.text.help,"ax",%progbits
+ 360              		.align	1
+ 361              		.global	help
+ 362              		.syntax unified
+ 363              		.thumb
+ 364              		.thumb_func
+ 365              		.fpu fpv4-sp-d16
+ 367              	help:
+ 368              	.LVL33:
+ 369              	.LFB10:
+  80:Core/Src/run.c **** void help(char* command){
+ 370              		.loc 1 80 25 view -0
+ 371              		.cfi_startproc
+ 372              		@ args = 0, pretend = 0, frame = 0
+ 373              		@ frame_needed = 0, uses_anonymous_args = 0
+ 374              		.loc 1 80 25 is_stmt 0 view .LVU69
+ 375 0000 08B5     		push	{r3, lr}
+ 376              	.LCFI7:
+ 377              		.cfi_def_cfa_offset 8
+ 378              		.cfi_offset 3, -8
+ 379              		.cfi_offset 14, -4
+  81:Core/Src/run.c **** 	printf("help exit sign save_priv get_pub save load q\n%s\n",command);
+ 380              		.loc 1 81 2 is_stmt 1 view .LVU70
+ 381 0002 0146     		mov	r1, r0
+ 382 0004 0148     		ldr	r0, .L20
+ 383              	.LVL34:
+ 384              		.loc 1 81 2 is_stmt 0 view .LVU71
+ARM GAS  /tmp/ccdAYkXc.s 			page 9
+
+
+ 385 0006 FFF7FEFF 		bl	printf
+ 386              	.LVL35:
+  82:Core/Src/run.c **** }
+ 387              		.loc 1 82 1 view .LVU72
+ 388 000a 08BD     		pop	{r3, pc}
+ 389              	.L21:
+ 390              		.align	2
+ 391              	.L20:
+ 392 000c 00000000 		.word	.LC1
+ 393              		.cfi_endproc
+ 394              	.LFE10:
+ 396              		.section	.text.sign_parse,"ax",%progbits
+ 397              		.align	1
+ 398              		.global	sign_parse
+ 399              		.syntax unified
+ 400              		.thumb
+ 401              		.thumb_func
+ 402              		.fpu fpv4-sp-d16
+ 404              	sign_parse:
+ 405              	.LVL36:
+ 406              	.LFB11:
+  83:Core/Src/run.c **** 
+  84:Core/Src/run.c **** void sign_parse(char* command){
+ 407              		.loc 1 84 31 is_stmt 1 view -0
+ 408              		.cfi_startproc
+ 409              		@ args = 0, pretend = 0, frame = 112
+ 410              		@ frame_needed = 0, uses_anonymous_args = 0
+ 411              		.loc 1 84 31 is_stmt 0 view .LVU74
+ 412 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 413              	.LCFI8:
+ 414              		.cfi_def_cfa_offset 24
+ 415              		.cfi_offset 4, -24
+ 416              		.cfi_offset 5, -20
+ 417              		.cfi_offset 6, -16
+ 418              		.cfi_offset 7, -12
+ 419              		.cfi_offset 8, -8
+ 420              		.cfi_offset 14, -4
+ 421 0004 9CB0     		sub	sp, sp, #112
+ 422              	.LCFI9:
+ 423              		.cfi_def_cfa_offset 136
+ 424 0006 0646     		mov	r6, r0
+  85:Core/Src/run.c ****   int Nparams = 2;
+ 425              		.loc 1 85 3 is_stmt 1 view .LVU75
+ 426              	.LVL37:
+  86:Core/Src/run.c ****   char * params[2];
+ 427              		.loc 1 86 3 view .LVU76
+  87:Core/Src/run.c ****   int i = 0;
+ 428              		.loc 1 87 3 view .LVU77
+  88:Core/Src/run.c ****   char* p = memchr(command,' ',strlen(command));
+ 429              		.loc 1 88 3 view .LVU78
+ 430              		.loc 1 88 13 is_stmt 0 view .LVU79
+ 431 0008 FFF7FEFF 		bl	strlen
+ 432              	.LVL38:
+ 433              		.loc 1 88 13 view .LVU80
+ 434 000c 0246     		mov	r2, r0
+ 435 000e 2021     		movs	r1, #32
+ 436 0010 3046     		mov	r0, r6
+ARM GAS  /tmp/ccdAYkXc.s 			page 10
+
+
+ 437 0012 FFF7FEFF 		bl	memchr
+ 438              	.LVL39:
+ 439 0016 0446     		mov	r4, r0
+ 440              	.LVL40:
+  89:Core/Src/run.c ****   while(p !=  0){
+ 441              		.loc 1 89 3 is_stmt 1 view .LVU81
+  87:Core/Src/run.c ****   int i = 0;
+ 442              		.loc 1 87 7 is_stmt 0 view .LVU82
+ 443 0018 0025     		movs	r5, #0
+ 444              		.loc 1 89 8 view .LVU83
+ 445 001a 24E0     		b	.L23
+ 446              	.LVL41:
+ 447              	.L24:
+ 448              	.LBB4:
+  90:Core/Src/run.c ****     while(*p == ' ')p++;
+ 449              		.loc 1 90 21 is_stmt 1 discriminator 2 view .LVU84
+ 450              		.loc 1 90 22 is_stmt 0 discriminator 2 view .LVU85
+ 451 001c 0134     		adds	r4, r4, #1
+ 452              	.LVL42:
+ 453              	.L28:
+ 454              		.loc 1 90 11 discriminator 1 view .LVU86
+ 455 001e 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 456              		.loc 1 90 10 discriminator 1 view .LVU87
+ 457 0020 202B     		cmp	r3, #32
+ 458 0022 FBD0     		beq	.L24
+  91:Core/Src/run.c ****     if(p ==  strlen(command)+command)break;
+ 459              		.loc 1 91 5 is_stmt 1 view .LVU88
+ 460              		.loc 1 91 14 is_stmt 0 view .LVU89
+ 461 0024 3046     		mov	r0, r6
+ 462 0026 FFF7FEFF 		bl	strlen
+ 463              	.LVL43:
+ 464              		.loc 1 91 29 view .LVU90
+ 465 002a 3718     		adds	r7, r6, r0
+ 466              		.loc 1 91 7 view .LVU91
+ 467 002c A742     		cmp	r7, r4
+ 468 002e 20D0     		beq	.L25
+  92:Core/Src/run.c ****     char* tmp = memchr(p+1,' ',strlen(command));
+ 469              		.loc 1 92 5 is_stmt 1 view .LVU92
+ 470              		.loc 1 92 17 is_stmt 0 view .LVU93
+ 471 0030 0246     		mov	r2, r0
+ 472 0032 2021     		movs	r1, #32
+ 473 0034 601C     		adds	r0, r4, #1
+ 474 0036 FFF7FEFF 		bl	memchr
+ 475              	.LVL44:
+  93:Core/Src/run.c ****     if(!tmp)tmp = strlen(command)+command;
+ 476              		.loc 1 93 5 is_stmt 1 view .LVU94
+ 477              		.loc 1 93 7 is_stmt 0 view .LVU95
+ 478 003a 8046     		mov	r8, r0
+ 479 003c B0B1     		cbz	r0, .L37
+ 480              	.L26:
+ 481              	.LVL45:
+  94:Core/Src/run.c ****     if(i < Nparams){
+ 482              		.loc 1 94 5 is_stmt 1 view .LVU96
+ 483              		.loc 1 94 7 is_stmt 0 view .LVU97
+ 484 003e 012D     		cmp	r5, #1
+ 485 0040 16DC     		bgt	.L27
+ 486              	.LBB5:
+ARM GAS  /tmp/ccdAYkXc.s 			page 11
+
+
+  95:Core/Src/run.c ****       size_t sz = (tmp-p);
+ 487              		.loc 1 95 7 is_stmt 1 view .LVU98
+ 488              		.loc 1 95 23 is_stmt 0 view .LVU99
+ 489 0042 A8EB0407 		sub	r7, r8, r4
+ 490              	.LVL46:
+  96:Core/Src/run.c ****       params[i] = malloc(sz+1);
+ 491              		.loc 1 96 7 is_stmt 1 view .LVU100
+ 492              		.loc 1 96 19 is_stmt 0 view .LVU101
+ 493 0046 781C     		adds	r0, r7, #1
+ 494 0048 FFF7FEFF 		bl	malloc
+ 495              	.LVL47:
+ 496              		.loc 1 96 17 view .LVU102
+ 497 004c 1CAA     		add	r2, sp, #112
+ 498 004e 02EB8502 		add	r2, r2, r5, lsl #2
+ 499 0052 42F8080C 		str	r0, [r2, #-8]
+  97:Core/Src/run.c ****       params[i][sz] = 0;
+ 500              		.loc 1 97 7 is_stmt 1 view .LVU103
+ 501              		.loc 1 97 21 is_stmt 0 view .LVU104
+ 502 0056 0022     		movs	r2, #0
+ 503 0058 C255     		strb	r2, [r0, r7]
+  98:Core/Src/run.c ****       strncpy(params[i],p,sz);
+ 504              		.loc 1 98 7 is_stmt 1 view .LVU105
+ 505 005a 3A46     		mov	r2, r7
+ 506 005c 2146     		mov	r1, r4
+ 507 005e FFF7FEFF 		bl	strncpy
+ 508              	.LVL48:
+  99:Core/Src/run.c ****       i++;
+ 509              		.loc 1 99 7 view .LVU106
+ 510              		.loc 1 99 8 is_stmt 0 view .LVU107
+ 511 0062 0135     		adds	r5, r5, #1
+ 512              	.LVL49:
+ 513              		.loc 1 99 8 view .LVU108
+ 514              	.LBE5:
+ 100:Core/Src/run.c ****     } else {
+ 101:Core/Src/run.c ****         i++;
+ 102:Core/Src/run.c ****         break;
+ 103:Core/Src/run.c ****     }
+ 104:Core/Src/run.c ****     p = tmp;
+ 515              		.loc 1 104 5 is_stmt 1 view .LVU109
+ 516              		.loc 1 104 7 is_stmt 0 view .LVU110
+ 517 0064 4446     		mov	r4, r8
+ 518              	.LVL50:
+ 519              	.L23:
+ 520              		.loc 1 104 7 view .LVU111
+ 521              	.LBE4:
+  89:Core/Src/run.c ****     while(*p == ' ')p++;
+ 522              		.loc 1 89 8 view .LVU112
+ 523 0066 002C     		cmp	r4, #0
+ 524 0068 D9D1     		bne	.L28
+  89:Core/Src/run.c ****     while(*p == ' ')p++;
+ 525              		.loc 1 89 8 view .LVU113
+ 526 006a 02E0     		b	.L25
+ 527              	.LVL51:
+ 528              	.L37:
+ 529              	.LBB6:
+  93:Core/Src/run.c ****     if(i < Nparams){
+ 530              		.loc 1 93 17 view .LVU114
+ARM GAS  /tmp/ccdAYkXc.s 			page 12
+
+
+ 531 006c B846     		mov	r8, r7
+ 532 006e E6E7     		b	.L26
+ 533              	.LVL52:
+ 534              	.L27:
+ 101:Core/Src/run.c ****         break;
+ 535              		.loc 1 101 9 is_stmt 1 view .LVU115
+ 101:Core/Src/run.c ****         break;
+ 536              		.loc 1 101 10 is_stmt 0 view .LVU116
+ 537 0070 0135     		adds	r5, r5, #1
+ 538              	.LVL53:
+ 102:Core/Src/run.c ****     }
+ 539              		.loc 1 102 9 is_stmt 1 view .LVU117
+ 540              	.L25:
+ 102:Core/Src/run.c ****     }
+ 541              		.loc 1 102 9 is_stmt 0 view .LVU118
+ 542              	.LBE6:
+ 105:Core/Src/run.c ****   }
+ 106:Core/Src/run.c ****   if(i != Nparams){
+ 543              		.loc 1 106 3 is_stmt 1 view .LVU119
+ 544              		.loc 1 106 5 is_stmt 0 view .LVU120
+ 545 0072 022D     		cmp	r5, #2
+ 546 0074 0ED0     		beq	.L29
+ 107:Core/Src/run.c ****   printf("Syntax is wrong must be password then message\n");
+ 547              		.loc 1 107 3 is_stmt 1 view .LVU121
+ 548 0076 1C48     		ldr	r0, .L39
+ 549 0078 FFF7FEFF 		bl	puts
+ 550              	.LVL54:
+ 108:Core/Src/run.c ****   if(i>=1)  free(params[0]);
+ 551              		.loc 1 108 3 view .LVU122
+ 552              		.loc 1 108 5 is_stmt 0 view .LVU123
+ 553 007c 002D     		cmp	r5, #0
+ 554 007e 05DC     		bgt	.L38
+ 555              	.L30:
+ 109:Core/Src/run.c ****   if(i>=2)  free(params[1]);
+ 556              		.loc 1 109 3 is_stmt 1 view .LVU124
+ 557              		.loc 1 109 5 is_stmt 0 view .LVU125
+ 558 0080 012D     		cmp	r5, #1
+ 559 0082 2DDD     		ble	.L22
+ 560              		.loc 1 109 13 is_stmt 1 discriminator 1 view .LVU126
+ 561 0084 1B98     		ldr	r0, [sp, #108]
+ 562 0086 FFF7FEFF 		bl	free
+ 563              	.LVL55:
+ 110:Core/Src/run.c ****   return;
+ 564              		.loc 1 110 3 discriminator 1 view .LVU127
+ 565 008a 29E0     		b	.L22
+ 566              	.L38:
+ 108:Core/Src/run.c ****   if(i>=1)  free(params[0]);
+ 567              		.loc 1 108 13 discriminator 1 view .LVU128
+ 568 008c 1A98     		ldr	r0, [sp, #104]
+ 569 008e FFF7FEFF 		bl	free
+ 570              	.LVL56:
+ 571 0092 F5E7     		b	.L30
+ 572              	.L29:
+ 111:Core/Src/run.c ****   }
+ 112:Core/Src/run.c ****   uint8_t priv[32];
+ 573              		.loc 1 112 3 view .LVU129
+ 113:Core/Src/run.c ****   uint8_t sig[72];
+ARM GAS  /tmp/ccdAYkXc.s 			page 13
+
+
+ 574              		.loc 1 113 3 view .LVU130
+ 114:Core/Src/run.c ****   get_privkey(&dat,(uint8_t*)params[0],priv);
+ 575              		.loc 1 114 3 view .LVU131
+ 576              		.loc 1 114 36 is_stmt 0 view .LVU132
+ 577 0094 1A9D     		ldr	r5, [sp, #104]
+ 578              	.LVL57:
+ 579              		.loc 1 114 3 view .LVU133
+ 580 0096 12AA     		add	r2, sp, #72
+ 581 0098 2946     		mov	r1, r5
+ 582 009a 1448     		ldr	r0, .L39+4
+ 583 009c FFF7FEFF 		bl	get_privkey
+ 584              	.LVL58:
+ 115:Core/Src/run.c ****   sign((uint8_t*)params[1],priv,sig);
+ 585              		.loc 1 115 3 is_stmt 1 view .LVU134
+ 586              		.loc 1 115 24 is_stmt 0 view .LVU135
+ 587 00a0 1B9E     		ldr	r6, [sp, #108]
+ 588              	.LVL59:
+ 589              		.loc 1 115 3 view .LVU136
+ 590 00a2 6A46     		mov	r2, sp
+ 591 00a4 12A9     		add	r1, sp, #72
+ 592 00a6 3046     		mov	r0, r6
+ 593 00a8 FFF7FEFF 		bl	sign
+ 594              	.LVL60:
+ 116:Core/Src/run.c ****   memset(priv,0,32);
+ 595              		.loc 1 116 3 is_stmt 1 view .LVU137
+ 596 00ac 2022     		movs	r2, #32
+ 597 00ae 0021     		movs	r1, #0
+ 598 00b0 12A8     		add	r0, sp, #72
+ 599 00b2 FFF7FEFF 		bl	memset
+ 600              	.LVL61:
+ 117:Core/Src/run.c ****   for(int i = 0; i < 72;i++)printf("%02x",sig[i]);
+ 601              		.loc 1 117 3 view .LVU138
+ 602              	.LBB7:
+ 603              		.loc 1 117 7 view .LVU139
+ 604              		.loc 1 117 11 is_stmt 0 view .LVU140
+ 605 00b6 0024     		movs	r4, #0
+ 606              	.LVL62:
+ 607              		.loc 1 117 3 view .LVU141
+ 608 00b8 07E0     		b	.L33
+ 609              	.LVL63:
+ 610              	.L34:
+ 611              		.loc 1 117 29 is_stmt 1 discriminator 3 view .LVU142
+ 612              		.loc 1 117 46 is_stmt 0 discriminator 3 view .LVU143
+ 613 00ba 1CAB     		add	r3, sp, #112
+ 614 00bc 2344     		add	r3, r3, r4
+ 615              		.loc 1 117 29 discriminator 3 view .LVU144
+ 616 00be 13F8701C 		ldrb	r1, [r3, #-112]	@ zero_extendqisi2
+ 617 00c2 0B48     		ldr	r0, .L39+8
+ 618 00c4 FFF7FEFF 		bl	printf
+ 619              	.LVL64:
+ 620              		.loc 1 117 26 discriminator 3 view .LVU145
+ 621 00c8 0134     		adds	r4, r4, #1
+ 622              	.LVL65:
+ 623              	.L33:
+ 624              		.loc 1 117 3 discriminator 1 view .LVU146
+ 625 00ca 472C     		cmp	r4, #71
+ 626 00cc F5DD     		ble	.L34
+ARM GAS  /tmp/ccdAYkXc.s 			page 14
+
+
+ 627              	.LBE7:
+ 118:Core/Src/run.c ****   printf("\n");
+ 628              		.loc 1 118 3 is_stmt 1 view .LVU147
+ 629 00ce 0A20     		movs	r0, #10
+ 630 00d0 FFF7FEFF 		bl	putchar
+ 631              	.LVL66:
+ 119:Core/Src/run.c ****   free(params[1]);
+ 632              		.loc 1 119 3 view .LVU148
+ 633 00d4 3046     		mov	r0, r6
+ 634 00d6 FFF7FEFF 		bl	free
+ 635              	.LVL67:
+ 120:Core/Src/run.c ****   free(params[0]);
+ 636              		.loc 1 120 3 view .LVU149
+ 637 00da 2846     		mov	r0, r5
+ 638 00dc FFF7FEFF 		bl	free
+ 639              	.LVL68:
+ 640              	.L22:
+ 121:Core/Src/run.c **** }
+ 641              		.loc 1 121 1 is_stmt 0 view .LVU150
+ 642 00e0 1CB0     		add	sp, sp, #112
+ 643              	.LCFI10:
+ 644              		.cfi_def_cfa_offset 24
+ 645              		@ sp needed
+ 646 00e2 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 647              	.L40:
+ 648 00e6 00BF     		.align	2
+ 649              	.L39:
+ 650 00e8 00000000 		.word	.LC2
+ 651 00ec 00000000 		.word	dat
+ 652 00f0 00000000 		.word	.LC0
+ 653              		.cfi_endproc
+ 654              	.LFE11:
+ 656              		.section	.text.priv_parse,"ax",%progbits
+ 657              		.align	1
+ 658              		.global	priv_parse
+ 659              		.syntax unified
+ 660              		.thumb
+ 661              		.thumb_func
+ 662              		.fpu fpv4-sp-d16
+ 664              	priv_parse:
+ 665              	.LVL69:
+ 666              	.LFB12:
+ 122:Core/Src/run.c **** void priv_parse(char*  command){
+ 667              		.loc 1 122 32 is_stmt 1 view -0
+ 668              		.cfi_startproc
+ 669              		@ args = 0, pretend = 0, frame = 8
+ 670              		@ frame_needed = 0, uses_anonymous_args = 0
+ 671              		.loc 1 122 32 is_stmt 0 view .LVU152
+ 672 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 673              	.LCFI11:
+ 674              		.cfi_def_cfa_offset 24
+ 675              		.cfi_offset 4, -24
+ 676              		.cfi_offset 5, -20
+ 677              		.cfi_offset 6, -16
+ 678              		.cfi_offset 7, -12
+ 679              		.cfi_offset 8, -8
+ 680              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccdAYkXc.s 			page 15
+
+
+ 681 0004 82B0     		sub	sp, sp, #8
+ 682              	.LCFI12:
+ 683              		.cfi_def_cfa_offset 32
+ 684 0006 0646     		mov	r6, r0
+ 123:Core/Src/run.c ****   int Nparams = 2;
+ 685              		.loc 1 123 3 is_stmt 1 view .LVU153
+ 686              	.LVL70:
+ 124:Core/Src/run.c ****   char * params[2];
+ 687              		.loc 1 124 3 view .LVU154
+ 125:Core/Src/run.c ****   int i = 0;
+ 688              		.loc 1 125 3 view .LVU155
+ 126:Core/Src/run.c ****   char* p = memchr(command,' ',strlen(command));
+ 689              		.loc 1 126 3 view .LVU156
+ 690              		.loc 1 126 13 is_stmt 0 view .LVU157
+ 691 0008 FFF7FEFF 		bl	strlen
+ 692              	.LVL71:
+ 693              		.loc 1 126 13 view .LVU158
+ 694 000c 0246     		mov	r2, r0
+ 695 000e 2021     		movs	r1, #32
+ 696 0010 3046     		mov	r0, r6
+ 697 0012 FFF7FEFF 		bl	memchr
+ 698              	.LVL72:
+ 699 0016 0446     		mov	r4, r0
+ 700              	.LVL73:
+ 127:Core/Src/run.c ****   while(p !=  0){
+ 701              		.loc 1 127 3 is_stmt 1 view .LVU159
+ 125:Core/Src/run.c ****   int i = 0;
+ 702              		.loc 1 125 7 is_stmt 0 view .LVU160
+ 703 0018 0025     		movs	r5, #0
+ 704              		.loc 1 127 8 view .LVU161
+ 705 001a 24E0     		b	.L42
+ 706              	.LVL74:
+ 707              	.L43:
+ 708              	.LBB8:
+ 128:Core/Src/run.c ****     while(*p == ' ')p++;
+ 709              		.loc 1 128 21 is_stmt 1 discriminator 2 view .LVU162
+ 710              		.loc 1 128 22 is_stmt 0 discriminator 2 view .LVU163
+ 711 001c 0134     		adds	r4, r4, #1
+ 712              	.LVL75:
+ 713              	.L47:
+ 714              		.loc 1 128 11 discriminator 1 view .LVU164
+ 715 001e 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 716              		.loc 1 128 10 discriminator 1 view .LVU165
+ 717 0020 202B     		cmp	r3, #32
+ 718 0022 FBD0     		beq	.L43
+ 129:Core/Src/run.c ****     if(p ==  strlen(command)+command)break;
+ 719              		.loc 1 129 5 is_stmt 1 view .LVU166
+ 720              		.loc 1 129 14 is_stmt 0 view .LVU167
+ 721 0024 3046     		mov	r0, r6
+ 722 0026 FFF7FEFF 		bl	strlen
+ 723              	.LVL76:
+ 724              		.loc 1 129 29 view .LVU168
+ 725 002a 3718     		adds	r7, r6, r0
+ 726              		.loc 1 129 7 view .LVU169
+ 727 002c A742     		cmp	r7, r4
+ 728 002e 20D0     		beq	.L44
+ 130:Core/Src/run.c ****     char* tmp = memchr(p+1,' ',strlen(command));
+ARM GAS  /tmp/ccdAYkXc.s 			page 16
+
+
+ 729              		.loc 1 130 5 is_stmt 1 view .LVU170
+ 730              		.loc 1 130 17 is_stmt 0 view .LVU171
+ 731 0030 0246     		mov	r2, r0
+ 732 0032 2021     		movs	r1, #32
+ 733 0034 601C     		adds	r0, r4, #1
+ 734 0036 FFF7FEFF 		bl	memchr
+ 735              	.LVL77:
+ 131:Core/Src/run.c ****     if(!tmp)tmp = strlen(command)+command;
+ 736              		.loc 1 131 5 is_stmt 1 view .LVU172
+ 737              		.loc 1 131 7 is_stmt 0 view .LVU173
+ 738 003a 8046     		mov	r8, r0
+ 739 003c B0B1     		cbz	r0, .L54
+ 740              	.L45:
+ 741              	.LVL78:
+ 132:Core/Src/run.c ****     if(i < Nparams){
+ 742              		.loc 1 132 5 is_stmt 1 view .LVU174
+ 743              		.loc 1 132 7 is_stmt 0 view .LVU175
+ 744 003e 012D     		cmp	r5, #1
+ 745 0040 16DC     		bgt	.L46
+ 746              	.LBB9:
+ 133:Core/Src/run.c ****       size_t sz = (tmp-p);
+ 747              		.loc 1 133 7 is_stmt 1 view .LVU176
+ 748              		.loc 1 133 23 is_stmt 0 view .LVU177
+ 749 0042 A8EB0407 		sub	r7, r8, r4
+ 750              	.LVL79:
+ 134:Core/Src/run.c ****       params[i] = malloc(sz+1);
+ 751              		.loc 1 134 7 is_stmt 1 view .LVU178
+ 752              		.loc 1 134 19 is_stmt 0 view .LVU179
+ 753 0046 781C     		adds	r0, r7, #1
+ 754 0048 FFF7FEFF 		bl	malloc
+ 755              	.LVL80:
+ 756              		.loc 1 134 17 view .LVU180
+ 757 004c 02AA     		add	r2, sp, #8
+ 758 004e 02EB8502 		add	r2, r2, r5, lsl #2
+ 759 0052 42F8080C 		str	r0, [r2, #-8]
+ 135:Core/Src/run.c ****       params[i][sz] = 0;
+ 760              		.loc 1 135 7 is_stmt 1 view .LVU181
+ 761              		.loc 1 135 21 is_stmt 0 view .LVU182
+ 762 0056 0022     		movs	r2, #0
+ 763 0058 C255     		strb	r2, [r0, r7]
+ 136:Core/Src/run.c ****       strncpy(params[i],p,sz);
+ 764              		.loc 1 136 7 is_stmt 1 view .LVU183
+ 765 005a 3A46     		mov	r2, r7
+ 766 005c 2146     		mov	r1, r4
+ 767 005e FFF7FEFF 		bl	strncpy
+ 768              	.LVL81:
+ 137:Core/Src/run.c ****       i++;
+ 769              		.loc 1 137 7 view .LVU184
+ 770              		.loc 1 137 8 is_stmt 0 view .LVU185
+ 771 0062 0135     		adds	r5, r5, #1
+ 772              	.LVL82:
+ 773              		.loc 1 137 8 view .LVU186
+ 774              	.LBE9:
+ 138:Core/Src/run.c ****     } else {
+ 139:Core/Src/run.c ****         i++;
+ 140:Core/Src/run.c ****         break;
+ 141:Core/Src/run.c ****     }
+ARM GAS  /tmp/ccdAYkXc.s 			page 17
+
+
+ 142:Core/Src/run.c ****     p = tmp;
+ 775              		.loc 1 142 5 is_stmt 1 view .LVU187
+ 776              		.loc 1 142 7 is_stmt 0 view .LVU188
+ 777 0064 4446     		mov	r4, r8
+ 778              	.LVL83:
+ 779              	.L42:
+ 780              		.loc 1 142 7 view .LVU189
+ 781              	.LBE8:
+ 127:Core/Src/run.c ****     while(*p == ' ')p++;
+ 782              		.loc 1 127 8 view .LVU190
+ 783 0066 002C     		cmp	r4, #0
+ 784 0068 D9D1     		bne	.L47
+ 127:Core/Src/run.c ****     while(*p == ' ')p++;
+ 785              		.loc 1 127 8 view .LVU191
+ 786 006a 02E0     		b	.L44
+ 787              	.LVL84:
+ 788              	.L54:
+ 789              	.LBB10:
+ 131:Core/Src/run.c ****     if(i < Nparams){
+ 790              		.loc 1 131 17 view .LVU192
+ 791 006c B846     		mov	r8, r7
+ 792 006e E6E7     		b	.L45
+ 793              	.LVL85:
+ 794              	.L46:
+ 139:Core/Src/run.c ****         break;
+ 795              		.loc 1 139 9 is_stmt 1 view .LVU193
+ 139:Core/Src/run.c ****         break;
+ 796              		.loc 1 139 10 is_stmt 0 view .LVU194
+ 797 0070 0135     		adds	r5, r5, #1
+ 798              	.LVL86:
+ 140:Core/Src/run.c ****     }
+ 799              		.loc 1 140 9 is_stmt 1 view .LVU195
+ 800              	.L44:
+ 140:Core/Src/run.c ****     }
+ 801              		.loc 1 140 9 is_stmt 0 view .LVU196
+ 802              	.LBE10:
+ 143:Core/Src/run.c ****   }
+ 144:Core/Src/run.c ****   if(i != Nparams){
+ 803              		.loc 1 144 3 is_stmt 1 view .LVU197
+ 804              		.loc 1 144 5 is_stmt 0 view .LVU198
+ 805 0072 022D     		cmp	r5, #2
+ 806 0074 0ED0     		beq	.L48
+ 145:Core/Src/run.c ****   printf("Syntax is wrong must be password then message\n");
+ 807              		.loc 1 145 3 is_stmt 1 view .LVU199
+ 808 0076 0F48     		ldr	r0, .L56
+ 809 0078 FFF7FEFF 		bl	puts
+ 810              	.LVL87:
+ 146:Core/Src/run.c ****   if(i>=1)  free(params[0]);
+ 811              		.loc 1 146 3 view .LVU200
+ 812              		.loc 1 146 5 is_stmt 0 view .LVU201
+ 813 007c 002D     		cmp	r5, #0
+ 814 007e 05DC     		bgt	.L55
+ 815              	.L49:
+ 147:Core/Src/run.c ****   if(i>=2)  free(params[1]);
+ 816              		.loc 1 147 3 is_stmt 1 view .LVU202
+ 817              		.loc 1 147 5 is_stmt 0 view .LVU203
+ 818 0080 012D     		cmp	r5, #1
+ARM GAS  /tmp/ccdAYkXc.s 			page 18
+
+
+ 819 0082 14DD     		ble	.L41
+ 820              		.loc 1 147 13 is_stmt 1 discriminator 1 view .LVU204
+ 821 0084 0198     		ldr	r0, [sp, #4]
+ 822 0086 FFF7FEFF 		bl	free
+ 823              	.LVL88:
+ 148:Core/Src/run.c ****   return;
+ 824              		.loc 1 148 3 discriminator 1 view .LVU205
+ 825 008a 10E0     		b	.L41
+ 826              	.L55:
+ 146:Core/Src/run.c ****   if(i>=1)  free(params[0]);
+ 827              		.loc 1 146 13 discriminator 1 view .LVU206
+ 828 008c 0098     		ldr	r0, [sp]
+ 829 008e FFF7FEFF 		bl	free
+ 830              	.LVL89:
+ 831 0092 F5E7     		b	.L49
+ 832              	.L48:
+ 149:Core/Src/run.c ****   }
+ 150:Core/Src/run.c ****   save_privkey((uint8_t*)(params[1]),(uint8_t*)params[0],&dat);
+ 833              		.loc 1 150 3 view .LVU207
+ 834              		.loc 1 150 33 is_stmt 0 view .LVU208
+ 835 0094 019D     		ldr	r5, [sp, #4]
+ 836              	.LVL90:
+ 837              		.loc 1 150 54 view .LVU209
+ 838 0096 009C     		ldr	r4, [sp]
+ 839              	.LVL91:
+ 840              		.loc 1 150 3 view .LVU210
+ 841 0098 074A     		ldr	r2, .L56+4
+ 842 009a 2146     		mov	r1, r4
+ 843 009c 2846     		mov	r0, r5
+ 844 009e FFF7FEFF 		bl	save_privkey
+ 845              	.LVL92:
+ 151:Core/Src/run.c ****   free(params[1]);
+ 846              		.loc 1 151 3 is_stmt 1 view .LVU211
+ 847 00a2 2846     		mov	r0, r5
+ 848 00a4 FFF7FEFF 		bl	free
+ 849              	.LVL93:
+ 152:Core/Src/run.c ****   free(params[0]);
+ 850              		.loc 1 152 3 view .LVU212
+ 851 00a8 2046     		mov	r0, r4
+ 852 00aa FFF7FEFF 		bl	free
+ 853              	.LVL94:
+ 854              	.L41:
+ 153:Core/Src/run.c **** }
+ 855              		.loc 1 153 1 is_stmt 0 view .LVU213
+ 856 00ae 02B0     		add	sp, sp, #8
+ 857              	.LCFI13:
+ 858              		.cfi_def_cfa_offset 24
+ 859              		@ sp needed
+ 860 00b0 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 861              	.LVL95:
+ 862              	.L57:
+ 863              		.loc 1 153 1 view .LVU214
+ 864              		.align	2
+ 865              	.L56:
+ 866 00b4 00000000 		.word	.LC2
+ 867 00b8 00000000 		.word	dat
+ 868              		.cfi_endproc
+ARM GAS  /tmp/ccdAYkXc.s 			page 19
+
+
+ 869              	.LFE12:
+ 871              		.section	.text.pub_parse,"ax",%progbits
+ 872              		.align	1
+ 873              		.global	pub_parse
+ 874              		.syntax unified
+ 875              		.thumb
+ 876              		.thumb_func
+ 877              		.fpu fpv4-sp-d16
+ 879              	pub_parse:
+ 880              	.LVL96:
+ 881              	.LFB13:
+ 154:Core/Src/run.c **** 
+ 155:Core/Src/run.c **** 
+ 156:Core/Src/run.c **** void pub_parse(char*  command){
+ 882              		.loc 1 156 31 is_stmt 1 view -0
+ 883              		.cfi_startproc
+ 884              		@ args = 0, pretend = 0, frame = 0
+ 885              		@ frame_needed = 0, uses_anonymous_args = 0
+ 886              		.loc 1 156 31 is_stmt 0 view .LVU216
+ 887 0000 10B5     		push	{r4, lr}
+ 888              	.LCFI14:
+ 889              		.cfi_def_cfa_offset 8
+ 890              		.cfi_offset 4, -8
+ 891              		.cfi_offset 14, -4
+ 892 0002 0446     		mov	r4, r0
+ 157:Core/Src/run.c ****   char* p = memchr(command,' ',strlen(command));
+ 893              		.loc 1 157 3 is_stmt 1 view .LVU217
+ 894              		.loc 1 157 13 is_stmt 0 view .LVU218
+ 895 0004 FFF7FEFF 		bl	strlen
+ 896              	.LVL97:
+ 897              		.loc 1 157 13 view .LVU219
+ 898 0008 0246     		mov	r2, r0
+ 899 000a 2021     		movs	r1, #32
+ 900 000c 2046     		mov	r0, r4
+ 901 000e FFF7FEFF 		bl	memchr
+ 902              	.LVL98:
+ 158:Core/Src/run.c ****   while(*p == ' ')p++;
+ 903              		.loc 1 158 3 is_stmt 1 view .LVU220
+ 904              		.loc 1 158 8 is_stmt 0 view .LVU221
+ 905 0012 00E0     		b	.L59
+ 906              	.L60:
+ 907              		.loc 1 158 19 is_stmt 1 discriminator 2 view .LVU222
+ 908              		.loc 1 158 20 is_stmt 0 discriminator 2 view .LVU223
+ 909 0014 0130     		adds	r0, r0, #1
+ 910              	.LVL99:
+ 911              	.L59:
+ 912              		.loc 1 158 9 discriminator 1 view .LVU224
+ 913 0016 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 914              		.loc 1 158 8 discriminator 1 view .LVU225
+ 915 0018 202B     		cmp	r3, #32
+ 916 001a FBD0     		beq	.L60
+ 159:Core/Src/run.c ****   if(p != command && p){
+ 917              		.loc 1 159 3 is_stmt 1 view .LVU226
+ 918              		.loc 1 159 5 is_stmt 0 view .LVU227
+ 919 001c A042     		cmp	r0, r4
+ 920 001e 10D0     		beq	.L65
+ 921              		.loc 1 159 19 discriminator 1 view .LVU228
+ARM GAS  /tmp/ccdAYkXc.s 			page 20
+
+
+ 922 0020 58B9     		cbnz	r0, .L68
+ 923 0022 0024     		movs	r4, #0
+ 924              	.LVL100:
+ 925              	.L63:
+ 926              	.LBB11:
+ 160:Core/Src/run.c ****     printf("Syntax is wrong must be password then message\n");
+ 161:Core/Src/run.c ****     return;
+ 162:Core/Src/run.c ****   }
+ 163:Core/Src/run.c ****   for(int i = 0; i < 33;i++)printf("%02x",dat.pub[i]);
+ 927              		.loc 1 163 3 discriminator 1 view .LVU229
+ 928 0024 202C     		cmp	r4, #32
+ 929 0026 0EDC     		bgt	.L69
+ 930              		.loc 1 163 29 is_stmt 1 discriminator 3 view .LVU230
+ 931              		.loc 1 163 50 is_stmt 0 discriminator 3 view .LVU231
+ 932 0028 094B     		ldr	r3, .L70
+ 933 002a 2344     		add	r3, r3, r4
+ 934              		.loc 1 163 29 discriminator 3 view .LVU232
+ 935 002c 93F84010 		ldrb	r1, [r3, #64]	@ zero_extendqisi2
+ 936 0030 0848     		ldr	r0, .L70+4
+ 937 0032 FFF7FEFF 		bl	printf
+ 938              	.LVL101:
+ 939              		.loc 1 163 26 discriminator 3 view .LVU233
+ 940 0036 0134     		adds	r4, r4, #1
+ 941              	.LVL102:
+ 942              		.loc 1 163 26 discriminator 3 view .LVU234
+ 943 0038 F4E7     		b	.L63
+ 944              	.LVL103:
+ 945              	.L68:
+ 946              		.loc 1 163 26 discriminator 3 view .LVU235
+ 947              	.LBE11:
+ 160:Core/Src/run.c ****     printf("Syntax is wrong must be password then message\n");
+ 948              		.loc 1 160 5 is_stmt 1 view .LVU236
+ 949 003a 0748     		ldr	r0, .L70+8
+ 950              	.LVL104:
+ 160:Core/Src/run.c ****     printf("Syntax is wrong must be password then message\n");
+ 951              		.loc 1 160 5 is_stmt 0 view .LVU237
+ 952 003c FFF7FEFF 		bl	puts
+ 953              	.LVL105:
+ 161:Core/Src/run.c ****   }
+ 954              		.loc 1 161 5 is_stmt 1 view .LVU238
+ 955 0040 04E0     		b	.L58
+ 956              	.LVL106:
+ 957              	.L65:
+ 161:Core/Src/run.c ****   }
+ 958              		.loc 1 161 5 is_stmt 0 view .LVU239
+ 959 0042 0024     		movs	r4, #0
+ 960              	.LVL107:
+ 161:Core/Src/run.c ****   }
+ 961              		.loc 1 161 5 view .LVU240
+ 962 0044 EEE7     		b	.L63
+ 963              	.LVL108:
+ 964              	.L69:
+ 164:Core/Src/run.c ****   printf("\n");
+ 965              		.loc 1 164 3 is_stmt 1 view .LVU241
+ 966 0046 0A20     		movs	r0, #10
+ 967 0048 FFF7FEFF 		bl	putchar
+ 968              	.LVL109:
+ARM GAS  /tmp/ccdAYkXc.s 			page 21
+
+
+ 969              	.L58:
+ 165:Core/Src/run.c **** }
+ 970              		.loc 1 165 1 is_stmt 0 view .LVU242
+ 971 004c 10BD     		pop	{r4, pc}
+ 972              	.L71:
+ 973 004e 00BF     		.align	2
+ 974              	.L70:
+ 975 0050 00000000 		.word	dat
+ 976 0054 00000000 		.word	.LC0
+ 977 0058 00000000 		.word	.LC2
+ 978              		.cfi_endproc
+ 979              	.LFE13:
+ 981              		.section	.text.wallet_main,"ax",%progbits
+ 982              		.align	1
+ 983              		.global	wallet_main
+ 984              		.syntax unified
+ 985              		.thumb
+ 986              		.thumb_func
+ 987              		.fpu fpv4-sp-d16
+ 989              	wallet_main:
+ 990              	.LVL110:
+ 991              	.LFB14:
+ 166:Core/Src/run.c **** 
+ 167:Core/Src/run.c **** 
+ 168:Core/Src/run.c **** 
+ 169:Core/Src/run.c **** 
+ 170:Core/Src/run.c **** char* commands[] = {"help","exit","sign","save_priv","get_pub","save","load","q","signh"};
+ 171:Core/Src/run.c **** 
+ 172:Core/Src/run.c **** int wallet_main(char*command) {
+ 992              		.loc 1 172 31 is_stmt 1 view -0
+ 993              		.cfi_startproc
+ 994              		@ args = 0, pretend = 0, frame = 0
+ 995              		@ frame_needed = 0, uses_anonymous_args = 0
+ 996              		.loc 1 172 31 is_stmt 0 view .LVU244
+ 997 0000 70B5     		push	{r4, r5, r6, lr}
+ 998              	.LCFI15:
+ 999              		.cfi_def_cfa_offset 16
+ 1000              		.cfi_offset 4, -16
+ 1001              		.cfi_offset 5, -12
+ 1002              		.cfi_offset 6, -8
+ 1003              		.cfi_offset 14, -4
+ 1004 0002 0546     		mov	r5, r0
+ 173:Core/Src/run.c ****     size_t offset = (size_t)memchr(command,' ',strlen(command));
+ 1005              		.loc 1 173 5 is_stmt 1 view .LVU245
+ 1006              		.loc 1 173 29 is_stmt 0 view .LVU246
+ 1007 0004 FFF7FEFF 		bl	strlen
+ 1008              	.LVL111:
+ 1009              		.loc 1 173 29 view .LVU247
+ 1010 0008 0446     		mov	r4, r0
+ 1011 000a 0246     		mov	r2, r0
+ 1012 000c 2021     		movs	r1, #32
+ 1013 000e 2846     		mov	r0, r5
+ 1014 0010 FFF7FEFF 		bl	memchr
+ 1015              	.LVL112:
+ 1016              		.loc 1 173 12 view .LVU248
+ 1017 0014 0646     		mov	r6, r0
+ 1018              	.LVL113:
+ARM GAS  /tmp/ccdAYkXc.s 			page 22
+
+
+ 174:Core/Src/run.c ****     if(offset == 0)
+ 1019              		.loc 1 174 5 is_stmt 1 view .LVU249
+ 1020              		.loc 1 174 7 is_stmt 0 view .LVU250
+ 1021 0016 60B1     		cbz	r0, .L87
+ 1022              	.LVL114:
+ 1023              	.L73:
+ 175:Core/Src/run.c ****       offset = (size_t)command + strlen(command)-1;
+ 176:Core/Src/run.c ****     size_t sz = sizeof(commands)/sizeof(char*);
+ 1024              		.loc 1 176 5 is_stmt 1 view .LVU251
+ 177:Core/Src/run.c ****     int i = 0;
+ 1025              		.loc 1 177 5 view .LVU252
+ 178:Core/Src/run.c ****     for(;i < sz;i++){
+ 1026              		.loc 1 178 5 view .LVU253
+ 177:Core/Src/run.c ****     int i = 0;
+ 1027              		.loc 1 177 9 is_stmt 0 view .LVU254
+ 1028 0018 0024     		movs	r4, #0
+ 1029              	.LVL115:
+ 1030              	.L74:
+ 1031              		.loc 1 178 5 discriminator 1 view .LVU255
+ 1032 001a 082C     		cmp	r4, #8
+ 1033 001c 0CD8     		bhi	.L75
+ 179:Core/Src/run.c ****     if(strncmp(command,commands[i],offset-(size_t)command) == 0){ // bad code
+ 1034              		.loc 1 179 5 is_stmt 1 view .LVU256
+ 1035              		.loc 1 179 8 is_stmt 0 view .LVU257
+ 1036 001e 721B     		subs	r2, r6, r5
+ 1037 0020 1B4B     		ldr	r3, .L89
+ 1038 0022 53F82410 		ldr	r1, [r3, r4, lsl #2]
+ 1039 0026 2846     		mov	r0, r5
+ 1040 0028 FFF7FEFF 		bl	strncmp
+ 1041              	.LVL116:
+ 1042              		.loc 1 179 7 view .LVU258
+ 1043 002c 20B1     		cbz	r0, .L75
+ 178:Core/Src/run.c ****     for(;i < sz;i++){
+ 1044              		.loc 1 178 18 view .LVU259
+ 1045 002e 0134     		adds	r4, r4, #1
+ 1046              	.LVL117:
+ 178:Core/Src/run.c ****     for(;i < sz;i++){
+ 1047              		.loc 1 178 18 view .LVU260
+ 1048 0030 F3E7     		b	.L74
+ 1049              	.LVL118:
+ 1050              	.L87:
+ 175:Core/Src/run.c ****     size_t sz = sizeof(commands)/sizeof(char*);
+ 1051              		.loc 1 175 7 is_stmt 1 view .LVU261
+ 175:Core/Src/run.c ****     size_t sz = sizeof(commands)/sizeof(char*);
+ 1052              		.loc 1 175 32 is_stmt 0 view .LVU262
+ 1053 0032 6619     		adds	r6, r4, r5
+ 175:Core/Src/run.c ****     size_t sz = sizeof(commands)/sizeof(char*);
+ 1054              		.loc 1 175 14 view .LVU263
+ 1055 0034 013E     		subs	r6, r6, #1
+ 1056              	.LVL119:
+ 175:Core/Src/run.c ****     size_t sz = sizeof(commands)/sizeof(char*);
+ 1057              		.loc 1 175 14 view .LVU264
+ 1058 0036 EFE7     		b	.L73
+ 1059              	.LVL120:
+ 1060              	.L75:
+ 180:Core/Src/run.c ****       break;
+ 181:Core/Src/run.c ****     }
+ARM GAS  /tmp/ccdAYkXc.s 			page 23
+
+
+ 182:Core/Src/run.c ****     }
+ 183:Core/Src/run.c ****     if(i == sz){
+ 1061              		.loc 1 183 5 is_stmt 1 view .LVU265
+ 1062              		.loc 1 183 7 is_stmt 0 view .LVU266
+ 1063 0038 092C     		cmp	r4, #9
+ 1064 003a 08D0     		beq	.L88
+ 184:Core/Src/run.c ****       help("2");
+ 185:Core/Src/run.c ****       return -1;
+ 186:Core/Src/run.c ****     }
+ 187:Core/Src/run.c ****     switch (i){
+ 1065              		.loc 1 187 5 is_stmt 1 view .LVU267
+ 1066 003c 082C     		cmp	r4, #8
+ 1067 003e 1FD8     		bhi	.L79
+ 1068 0040 DFE804F0 		tbb	[pc, r4]
+ 1069              	.L80:
+ 1070 0044 0B       		.byte	(.L84-.L80)/2
+ 1071 0045 23       		.byte	(.L85-.L80)/2
+ 1072 0046 0F       		.byte	(.L83-.L80)/2
+ 1073 0047 14       		.byte	(.L82-.L80)/2
+ 1074 0048 19       		.byte	(.L81-.L80)/2
+ 1075 0049 23       		.byte	(.L85-.L80)/2
+ 1076 004a 23       		.byte	(.L85-.L80)/2
+ 1077 004b 23       		.byte	(.L85-.L80)/2
+ 1078 004c 23       		.byte	(.L85-.L80)/2
+ 1079 004d 00       		.p2align 1
+ 1080              	.L88:
+ 184:Core/Src/run.c ****       help("2");
+ 1081              		.loc 1 184 7 view .LVU268
+ 1082 004e 1148     		ldr	r0, .L89+4
+ 1083 0050 FFF7FEFF 		bl	help
+ 1084              	.LVL121:
+ 185:Core/Src/run.c ****     }
+ 1085              		.loc 1 185 7 view .LVU269
+ 185:Core/Src/run.c ****     }
+ 1086              		.loc 1 185 14 is_stmt 0 view .LVU270
+ 1087 0054 4FF0FF34 		mov	r4, #-1
+ 1088              	.LVL122:
+ 185:Core/Src/run.c ****     }
+ 1089              		.loc 1 185 14 view .LVU271
+ 1090 0058 18E0     		b	.L72
+ 1091              	.LVL123:
+ 1092              	.L84:
+ 188:Core/Src/run.c ****       case 0:
+ 189:Core/Src/run.c ****         help(command);
+ 1093              		.loc 1 189 9 is_stmt 1 view .LVU272
+ 1094 005a 2846     		mov	r0, r5
+ 1095 005c FFF7FEFF 		bl	help
+ 1096              	.LVL124:
+ 190:Core/Src/run.c ****         break;
+ 1097              		.loc 1 190 9 view .LVU273
+ 1098 0060 14E0     		b	.L72
+ 1099              	.L83:
+ 191:Core/Src/run.c ****       case 1:
+ 192:Core/Src/run.c ****         break;
+ 193:Core/Src/run.c ****       case 2:
+ 194:Core/Src/run.c ****         sign_parse(command);
+ 1100              		.loc 1 194 9 view .LVU274
+ARM GAS  /tmp/ccdAYkXc.s 			page 24
+
+
+ 1101 0062 2846     		mov	r0, r5
+ 1102 0064 FFF7FEFF 		bl	sign_parse
+ 1103              	.LVL125:
+ 195:Core/Src/run.c ****         break;
+ 1104              		.loc 1 195 9 view .LVU275
+ 196:Core/Src/run.c ****       case 3:
+ 197:Core/Src/run.c ****         priv_parse(command);
+ 198:Core/Src/run.c ****         break;
+ 199:Core/Src/run.c ****       case 4:
+ 200:Core/Src/run.c ****         pub_parse(command);
+ 201:Core/Src/run.c ****         break;
+ 202:Core/Src/run.c ****       case 5:
+ 203:Core/Src/run.c ****         break;
+ 204:Core/Src/run.c ****       case 6:
+ 205:Core/Src/run.c ****         break;
+ 206:Core/Src/run.c ****       case 7:
+ 207:Core/Src/run.c ****       break;
+ 208:Core/Src/run.c ****       case 8:
+ 209:Core/Src/run.c ****         break;
+ 210:Core/Src/run.c ****       default:
+ 211:Core/Src/run.c ****         help("3");
+ 212:Core/Src/run.c ****     }
+ 213:Core/Src/run.c ****   return 0;
+ 1105              		.loc 1 213 10 is_stmt 0 view .LVU276
+ 1106 0068 0024     		movs	r4, #0
+ 1107              	.LVL126:
+ 195:Core/Src/run.c ****         break;
+ 1108              		.loc 1 195 9 view .LVU277
+ 1109 006a 0FE0     		b	.L72
+ 1110              	.LVL127:
+ 1111              	.L82:
+ 197:Core/Src/run.c ****         break;
+ 1112              		.loc 1 197 9 is_stmt 1 view .LVU278
+ 1113 006c 2846     		mov	r0, r5
+ 1114 006e FFF7FEFF 		bl	priv_parse
+ 1115              	.LVL128:
+ 198:Core/Src/run.c ****       case 4:
+ 1116              		.loc 1 198 9 view .LVU279
+ 1117              		.loc 1 213 10 is_stmt 0 view .LVU280
+ 1118 0072 0024     		movs	r4, #0
+ 1119              	.LVL129:
+ 198:Core/Src/run.c ****       case 4:
+ 1120              		.loc 1 198 9 view .LVU281
+ 1121 0074 0AE0     		b	.L72
+ 1122              	.LVL130:
+ 1123              	.L81:
+ 200:Core/Src/run.c ****         break;
+ 1124              		.loc 1 200 9 is_stmt 1 view .LVU282
+ 1125 0076 2846     		mov	r0, r5
+ 1126 0078 FFF7FEFF 		bl	pub_parse
+ 1127              	.LVL131:
+ 201:Core/Src/run.c ****       case 5:
+ 1128              		.loc 1 201 9 view .LVU283
+ 1129              		.loc 1 213 10 is_stmt 0 view .LVU284
+ 1130 007c 0024     		movs	r4, #0
+ 1131              	.LVL132:
+ 201:Core/Src/run.c ****       case 5:
+ARM GAS  /tmp/ccdAYkXc.s 			page 25
+
+
+ 1132              		.loc 1 201 9 view .LVU285
+ 1133 007e 05E0     		b	.L72
+ 1134              	.LVL133:
+ 1135              	.L79:
+ 211:Core/Src/run.c ****     }
+ 1136              		.loc 1 211 9 is_stmt 1 view .LVU286
+ 1137 0080 0548     		ldr	r0, .L89+8
+ 1138 0082 FFF7FEFF 		bl	help
+ 1139              	.LVL134:
+ 1140              		.loc 1 213 10 is_stmt 0 view .LVU287
+ 1141 0086 0024     		movs	r4, #0
+ 1142              	.LVL135:
+ 1143              		.loc 1 213 10 view .LVU288
+ 1144 0088 00E0     		b	.L72
+ 1145              	.LVL136:
+ 1146              	.L85:
+ 1147              		.loc 1 213 10 view .LVU289
+ 1148 008a 0024     		movs	r4, #0
+ 1149              	.LVL137:
+ 1150              	.L72:
+ 214:Core/Src/run.c **** }...
+ 1151              		.loc 1 214 1 view .LVU290
+ 1152 008c 2046     		mov	r0, r4
+ 1153 008e 70BD     		pop	{r4, r5, r6, pc}
+ 1154              	.LVL138:
+ 1155              	.L90:
+ 1156              		.loc 1 214 1 view .LVU291
+ 1157              		.align	2
+ 1158              	.L89:
+ 1159 0090 00000000 		.word	.LANCHOR0
+ 1160 0094 00000000 		.word	.LC3
+ 1161 0098 04000000 		.word	.LC4
+ 1162              		.cfi_endproc
+ 1163              	.LFE14:
+ 1165              		.global	commands
+ 1166              		.comm	dat,97,4
+ 1167              		.section	.data.commands,"aw"
+ 1168              		.align	2
+ 1169              		.set	.LANCHOR0,. + 0
+ 1172              	commands:
+ 1173 0000 00000000 		.word	.LC5
+ 1174 0004 08000000 		.word	.LC6
+ 1175 0008 10000000 		.word	.LC7
+ 1176 000c 18000000 		.word	.LC8
+ 1177 0010 24000000 		.word	.LC9
+ 1178 0014 2C000000 		.word	.LC10
+ 1179 0018 34000000 		.word	.LC11
+ 1180 001c 3C000000 		.word	.LC12
+ 1181 0020 40000000 		.word	.LC13
+ 1182              		.section	.rodata.help.str1.4,"aMS",%progbits,1
+ 1183              		.align	2
+ 1184              	.LC1:
+ 1185 0000 68656C70 		.ascii	"help exit sign save_priv get_pub save load q\012%s\012"
+ 1185      20657869 
+ 1185      74207369 
+ 1185      676E2073 
+ 1185      6176655F 
+ARM GAS  /tmp/ccdAYkXc.s 			page 26
+
+
+ 1186 0030 00       		.ascii	"\000"
+ 1187              		.section	.rodata.save_privkey.str1.4,"aMS",%progbits,1
+ 1188              		.align	2
+ 1189              	.LC0:
+ 1190 0000 25303278 		.ascii	"%02x\000"
+ 1190      00
+ 1191              		.section	.rodata.sign_parse.str1.4,"aMS",%progbits,1
+ 1192              		.align	2
+ 1193              	.LC2:
+ 1194 0000 53796E74 		.ascii	"Syntax is wrong must be password then message\000"
+ 1194      61782069 
+ 1194      73207772 
+ 1194      6F6E6720 
+ 1194      6D757374 
+ 1195              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1196              		.align	2
+ 1197              	.LC5:
+ 1198 0000 68656C70 		.ascii	"help\000"
+ 1198      00
+ 1199 0005 000000   		.space	3
+ 1200              	.LC6:
+ 1201 0008 65786974 		.ascii	"exit\000"
+ 1201      00
+ 1202 000d 000000   		.space	3
+ 1203              	.LC7:
+ 1204 0010 7369676E 		.ascii	"sign\000"
+ 1204      00
+ 1205 0015 000000   		.space	3
+ 1206              	.LC8:
+ 1207 0018 73617665 		.ascii	"save_priv\000"
+ 1207      5F707269 
+ 1207      7600
+ 1208 0022 0000     		.space	2
+ 1209              	.LC9:
+ 1210 0024 6765745F 		.ascii	"get_pub\000"
+ 1210      70756200 
+ 1211              	.LC10:
+ 1212 002c 73617665 		.ascii	"save\000"
+ 1212      00
+ 1213 0031 000000   		.space	3
+ 1214              	.LC11:
+ 1215 0034 6C6F6164 		.ascii	"load\000"
+ 1215      00
+ 1216 0039 000000   		.space	3
+ 1217              	.LC12:
+ 1218 003c 7100     		.ascii	"q\000"
+ 1219 003e 0000     		.space	2
+ 1220              	.LC13:
+ 1221 0040 7369676E 		.ascii	"signh\000"
+ 1221      6800
+ 1222              		.section	.rodata.wallet_main.str1.4,"aMS",%progbits,1
+ 1223              		.align	2
+ 1224              	.LC3:
+ 1225 0000 3200     		.ascii	"2\000"
+ 1226 0002 0000     		.space	2
+ 1227              	.LC4:
+ 1228 0004 3300     		.ascii	"3\000"
+ARM GAS  /tmp/ccdAYkXc.s 			page 27
+
+
+ 1229              		.text
+ 1230              	.Letext0:
+ 1231              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 1232              		.file 3 "/usr/lib/gcc/arm-none-eabi/8.3.1/include/stddef.h"
+ 1233              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 1234              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 1235              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 1236              		.file 7 "/usr/include/newlib/sys/_stdint.h"
+ 1237              		.file 8 "Core/Inc/structures.h"
+ 1238              		.file 9 "/usr/include/newlib/stdlib.h"
+ 1239              		.file 10 "Core/Inc/secp256k1.h"
+ 1240              		.file 11 "/usr/include/newlib/string.h"
+ 1241              		.file 12 "/usr/include/newlib/stdio.h"
+ 1242              		.file 13 "<built-in>"
+ 1243              		.file 14 "Core/Inc/sha256.h"
+ 1244              		.file 15 "Core/Inc/encrypt.h"
+ARM GAS  /tmp/ccdAYkXc.s 			page 28
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 run.c
+     /tmp/ccdAYkXc.s:18     .text.get_privkey:0000000000000000 $t
+     /tmp/ccdAYkXc.s:26     .text.get_privkey:0000000000000000 get_privkey
+     /tmp/ccdAYkXc.s:81     .text.save_privkey:0000000000000000 $t
+     /tmp/ccdAYkXc.s:88     .text.save_privkey:0000000000000000 save_privkey
+     /tmp/ccdAYkXc.s:253    .text.save_privkey:00000000000000b4 $d
+     /tmp/ccdAYkXc.s:258    .text.sign:0000000000000000 $t
+     /tmp/ccdAYkXc.s:265    .text.sign:0000000000000000 sign
+     /tmp/ccdAYkXc.s:334    .text.sign:0000000000000040 $d
+     /tmp/ccdAYkXc.s:339    .text.signh:0000000000000000 $t
+     /tmp/ccdAYkXc.s:346    .text.signh:0000000000000000 signh
+     /tmp/ccdAYkXc.s:360    .text.help:0000000000000000 $t
+     /tmp/ccdAYkXc.s:367    .text.help:0000000000000000 help
+     /tmp/ccdAYkXc.s:392    .text.help:000000000000000c $d
+     /tmp/ccdAYkXc.s:397    .text.sign_parse:0000000000000000 $t
+     /tmp/ccdAYkXc.s:404    .text.sign_parse:0000000000000000 sign_parse
+     /tmp/ccdAYkXc.s:650    .text.sign_parse:00000000000000e8 $d
+                            *COM*:0000000000000061 dat
+     /tmp/ccdAYkXc.s:657    .text.priv_parse:0000000000000000 $t
+     /tmp/ccdAYkXc.s:664    .text.priv_parse:0000000000000000 priv_parse
+     /tmp/ccdAYkXc.s:866    .text.priv_parse:00000000000000b4 $d
+     /tmp/ccdAYkXc.s:872    .text.pub_parse:0000000000000000 $t
+     /tmp/ccdAYkXc.s:879    .text.pub_parse:0000000000000000 pub_parse
+     /tmp/ccdAYkXc.s:975    .text.pub_parse:0000000000000050 $d
+     /tmp/ccdAYkXc.s:982    .text.wallet_main:0000000000000000 $t
+     /tmp/ccdAYkXc.s:989    .text.wallet_main:0000000000000000 wallet_main
+     /tmp/ccdAYkXc.s:1070   .text.wallet_main:0000000000000044 $d
+     /tmp/ccdAYkXc.s:1159   .text.wallet_main:0000000000000090 $d
+     /tmp/ccdAYkXc.s:1172   .data.commands:0000000000000000 commands
+     /tmp/ccdAYkXc.s:1168   .data.commands:0000000000000000 $d
+     /tmp/ccdAYkXc.s:1183   .rodata.help.str1.4:0000000000000000 $d
+     /tmp/ccdAYkXc.s:1188   .rodata.save_privkey.str1.4:0000000000000000 $d
+     /tmp/ccdAYkXc.s:1192   .rodata.sign_parse.str1.4:0000000000000000 $d
+     /tmp/ccdAYkXc.s:1196   .rodata.str1.4:0000000000000000 $d
+     /tmp/ccdAYkXc.s:1223   .rodata.wallet_main.str1.4:0000000000000000 $d
+     /tmp/ccdAYkXc.s:1079   .text.wallet_main:000000000000004d $d
+     /tmp/ccdAYkXc.s:1079   .text.wallet_main:000000000000004e $t
+
+UNDEFINED SYMBOLS
+decrypt
+SHA256
+printf
+putchar
+secp256k1_context_create
+secp256k1_ec_pubkey_create
+secp256k1_ec_pubkey_serialize
+encrypt_raw
+secp256k1_context_destroy
+secp256k1_ecdsa_sign
+secp256k1_ecdsa_signature_serialize_der
+secp256k1_nonce_function_rfc6979
+strlen
+memchr
+malloc
+strncpy
+puts
+ARM GAS  /tmp/ccdAYkXc.s 			page 29
+
+
+free
+memset
+strncmp

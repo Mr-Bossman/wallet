@@ -330,28 +330,54 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
+
+// this is so that people cant predict the diplay output or inputs 
+uint32_t Random(){
+
+}
+
+
+//save stuff to flash
+int save_flash(){
+}
+
+
+// get a signmature to see if code is valid
+uint64_t get_program_signature(){
+
+}
+
+//get user sig so they can put custom code on
+uint64_t get_user_signature(){
+
+}
+int wallet_main(char* s) ;
+
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-  secp256k1_context* secp256k1_context_sign;
-  secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
+  printf("demo program becuse i dont want to use the lcd rn\n>");
+  char str[512] = {0};
+  int b = 0;
   for(;;)
   {
-    uint8_t p[32];
-    osDelay(1000);
-
-   SHA256((uint8_t*)"bruh",p);
-    for(int i = 0; i < 32;i++)printf("%02x",p[i]);
-    printf("\n");
-    secp256k1_ecdsa_signature sig;
-    uint8_t t[72];
-    secp256k1_context* secp256k1_context_sign;
-    secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-    int ret = secp256k1_ecdsa_sign(secp256k1_context_sign, &sig, p, p, secp256k1_nonce_function_rfc6979, NULL);
-    int sz = 72;
-    secp256k1_ecdsa_signature_serialize_der(secp256k1_context_sign,t,&sz,&sig);
-    for(int i = 0; i < 72;i++)printf("%02x%s",t[i],(!((i+1)%8))?"\n":"");
+    if(b <511)
+    str[b++] = getchar();
+    if(str[b-1] == 0x7f){ //bkspace
+      if(b)b-=2;
+      printf("\b ");
+    }
+    if(str[b-1] == '\r'){ //bkspace
+      printf("\n");
+      str[b-1] = 0;
+      b = 0;
+      wallet_main(str);
+    } 
+    puts("\r\b");
+    printf("%c",'>');
+    for(int i = 0; i < b;i++)
+    printf("%c",str[i]);
   }
   /* USER CODE END 5 */
 }
