@@ -55,7 +55,7 @@ osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* USER CODE BEGIN PV */
 
@@ -82,7 +82,6 @@ void StartDefaultTask(void *argument);
   */
 int main(void)
 {
-  
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -152,7 +151,6 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
-  
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -246,15 +244,15 @@ static void MX_USART1_UART_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+  if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_2) != HAL_OK)
   {
     Error_Handler();
   }
-  if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+  if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_8_8) != HAL_OK)
   {
     Error_Handler();
   }
-  if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
+  if (HAL_UARTEx_EnableFifoMode(&huart1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -330,7 +328,6 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-
 // this is so that people cant predict the diplay output or inputs 
 uint32_t Random(){
 
@@ -352,7 +349,6 @@ uint64_t get_user_signature(){
 
 }
 int wallet_main(char* s) ;
-
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
@@ -360,24 +356,27 @@ void StartDefaultTask(void *argument)
   printf("demo program becuse i dont want to use the lcd rn\n>");
   char str[512] = {0};
   int b = 0;
-  for(;;)
+  for (;;)
   {
-    if(b <511)
-    str[b++] = getchar();
-    if(str[b-1] == 0x7f){ //bkspace
-      if(b)b-=2;
+    if (b < 511)
+      str[b++] = getchar();
+    if (str[b - 1] == 0x7f)
+    { //bkspace
+      if (b)
+        b -= 2;
       printf("\b ");
     }
-    if(str[b-1] == '\r'){ //bkspace
+    if (str[b - 1] == '\r')
+    {
       printf("\n");
-      str[b-1] = 0;
+      str[b - 1] = 0;
       b = 0;
       wallet_main(str);
-    } 
+    }
     puts("\r\b");
-    printf("%c",'>');
-    for(int i = 0; i < b;i++)
-    printf("%c",str[i]);
+    printf("%c", '>');
+    for (int i = 0; i < b; i++)
+      printf("%c", str[i]);
   }
   /* USER CODE END 5 */
 }

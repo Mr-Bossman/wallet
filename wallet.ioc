@@ -1,6 +1,8 @@
 #MicroXplorer Configuration settings - do not modify
-FREERTOS.IPParameters=Tasks01
-FREERTOS.Tasks01=defaultTask,24,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.IPParameters=Tasks01,configMINIMAL_STACK_SIZE,configTOTAL_HEAP_SIZE
+FREERTOS.Tasks01=defaultTask,24,512,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.configMINIMAL_STACK_SIZE=512
+FREERTOS.configTOTAL_HEAP_SIZE=32768
 File.Version=6
 KeepUserPlacement=false
 Mcu.Family=STM32WB
@@ -212,7 +214,10 @@ RCC.USBFreq_Value=128000000
 RCC.VCOInputFreq_Value=32000000
 RCC.VCOOutputFreq_Value=256000000
 RCC.VCOSAI1OutputFreq_Value=256000000
-USART1.IPParameters=VirtualMode-Asynchronous
+USART1.FIFOMode=FIFOMODE_ENABLE
+USART1.IPParameters=VirtualMode-Asynchronous,FIFOMode,TXFIFOThreshold,RXFIFOThreshold
+USART1.RXFIFOThreshold=RXFIFO_THRESHOLD_FULL
+USART1.TXFIFOThreshold=TXFIFO_THRESHOLD_HALFFULL
 USART1.VirtualMode-Asynchronous=VM_ASYNC
 VP_FREERTOS_VS_CMSIS_V2.Mode=CMSIS_V2
 VP_FREERTOS_VS_CMSIS_V2.Signal=FREERTOS_VS_CMSIS_V2
