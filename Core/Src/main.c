@@ -355,7 +355,7 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-  printf("demo program becuse i dont want to use the lcd rn\n>\n");
+  printf("demo program becuse i dont want to use the lcd rn\n>");
   char str[512] = {0};
   int b = 0;
   for (;;)

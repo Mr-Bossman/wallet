@@ -23,6 +23,22 @@ uint32_t read(uint32_t index,encrypted_data *in){
 uint16_t count(){
   return FLASH_LEN_DATA();
 }
+uint8_t chk_null(char* ptr,size_t len){
+  for(size_t i = 0;i < len;i++)
+    if(*ptr++)
+      return 0;
+  return 1;
+}
+uint16_t first_aval(){
+  encrypted_data data;
+  size_t i = 0;
+  for(; i < count();i++){
+    read(i,&data);
+    if (chk_null(&data,sizeof(encrypted_data)))
+      break;
+  }
+  return i;
+}
 void help(char *command)
 {
   printf("help exit sign save_priv get_pub save load q\n%s\n", command);
@@ -338,23 +354,29 @@ void priv_parse(char *command)
     return;
   }
   save_privkey((uint8_t *)(params[1]), (uint8_t *)params[0], &dat);
+  save(first_aval(),&dat);
   free(params[1]);
   free(params[0]);
 }
 
 void pub_parse(char *command)
 {
-  char *p = memchr(command, ' ', strlen(command));
+ /* char *p = memchr(command, ' ', strlen(command));
   while (*p == ' ')
     p++;
   if (p != command && p)
   {
     printf("Syntax is wrong must be password then message\n");
     return;
+  }*/
+  for(size_t i = 0; i < count();i++){
+    read(i,&dat);
+    if (chk_null(&dat,sizeof(encrypted_data)))
+      continue;
+    for (int i = 0; i < 33; i++)
+      printf("%02x", dat.pub[i]);
+    printf("\n");
   }
-  for (int i = 0; i < 33; i++)
-    printf("%02x", dat.pub[i]);
-  printf("\n");
 }
 
 char *commands[] = {"help", "exit", "sign", "save_priv", "get_pub", "save", "load", "q", "signh", "signrech", "signrec"};
