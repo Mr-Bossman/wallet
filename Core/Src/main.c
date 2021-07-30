@@ -25,6 +25,7 @@
 #include "retarget.h"
 #include "sha256.h"
 #include "encrypt.h"
+#include "eeprom.h"
 #include "secp256k1.h"
 #include "secp256k1_recovery.h"
 #include <stdlib.h>
@@ -339,6 +340,7 @@ int save_flash(){
 }
 
 
+
 // get a signmature to see if code is valid
 uint64_t get_program_signature(){
 
@@ -353,7 +355,7 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-  printf("demo program becuse i dont want to use the lcd rn\n>");
+  printf("demo program becuse i dont want to use the lcd rn\n>\n");
   char str[512] = {0};
   int b = 0;
   for (;;)

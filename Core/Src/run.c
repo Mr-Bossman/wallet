@@ -14,7 +14,15 @@ typedef struct encrypted_data
 } encrypted_data;
 
 encrypted_data dat;
-
+uint32_t save(uint32_t index,encrypted_data *in){
+  return FLASH_WRITE_DATA(index,in,sizeof(encrypted_data));
+}
+uint32_t read(uint32_t index,encrypted_data *in){
+  return FLASH_READ_DATA(index,in,sizeof(encrypted_data));
+}
+uint16_t count(){
+  return FLASH_LEN_DATA();
+}
 void help(char *command)
 {
   printf("help exit sign save_priv get_pub save load q\n%s\n", command);
