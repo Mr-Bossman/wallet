@@ -18,14 +18,16 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
-#include "cmsis_os.h"
-#include "ssd1306.h"
 #include <stdio.h>
-#include "pics.h"
+#include "main.h"
+
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "cmsis_os.h"
+#include "ssd1306.h"
+#include "pics.h"
+#include "retarget.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -399,22 +401,26 @@ int wallet_main(char* s) ;
 void StartDefaultTask(void *argument)
 {
   lcd_init(hi2c1);
-  while(1)
+  //while(1)
     for(size_t i = 0; i < sizeof(map)/(16*64);i++){
-      lcd_printmap(map[i]);
+      //lcd_printmap(map[i]);
     }
-  printf("demo program becuse i dont want to use the lcd rn\n>");
+  printf("demo program becuse i dont want to use the lcd rn\n$>");
   char str[512] = {0};
   int b = 0;
+  char ind[] = "$>";
   for (;;)
   {
     if (b < 511)
       str[b++] = getchar();
     if (str[b - 1] == 0x7f)
     { //bkspace
-      if (b)
+      if (b >= 2){
         b -= 2;
-      printf("\b ");
+        printf("\b ");
+      } else {
+        b = 0;
+      }
     }
     if (str[b - 1] == '\r')
     {
@@ -424,7 +430,7 @@ void StartDefaultTask(void *argument)
       wallet_main(str);
     }
     puts("\r\b");
-    printf("%c", '>');
+    printf("%s", ind);
     for (int i = 0; i < b; i++)
       printf("%c", str[i]);
   }

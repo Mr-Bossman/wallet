@@ -220,8 +220,6 @@ void AESDecrypt(unsigned char * encryptedMessage, unsigned char * expandedKey, u
 
 	InitialRound(state, expandedKey+160);
 
-	int numberOfRounds = 9;
-
 	for (int i = 8; i >= 0; i--) {
 		DRound(state, expandedKey + (16 * (i + 1)));
 	}

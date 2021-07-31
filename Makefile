@@ -42,6 +42,7 @@ BUILD_DIR = build
  #./configure --build=arm-none-eabi --target=arm-none-eabi --host=x86_64-linux-gnu CFLAGS='--specs=nosys.specs  -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -DUSE_ECMULT_STATIC_PRECOMPUTATION ' CXXFLAGS='--specs=nosys.specs  -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -DUSE_ECMULT_STATIC_PRECOMPUTATION ' --enable-module-recovery
 C_SOURCES =  \
 Core/Src/ssd1306.c \
+Core/Src/Cstring_func.c\
 Core/Src/run.c \
 Core/Src/retarget.c \
 Core/Src/main.c \
@@ -152,12 +153,12 @@ C_INCLUDES =  \
 
 
 # compile gcc flags
-ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -pedantic -fdata-sections -ffunction-sections
+ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -pedantic -fdata-sections -ffunction-sections  -Wno-unused-result -Wno-pointer-sign -Wno-unused-function
 
-CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -pedantic -fdata-sections -ffunction-sections
+CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -pedantic -fdata-sections -ffunction-sections -Wno-unused-result -Wno-pointer-sign -Wno-unused-function
 
 ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
+CFLAGS += -g -gdwarf-2 -std=c11
 endif
 
 
