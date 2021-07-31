@@ -4,3 +4,6 @@
 [submodule "font8x8"]
 	path = font8x8
 	url = https://github.com/dhepper/font8x8.git
+[submodule "secp256k1"]
+	path = secp256k1
+	url = https://github.com/bitcoin-core/secp256k1

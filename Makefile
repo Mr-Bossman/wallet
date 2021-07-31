@@ -35,6 +35,11 @@ BUILD_DIR = build
 # source
 ######################################
 # C sources
+
+ #export CC=arm-none-eabi-gcc
+ #export CXX=arm-none-eabi-g++
+ #./autogen.sh
+ #./configure --build=arm-none-eabi --target=arm-none-eabi --host=x86_64-linux-gnu CFLAGS='--specs=nosys.specs  -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -DUSE_ECMULT_STATIC_PRECOMPUTATION ' CXXFLAGS='--specs=nosys.specs  -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -DUSE_ECMULT_STATIC_PRECOMPUTATION ' --enable-module-recovery
 C_SOURCES =  \
 Core/Src/ssd1306.c \
 Core/Src/run.c \
