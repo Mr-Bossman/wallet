@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "cstdint": "c",
+        "string.h": "c",
+        "ssd1306.h": "c"
+    }
+}
