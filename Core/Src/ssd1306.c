@@ -33,16 +33,26 @@ void lcd_init(I2C_HandleTypeDef c){
 }
 void lcd_printc(char chr,char cursor){
     lcd_move(cursor&0xf,cursor>>4);
-    // rot
-    HAL_I2C_Mem_Write(&hi2c1,0x78,0x40,1,font8x8_basic[chr&0x7F],8,1);
+    char tmp[8] = {0};
+    for(size_t b = 0;b< 8;b++)
+        for(size_t bt = 0;bt< 8;bt++){
+            char bit = (font8x8_basic[chr&0x7f][b] >> bt)&1;
+            tmp[bt] |= bit << b;
+        }
+    HAL_I2C_Mem_Write(&hi2c1,0x78,0x40,1,tmp,8,1);
 
 }
-//wip
-void lcd_printmap(){
-    char dat[8] = {0};
+
+void lcd_printmap(char map[64][16]){
     for(uint8_t r = 0;r< 8;r++){
-        move_lcd(0,r);
+        lcd_move(0,r);
         for(uint8_t c = 0;c<16;c++){
+            char dat[8] = {0};
+            for(size_t b = 0;b< 8;b++)
+                for(size_t bt = 0;bt< 8;bt++){
+                    char bit = (map[b+(r*8)][c] >> bt)&1;
+                    dat[bt] |= bit << b;
+            }
             HAL_I2C_Mem_Write(&hi2c1,0x78,0x40,1,dat,8,1);
         }
     }

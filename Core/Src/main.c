@@ -21,7 +21,8 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "ssd1306.h"
-
+#include <stdio.h>
+#include "pics.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -398,8 +399,10 @@ int wallet_main(char* s) ;
 void StartDefaultTask(void *argument)
 {
   lcd_init(hi2c1);
-  for(char i = 0x20;i < 0x80;i++)
-  lcd_printc(i,i-0x20);
+  while(1)
+    for(size_t i = 0; i < sizeof(map)/(16*64);i++){
+      lcd_printmap(map[i]);
+    }
   printf("demo program becuse i dont want to use the lcd rn\n>");
   char str[512] = {0};
   int b = 0;
