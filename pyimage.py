@@ -34,14 +34,14 @@ def printCarr(data):
 cap = cv2.VideoCapture(sys.argv[1])
 count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 #count = 
-skip = count-100
-print("const char map["+str(int(skip/4))+"][64][16] = {",end='')
+skip = count-400
+print("const char map["+str(int(skip/16))+"][64][16] = {",end='')
 while True:
     ret, frame = cap.read()
     if (not ret) or (not count):
         break
     count -= 1
-    if(count%8):
+    if(count%16):
         continue
     if(count > skip):
         continue
