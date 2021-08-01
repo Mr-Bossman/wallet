@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h>
+#include <stdint.h>
 #include "aes.h"
 #include "sha256.h"
 #include "encrypt.h"
@@ -7,6 +9,7 @@
 #include "secp256k1_recovery.h"
 #include "eeprom.h"
 #include "Cstring_func.h"
+#include "stdbool.h"
 char *commands[] = {"help", "sign", "priv", "pub", "del", "sel", "signh", "signrech", "signrec"};
 
 typedef struct encrypted_data
@@ -37,7 +40,7 @@ uint16_t first_aval()
   for (; i < count(); i++)
   {
     read(i, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)))
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
       break;
   }
   return i;
@@ -122,8 +125,10 @@ void save_privkey(uint8_t *seed, uint8_t *pass, encrypted_data *out)
   for (int i = 0; i < 33; i++)
     printf("%02x", out->pub[i]);
   printf("\n");
-
   encrypt_raw((uint8_t *)priv, 32, (uint8_t *)pass, sum);
+  for (int i = 0; i < 32; i++)
+    printf("%02x", sum[i]);
+  printf("\n");
   memcpy(out->sum, sum, 32);
   memcpy(out->enc_priv, priv, 32);
   secp256k1_context_destroy(ctx);
@@ -281,36 +286,40 @@ void priv_parse(char *command)
   }
 
   save_privkey((uint8_t *)(params[1]), (uint8_t *)params[0], &dat);
-  //check if unique
+  encrypted_data data;
+  for (size_t i = 0; i < count(); i++)
+  {
+    read(i, &data);
+    if (!memcmp(&dat, &data, sizeof(encrypted_data)))
+      return;
+  }
   save(first_aval(), &dat);
 }
 
 void pub_parse(char *command)
 {
-  /* char *p = memchr(command, ' ', strlen(command));
-  while (*p == ' ')
-    p++;
-  if (p != command && p)
+  char *p = next_non_sp(command, 1, strlen(command));
+  if (p == strpnlen(command,100) && p)
   {
     printf("Syntax is wrong must be password then message\n");
     return;
-  }*/
-  // show which is selected;
-
+  }
   
   encrypted_data data;
+  size_t index = 0;
   for (size_t i = 0; i < count(); i++)
   {
     read(i, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)))
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
       continue;
     if (memcmp(&dat, &data, sizeof(encrypted_data)))
-      printf("%u - ", i + 1);
+      printf("%u - ", index + 1);
     else
-      printf("%u > ", i + 1);
-    for (int i = 0; i < 33; i++)
-      printf("%02x", data.pub[i]);
+      printf("%u > ", index + 1);
+    for (int b = 0; b < 33; b++)
+      printf("%02x", data.pub[b]);
     printf("\n");
+    index++;
   }
 }
 
@@ -330,16 +339,28 @@ void del_parse(char *command)
     return;
   }
   sel -= 1;
-  if (sel > count())
-    goto nosel;
-  read(sel, &data);
-  if (chk_null((const char*)&data, sizeof(encrypted_data)))
-    goto nosel;
+  /* baaaaad code v*/
+  bool bruh = true;
+  size_t index = 0;
+  for (size_t i = 0; i < count(); i++)
+  {
+    read(i, &data);
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
+      continue;
+    if (sel == index){
+       sel = i;
+       bruh = false;
+    }
+    index++;
+  }
+  if(bruh){
+    printf("there is no n'th pubkey\n");
+    return;
+  }
+  /* baaaaad code ^*/
   memset(&data, 0xff, sizeof(encrypted_data));
   save(sel, &data);
   return;
-nosel:
-  printf("there is no n'th pubkey\n");
 }
 void sel_parse(char *command)
 {
@@ -357,18 +378,30 @@ void sel_parse(char *command)
     return;
   }
   sel -= 1;
-  if (sel > count())
-    goto nosel;
-  read(sel, &data);
-  if (chk_null((const char*)&data, sizeof(encrypted_data)))
-    goto nosel;
+  /* baaaaad code v*/
+  bool bruh = true;
+  size_t index = 0;
+  for (size_t i = 0; i < count(); i++)
+  {
+    read(i, &data);
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
+      continue;
+    if (sel == index){
+       sel = i;
+       bruh = false;
+    }
+    index++;
+  }
+  if(bruh){
+    printf("there is no n'th pubkey\n");
+    return;
+  }
+  /* baaaaad code ^*/
   memcpy(&dat, &data, sizeof(encrypted_data));
   for (int i = 0; i < 33; i++)
     printf("%02x", data.pub[i]);
   printf("\n");
   return;
-nosel:
-  printf("there is no n'th pubkey\n");
 }
 int wallet_main(char *command)
 {

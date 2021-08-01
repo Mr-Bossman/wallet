@@ -133,7 +133,8 @@ uint16_t FLASH_WRITE_DATA(uint16_t offset,uint8_t *buf,uint16_t len)
 	while(offset--)
 		FLASH_READ(off,(uint8_t*)&tmpof,4),off+=tmpof;
 	len += 2;
-	uint32_t ret = FLASH_WRITE(off,(uint8_t*)&len,4);
+	uint32_t ret = FLASH_WRITE(off,(uint8_t*)&len,2);
+	len -= 2;
 	if(ret)return ret;
 	ret = FLASH_WRITE(off+2,buf,len);
 	return ret;
