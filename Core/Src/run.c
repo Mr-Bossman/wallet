@@ -339,27 +339,22 @@ void del_parse(char *command)
     return;
   }
   sel -= 1;
-  /* baaaaad code v*/
-  bool bruh = true;
   size_t index = 0;
-  for (size_t i = 0; i < count(); i++)
-  {
-    read(i, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
-      continue;
-    if (sel == index){
-       sel = i;
-       bruh = false;
+  size_t i =0;
+  while(1){
+    if(i >= count()){
+      printf("there is no n'th pubkey\n");
+      return;
     }
+    read(i++, &data);
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data))) 
+    continue;
+    if (sel == index)break;
     index++;
   }
-  if(bruh){
-    printf("there is no n'th pubkey\n");
-    return;
-  }
-  /* baaaaad code ^*/
+  i--;
   memset(&data, 0xff, sizeof(encrypted_data));
-  save(sel, &data);
+  save(i, &data);
   return;
 }
 void sel_parse(char *command)
@@ -378,25 +373,19 @@ void sel_parse(char *command)
     return;
   }
   sel -= 1;
-  /* baaaaad code v*/
-  bool bruh = true;
   size_t index = 0;
-  for (size_t i = 0; i < count(); i++)
-  {
-    read(i, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
-      continue;
-    if (sel == index){
-       sel = i;
-       bruh = false;
+  size_t i =0;
+  while(1){
+    if(i >= count()){
+      printf("there is no n'th pubkey\n");
+      return;
     }
+    read(i++, &data);
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data))) 
+    continue;
+    if (sel == index)break;
     index++;
   }
-  if(bruh){
-    printf("there is no n'th pubkey\n");
-    return;
-  }
-  /* baaaaad code ^*/
   memcpy(&dat, &data, sizeof(encrypted_data));
   for (int i = 0; i < 33; i++)
     printf("%02x", data.pub[i]);

@@ -3,7 +3,10 @@
         "cstdint": "c",
         "string.h": "c",
         "ssd1306.h": "c",
-        "optional": "c"
+        "optional": "c",
+        "secp256k1_recovery.h": "c",
+        "stdbool.h": "c",
+        "stdio.h": "c"
     },
     "cortex-debug.armToolchainPath": "/home/jesse/.config/Code/User/globalStorage/bmd.stm32-for-vscode/@xpack-dev-tools/arm-none-eabi-gcc/10.2.1-1.1.2/.content/bin",
     "cortex-debug.openocdPath": "/home/jesse/.config/Code/User/globalStorage/bmd.stm32-for-vscode/@xpack-dev-tools/openocd/0.11.0-1.1/.content/bin/openocd"

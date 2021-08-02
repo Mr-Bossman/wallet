@@ -28,6 +28,7 @@
 #include "ssd1306.h"
 #include "pics.h"
 #include "retarget.h"
+#include "run.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -377,27 +378,7 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-uint32_t Random(){
 
-}
-
-
-//save stuff to flash
-int save_flash(){
-}
-
-
-
-// get a signmature to see if code is valid
-uint64_t get_program_signature(){
-
-}
-
-//get user sig so they can put custom code on
-uint64_t get_user_signature(){
-
-}
-int wallet_main(char* s) ;
 void StartDefaultTask(void *argument)
 {
   lcd_init(hi2c1);
