@@ -18,15 +18,14 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <stdio.h>
+#include "cmsis_os.h"
 #include "main.h"
 
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "cmsis_os.h"
-#include "ssd1306.h"
-#include "pics.h"
+#include <stdio.h>
+#include "lcd_ui.h"
 #include "retarget.h"
 #include "run.h"
 /* USER CODE END Includes */
@@ -381,11 +380,17 @@ static void MX_GPIO_Init(void)
 
 void StartDefaultTask(void *argument)
 {
-  lcd_init(hi2c1);
-  //while(1)
-    for(size_t i = 0; i < sizeof(map)/(16*64);i++){
-      //lcd_printmap(map[i]);
-    }
+  //rember to make free set to zeros for seccccccccckckckckc
+  const osThreadAttr_t lcd_attr = {
+    .name = "lcd",
+    .priority = (osPriority_t) osPriorityNormal1,
+    .stack_size = 512 * 4
+  };
+  osThreadId id;
+  id = osThreadNew (lcd_ui_main,(void*)&hi2c1,&lcd_attr);
+  if(id == NULL){
+      printf("Failed to create task!!!!!!!\n");
+  }
   printf("demo program becuse i dont want to use the lcd rn\n$>");
   char str[512] = {0};
   int b = 0;
@@ -414,6 +419,7 @@ void StartDefaultTask(void *argument)
     printf("%s", ind);
     for (int i = 0; i < b; i++)
       printf("%c", str[i]);
+    osThreadYield();
   }
   /* USER CODE END 5 */
 }

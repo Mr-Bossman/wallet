@@ -24,6 +24,8 @@ void lcd_init(I2C_HandleTypeDef c){
     hi2c1 = c;
     //assume const
     HAL_I2C_Mem_Write(&hi2c1,0x78,0x00,1,init_,4,1);
+}
+void lcd_clear(){
     char dat[8] = {0};
     for(uint8_t r = 0;r< 8;r++){
         lcd_move(0,r);
@@ -33,6 +35,7 @@ void lcd_init(I2C_HandleTypeDef c){
     }
     lcd_move(0,0);
 }
+
 void lcd_printc(const char chr,const char cursor){
     lcd_move(cursor&0xf,cursor>>4);
     char tmp[8] = {0};

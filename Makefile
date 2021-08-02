@@ -37,6 +37,7 @@ BUILD_DIR = build
 # C sources
 
 C_SOURCES =  \
+Core/Src/lcd_ui.c \
 Core/Src/ssd1306.c \
 Core/Src/Cstring_func.c\
 Core/Src/run.c \
