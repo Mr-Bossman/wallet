@@ -31,19 +31,24 @@ def printCarr(data):
             dat = dat >> 1
     print("}}",end='')
 
+skip=300
+mod=16
+abytes=2900000
 cap = cv2.VideoCapture(sys.argv[1])
-count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-count = 500
-skip = count-400
-print("const char map["+str(int(skip/16)+1)+"][64][16] = {",end='')
+fr = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+frames = int((abytes/8192)*mod)
+if(fr < frames):
+    frames = fr
+count = frames+skip
+print("const char map["+str(int(frames/mod)+1)+"][64][16] = {",end='')
 while True:
     ret, frame = cap.read()
     if (not ret) or (not count):
         break
     count -= 1
-    if(count%16):
+    if(count%mod):
         continue
-    if(count > skip):
+    if(count > frames):
         continue
     image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     image = image.resize((128, 64))

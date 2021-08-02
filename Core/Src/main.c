@@ -18,9 +18,8 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "cmsis_os.h"
 #include "main.h"
-
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -108,7 +107,6 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   RetargetInit(&huart1);
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -233,7 +231,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x00707CBB;
+  hi2c1.Init.Timing = 0x00100718;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -257,6 +255,9 @@ static void MX_I2C1_Init(void)
   {
     Error_Handler();
   }
+  /** I2C Enable Fast Mode Plus
+  */
+  HAL_I2CEx_EnableFastModePlus(I2C_FASTMODEPLUS_I2C1);
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
@@ -377,9 +378,10 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-
 void StartDefaultTask(void *argument)
 {
+  /* USER CODE BEGIN 5 */
+  /* Infinite loop */
   //rember to make free set to zeros for seccccccccckckckckc
   const osThreadAttr_t lcd_attr = {
     .name = "lcd",
@@ -423,6 +425,7 @@ void StartDefaultTask(void *argument)
   }
   /* USER CODE END 5 */
 }
+
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM1 interrupt took place, inside

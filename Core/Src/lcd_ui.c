@@ -7,8 +7,7 @@ void lcd_ui_main(void *arg){
     lcd_clear();
     for(size_t i = 0; i < sizeof(map)/(16*64);i++){
         lcd_printmap(map[i]);
-        osThreadYield();
-        osDelay(1);
+        osDelay(100);
     }
     while (1) {
         osDelay(10);
