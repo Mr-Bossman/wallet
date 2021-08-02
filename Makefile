@@ -36,10 +36,6 @@ BUILD_DIR = build
 ######################################
 # C sources
 
- #export CC=arm-none-eabi-gcc
- #export CXX=arm-none-eabi-g++
- #./autogen.sh
- #./configure --build=arm-none-eabi --target=arm-none-eabi --host=x86_64-linux-gnu CFLAGS='--specs=nosys.specs  -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -DUSE_ECMULT_STATIC_PRECOMPUTATION ' CXXFLAGS='--specs=nosys.specs  -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -DUSE_ECMULT_STATIC_PRECOMPUTATION ' --enable-module-recovery
 C_SOURCES =  \
 Core/Src/ssd1306.c \
 Core/Src/Cstring_func.c\
@@ -93,19 +89,22 @@ startup_stm32wb55xx_cm4.s
 #######################################
 # binaries
 #######################################
-PREFIX = arm-none-eabi-
+HOST = $(shell gcc -v 2> /dev/stdout | awk  -e \'/Target:/ {print $2}\')
+PREFIX = arm-none-eabi
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
 ifdef GCC_PATH
-CC = $(GCC_PATH)/$(PREFIX)gcc
-AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
-CP = $(GCC_PATH)/$(PREFIX)objcopy
-SZ = $(GCC_PATH)/$(PREFIX)size
+CC = $(GCC_PATH)/$(PREFIX)-gcc
+CXX = $(GCC_PATH)/$(PREFIX)-g++
+AS = $(GCC_PATH)/$(PREFIX)-gcc -x assembler-with-cpp
+CP = $(GCC_PATH)/$(PREFIX)-objcopy
+SZ = $(GCC_PATH)/$(PREFIX)-size
 else
-CC = $(PREFIX)gcc
-AS = $(PREFIX)gcc -x assembler-with-cpp
-CP = $(PREFIX)objcopy
-SZ = $(PREFIX)size
+CC = $(PREFIX)-gcc
+CXX = $(PREFIX)-g++
+AS = $(PREFIX)-gcc -x assembler-with-cpp
+CP = $(PREFIX)-objcopy
+SZ = $(PREFIX)-size
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
@@ -198,10 +197,15 @@ $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
+secp256k1/src/libsecp256k1_la-secp256k1.o:
+	$(shell cd secp256k1 && ./autogen.sh 2> /dev/null 1> /dev/null)
+	#$(shell cd secp256k1 && ./configure CXX=$(CXX) CC=$(CC) --build=$(PREFIX) --target=$(PREFIX) CFLAGS=\'$(CFLAGS) -DUSE_ECMULT_STATIC_PRECOMPUTATION\' CXXFLAGS=\'$(CFLAGS) -DUSE_ECMULT_STATIC_PRECOMPUTATION\'--host=$(HOST)  --enable-module-recovery 2> /dev/null 1> /dev/null)
+	$(MAKE) -C ./secp256k1
+
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SZ) $@
-
+	
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@
 	
@@ -216,7 +220,9 @@ $(BUILD_DIR):
 #######################################
 clean:
 	-rm -fR $(BUILD_DIR)
-  
+clean-all:
+	$(MAKE) -C ./secp256k1 clean
+	-rm -fR $(BUILD_DIR)
 #######################################
 # dependencies
 #######################################
