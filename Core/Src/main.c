@@ -27,6 +27,7 @@
 #include "lcd_ui.h"
 #include "retarget.h"
 #include "run.h"
+#include "free_zero.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

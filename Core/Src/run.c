@@ -144,6 +144,7 @@ void sign(uint8_t *message, uint8_t priv[32], uint8_t sigg[72])
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
   secp256k1_ecdsa_sign(secp256k1_context_sign, &sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
   secp256k1_ecdsa_signature_serialize_der(secp256k1_context_sign, sigg, &sz, &sig);
+  secp256k1_context_destroy(secp256k1_context_sign);
 }
 uint8_t hex_byte(uint8_t *str)
 {
