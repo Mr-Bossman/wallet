@@ -1,0 +1,71 @@
+{
+  "configurations": [
+    {
+      "name": "wallet-arm",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/Core/Inc",
+        "${workspaceFolder}/Core/Inc/font8x8",
+        "${workspaceFolder}/Drivers/STM32WBxx_HAL_Driver/Inc",
+        "${workspaceFolder}/Drivers/STM32WBxx_HAL_Driver/Inc/Legacy",
+        "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/include",
+        "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
+        "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F",
+        "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32WBxx/Include/**",
+        "${workspaceFolder}/Drivers/CMSIS/Include",
+        "/usr/lib/gcc/arm-none-eabi/10.2.1/include",
+        "/usr/lib/gcc/arm-none-eabi/10.2.1/include-fixed",
+        "/usr/lib/gcc/arm-none-eabi/10.2.1/../../../arm-none-eabi/include"
+      ],
+      "defines": [
+        "USE_HAL_DRIVER",
+        "STM32WB55xx"
+      ],
+      "compilerPath": "/usr/bin/arm-none-eabi-gcc",
+      "cStandard": "c11",
+      "cppStandard": "c++14",
+      "intelliSenseMode": "linux-gcc-arm",
+      "compilerArgs": [
+        "-O3",
+        "-Wall",
+        "-pedantic",
+        "-fdata-sections",
+        "-ffunction-sections",
+        "-Wno-unused-result",
+        "-Wno-pointer-sign",
+        "-Wno-unused-function",
+        "-gdwarf-2",
+        "-std=c11",
+        "-MMD",
+        "-MP",
+        "-mcpu=cortex-m4",
+        "-mthumb",
+        "-mfpu=fpv4-sp-d16",
+        "-mfloat-abi=hard",
+        "-DUSE_HAL_DRIVER",
+        "-DSTM32WB55xx"
+      ],
+      "compileCommands": ""
+    },
+    {
+      "name": "STM32",
+      "includePath": [
+        "Core/Inc",
+        "Core/Inc/font8x8",
+        "Drivers/CMSIS/Device/ST/STM32WBxx/Include",
+        "Drivers/CMSIS/Include",
+        "Drivers/STM32WBxx_HAL_Driver/Inc",
+        "Drivers/STM32WBxx_HAL_Driver/Inc/Legacy",
+        "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
+        "Middlewares/Third_Party/FreeRTOS/Source/include",
+        "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F"
+      ],
+      "defines": [
+        "STM32WB55xx",
+        "USE_HAL_DRIVER"
+      ],
+      "compilerPath": "/home/jesse/.config/Code/User/globalStorage/bmd.stm32-for-vscode/@xpack-dev-tools/arm-none-eabi-gcc/10.2.1-1.1.2/.content/bin/arm-none-eabi-gcc"
+    }
+  ],
+  "version": 4
+}
