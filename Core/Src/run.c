@@ -134,16 +134,13 @@ void save_privkey(uint8_t *seed, uint8_t *pass, encrypted_data *out)
   secp256k1_context_destroy(ctx);
 }
 
-void sign(uint8_t *message, uint8_t priv[32], uint8_t sigg[72])
+void sign(uint8_t *message, uint8_t priv[32], uint8_t sig[64])
 {
   uint8_t hash[32];
   SHA256((uint8_t *)message, hash);
-  unsigned int sz = 72;
-  secp256k1_ecdsa_signature sig;
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign(secp256k1_context_sign, &sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
-  secp256k1_ecdsa_signature_serialize_der(secp256k1_context_sign, sigg, &sz, &sig);
+  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
 uint8_t hex_byte(uint8_t *str)
@@ -155,7 +152,7 @@ uint8_t hex_byte(uint8_t *str)
   ret = strtoul(tmp, NULL, 16);
   return (uint8_t)ret;
 }
-void signh(uint8_t *hex, uint8_t priv[32], uint8_t sigg[72])
+void signh(uint8_t *hex, uint8_t priv[32], uint8_t sig[64])
 {
   uint8_t hash[32];
   if (strlen(hex) != 64)
@@ -164,14 +161,12 @@ void signh(uint8_t *hex, uint8_t priv[32], uint8_t sigg[72])
   {
     hash[i] = hex_byte(hex + (i * 2));
   }
-  unsigned int sz = 72;
-  secp256k1_ecdsa_signature sig;
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign(secp256k1_context_sign, &sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
-  secp256k1_ecdsa_signature_serialize_der(secp256k1_context_sign, sigg, &sz, &sig);
+  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
+  secp256k1_context_destroy(secp256k1_context_sign);
 }
-void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sigg[65])
+void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sig[65])
 {
   uint8_t hash[32];
   if (strlen(hex) != 64)
@@ -183,25 +178,19 @@ void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sigg[65])
   for (int i = 0; i < 32; i++)
     printf("%02x", hash[i]);
   printf("\n");
-  int rec = -1;
-  secp256k1_ecdsa_recoverable_signature sig;
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, &sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
-  secp256k1_ecdsa_recoverable_signature_serialize_compact(secp256k1_context_sign, sigg + 1, &rec, &sig);
-  sigg[0] = 27 + rec + 4;
+  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
+  secp256k1_context_destroy(secp256k1_context_sign);
 }
-void signrec(uint8_t *message, uint8_t priv[32], uint8_t sigg[65])
+void signrec(uint8_t *message, uint8_t priv[32], uint8_t sig[65])
 {
   uint8_t hash[32];
   SHA256((uint8_t *)message, hash);
-  int rec = -1;
-  secp256k1_ecdsa_recoverable_signature sig;
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, &sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
-  secp256k1_ecdsa_recoverable_signature_serialize_compact(secp256k1_context_sign, sigg + 1, &rec, &sig);
-  sigg[0] = 27 + rec + 4;
+  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
+  secp256k1_context_destroy(secp256k1_context_sign);
 }
 
 void signrech_parse(char *command)
@@ -250,11 +239,11 @@ void signh_parse(char *command)
     return;
   }
   uint8_t priv[32];
-  uint8_t sig[72];
+  uint8_t sig[64];
   get_privkey(&dat, (uint8_t *)params[0], priv);
   signh((uint8_t *)params[1], priv, sig);
   memset(priv, 0, 32);
-  for (int i = 0; i < 72; i++)
+  for (int i = 0; i < 64; i++)
     printf("%02x", sig[i]);
   printf("\n");
 }
@@ -269,11 +258,11 @@ void sign_parse(char *command)
   }
 
   uint8_t priv[32];
-  uint8_t sig[72];
+  uint8_t sig[64];
   get_privkey(&dat, (uint8_t *)params[0], priv);
   sign((uint8_t *)params[1], priv, sig);
   memset(priv, 0, 32);
-  for (int i = 0; i < 72; i++)
+  for (int i = 0; i < 64; i++)
     printf("%02x", sig[i]);
   printf("\n");
 }
