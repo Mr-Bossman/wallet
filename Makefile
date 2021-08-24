@@ -90,7 +90,7 @@ startup_stm32wb55xx_cm4.s
 #######################################
 # binaries
 #######################################
-HOST = $(shell gcc -v 2> /dev/stdout | awk  -e \'/Target:/ {print $2}\')
+HOST = $(shell gcc -v 2> /dev/stdout | awk  -e '/Target:/ {print $$2}')
 PREFIX = arm-none-eabi
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
@@ -163,8 +163,7 @@ endif
 
 
 # Generate dependency information
-CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
-
+CFLAGS += -MMD -MP
 
 #######################################
 # LDFLAGS
@@ -193,14 +192,14 @@ OBJECTS += secp256k1/src/libsecp256k1_la-secp256k1.o
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
-	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+	$(CC) -c $(CFLAGS) -MF"$(@:%.o=%.d)" -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
-	$(AS) -c $(CFLAGS) $< -o $@
+	$(AS) -c $(CFLAGS) -MF"$(@:%.o=%.d)" $< -o $@
 
 secp256k1/src/libsecp256k1_la-secp256k1.o:
-	$(shell cd secp256k1 && ./autogen.sh 2> /dev/null 1> /dev/null)
-	#$(shell cd secp256k1 && ./configure CXX=$(CXX) CC=$(CC) --build=$(PREFIX) --target=$(PREFIX) CFLAGS=\'$(CFLAGS) -DUSE_ECMULT_STATIC_PRECOMPUTATION\' CXXFLAGS=\'$(CFLAGS) -DUSE_ECMULT_STATIC_PRECOMPUTATION\'--host=$(HOST)  --enable-module-recovery 2> /dev/null 1> /dev/null)
+	#$(shell cd secp256k1 && ./autogen.sh)
+	#$(shell cd secp256k1 && ./configure CXX=$(CXX) CC=$(CC) --build=$(PREFIX) --target=$(PREFIX) CFLAGS='$(CFLAGS) -DSECP256K1_BIG_ENDIAN -specs=nosys.specs -specs=nano.specs' CXXFLAGS='$(CFLAGS) -DSECP256K1_BIG_ENDIAN -specs=nosys.specs -specs=nano.specs' --host=$(HOST)  --enable-module-recovery -enable-ecmult-static-precomputation)
 	$(MAKE) -C ./secp256k1
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile

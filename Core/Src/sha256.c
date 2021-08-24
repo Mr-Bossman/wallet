@@ -151,3 +151,10 @@ void SHA256(uint8_t* data,	uint8_t hash[32]) {
 	SHA256Final(&ctx, hash);
 }
 
+
+void SHA256_len(uint8_t* data,uint8_t hash[32],size_t strLen) {
+	SHA256_CTX ctx;
+	SHA256Init(&ctx);
+	SHA256Update(&ctx, data, strLen);
+	SHA256Final(&ctx, hash);
+}

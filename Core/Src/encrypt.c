@@ -16,7 +16,7 @@ int encrypt(uint8_t*  data,uint8_t*  pass,uint8_t sum[32]){
   unsigned char key2[176];
 	KeyExpansion(sum, key1);
   KeyExpansion(sum+16, key2);
-  SHA256(data,sum);
+  SHA256_len(data,sum,len);
 	for (int i = 0; i < len; i += 16) {
 		AESEncrypt(data+i, key1, data+i);
 	}
@@ -32,7 +32,7 @@ int encrypt_raw(uint8_t*  data,size_t len,uint8_t*  pass,uint8_t sum[32]){
   unsigned char key2[176];
 	KeyExpansion(sum, key1);
   KeyExpansion(sum+16, key2);
-  SHA256(data,sum);
+  SHA256_len(data,sum,len);
 	for (int i = 0; i < len; i += 16) {
 		AESEncrypt(data+i, key1, data+i);
 	}
@@ -57,7 +57,7 @@ int decrypt(uint8_t* data,size_t len,uint8_t*  pass,uint8_t  sum[32]){
 	for (int i = 0; i < len; i += 16) {
 		AESDecrypt(data+i, key1, data+i);
 	}
-  SHA256(data,checksum);
+  SHA256_len(data,checksum,len);
   if(memcmp(checksum,sum,32))
     return -2;
   return 0;

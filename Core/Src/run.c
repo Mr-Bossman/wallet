@@ -101,10 +101,10 @@ void help(char *command)
   printf("\n%s\n", command);
 }
 
-void get_privkey(encrypted_data *in, uint8_t *pass, uint8_t priv[32])
+int get_privkey(encrypted_data *in, uint8_t *pass, uint8_t priv[32])
 {
   memcpy(priv, in->enc_priv, 32);
-  decrypt(priv, 32, (uint8_t *)pass, in->sum);
+  return decrypt(priv, 32, (uint8_t *)pass, in->sum);
 }
 
 void save_privkey(uint8_t *seed, uint8_t *pass, encrypted_data *out)
@@ -140,7 +140,7 @@ void sign(uint8_t *message, uint8_t priv[32], uint8_t sig[64])
   SHA256((uint8_t *)message, hash);
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
+  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
 uint8_t hex_byte(uint8_t *str)
@@ -155,22 +155,23 @@ uint8_t hex_byte(uint8_t *str)
 void signh(uint8_t *hex, uint8_t priv[32], uint8_t sig[64])
 {
   uint8_t hash[32];
-  if (strlen(hex) != 64)
-    return;
+  //if (strlen(hex) != 64)
+  //  return;
   for (int i = 0; i < 32; i++)
   {
     hash[i] = hex_byte(hex + (i * 2));
   }
+
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
+  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
 void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sig[65])
 {
   uint8_t hash[32];
-  if (strlen(hex) != 64)
-    return;
+  //if (strlen(hex) != 64)
+  //  return;
   for (int i = 0; i < 32; i++)
   {
     hash[i] = hex_byte(hex + (i * 2));
@@ -180,7 +181,7 @@ void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sig[65])
   printf("\n");
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
+  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
 void signrec(uint8_t *message, uint8_t priv[32], uint8_t sig[65])
@@ -189,7 +190,7 @@ void signrec(uint8_t *message, uint8_t priv[32], uint8_t sig[65])
   SHA256((uint8_t *)message, hash);
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, secp256k1_nonce_function_rfc6979, NULL);
+  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
 
