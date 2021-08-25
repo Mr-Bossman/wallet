@@ -199,7 +199,7 @@ $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 
 secp256k1/src/libsecp256k1_la-secp256k1.o:
 	#$(shell cd secp256k1 && ./autogen.sh)
-	#$(shell cd secp256k1 && ./configure CXX=$(CXX) CC=$(CC) --build=$(PREFIX) --target=$(PREFIX) CFLAGS='$(CFLAGS) -DSECP256K1_BIG_ENDIAN -specs=nosys.specs -specs=nano.specs' CXXFLAGS='$(CFLAGS) -DSECP256K1_BIG_ENDIAN -specs=nosys.specs -specs=nano.specs' --host=$(HOST)  --enable-module-recovery -enable-ecmult-static-precomputation)
+	#$(shell cd secp256k1 && ./configure CXX=$(CXX) CC=$(CC) --build=$(PREFIX) --target=$(PREFIX) CFLAGS='$(CFLAGS) -specs=nosys.specs -specs=nano.specs' CXXFLAGS='$(CFLAGS) -specs=nosys.specs -specs=nano.specs' --host=$(HOST)  --enable-module-recovery -enable-ecmult-static-precomputation)
 	$(MAKE) -C ./secp256k1
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
