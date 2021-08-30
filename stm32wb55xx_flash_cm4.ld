@@ -55,14 +55,20 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)                 : ORIGIN = 0x08000000, LENGTH = 512K
+FLASH (rx)                 : ORIGIN = 0x08000000, LENGTH = 512k
 RAM1 (xrw)                 : ORIGIN = 0x20000008, LENGTH = 0x2FFF8
 RAM_SHARED (xrw)           : ORIGIN = 0x20030000, LENGTH = 10K
+SPI (xr)           : ORIGIN = 0x90000000, LENGTH = 8M
 }
 
 /* Define output sections */
 SECTIONS
 {
+   /DISCARD/ :
+  {
+    *(.ARM.exidx*)
+    *(.ARM.extab*)
+  }
   /* The startup code goes first into FLASH */
   .isr_vector :
   {
@@ -70,14 +76,24 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
-
+  .text2 :
+  {
+    . = ALIGN(4);
+    libs/librustzcash.a(.text)
+    libs/libsnark.a(.text)
+    libs/libsodium.a(.text)
+    libs/librustzcash.a(.text*)
+    libs/libsnark.a(.text*)
+    libs/libsodium.a(.text*)
+    . = ALIGN(4);
+  } >SPI
   /* The program code and other data goes into FLASH */
   .text :
   {
     . = ALIGN(4);
-    *(.text)           /* .text sections (code) */
-    *(.text*)          /* .text* sections (code) */
-    *(.glue_7)         /* glue arm to thumb code */
+    *(.text)
+    *(.text*)
+    *(.glue_7)         /* glue arm to thumb code 1*/
     *(.glue_7t)        /* glue thumb to arm code */
     *(.eh_frame)
 

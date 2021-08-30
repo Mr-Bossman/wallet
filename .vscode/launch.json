@@ -8,14 +8,14 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/wallet.elf",
+            "executable": "./build/wallet.elf_main",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
             "armToolchainPath": "/usr/bin",
             "interface": "swd",
             "svdFile": "/opt/st/stm32cubeide_1.7.0/plugins/com.st.stm32cube.ide.mcu.productdb.debug_2.0.0.202107021202/resources/cmsis/STMicroelectronics_CMSIS_SVD/STM32WB55_CM4.svd",
-            "runToMain": true,
+            "runToMain": false,
             "configFiles": [
                 "/opt/st/stm32cubeide_1.7.0/plugins/com.st.stm32cube.ide.mcu.debug.openocd_2.0.0.202106290712/resources/openocd/st_scripts/interface/stlink.cfg",
                 "/opt/st/stm32cubeide_1.7.0/plugins/com.st.stm32cube.ide.mcu.debug.openocd_2.0.0.202106290712/resources/openocd/st_scripts/target/stm32wbx.cfg",
