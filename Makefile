@@ -110,7 +110,7 @@ CP = $(PREFIX)-objcopy
 SZ = $(PREFIX)-size
 endif
 HEX = $(CP) -O ihex
-BIN = $(CP) -O binary -S
+BIN = $(CP) -O binary
  
 #######################################
 # CFLAGS
@@ -207,8 +207,8 @@ secp256k1/src/libsecp256k1_la-secp256k1.o:
 #adding lib rust breaks it
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	$(CXX) $(OBJECTS)  libs/main.a  libs/libsnark.a  libs/librustzcash.a libs/libsodium.a $(LDFLAGS) -T$(LDSCRIPT) -o $@
-	$(CP) -R .text2 $@ $@_main
-	$(CP) -j .text2 $@ $@_text
+	$(CP) -R .text2 -R .ARM2 $@ $@_main
+	$(CP) -j .text2 -j .ARM2 $@ $@_text
 	$(SZ) $@
 	$(SZ) $@_text
 	$(SZ) $@_main
@@ -219,8 +219,8 @@ $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) -j .text2 $< $@_text2
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(BIN) -R .text2 $< $@	
-	$(BIN) -j .text2 $< $@_text2
+	$(BIN) -R .text2 -R .ARM2 $< $@	
+	$(BIN) -j .text2 -j .ARM2 $< $@_text2
 	
 $(BUILD_DIR):
 	mkdir $@		

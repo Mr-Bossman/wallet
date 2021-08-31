@@ -11,8 +11,27 @@
 #include "retarget.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unwind.h>
 
 
+
+_Unwind_Reason_Code unwind_backtrace_callback(struct _Unwind_Context* context, void* arg) {
+    uintptr_t pc = _Unwind_GetIP(context);
+    printf("0x%x\n", pc);
+    return _URC_NO_REASON;
+}
+
+void print_trace (void)
+{
+  _Unwind_Reason_Code rc = _Unwind_Backtrace(unwind_backtrace_callback, 0);
+  printf("code %d\n", rc);
+}
+
+void sig_func (int sig)
+{
+    printf("exit %d\n", sig);
+}
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
@@ -21,7 +40,8 @@ UART_HandleTypeDef *gHuart;
 
 void RetargetInit(UART_HandleTypeDef *huart) {
   gHuart = huart;
-
+  for(uint8_t i = 0;i <= 32;i++)
+    signal(i,sig_func);
   /* Disable I/O buffering for STDOUT stream, so that
    * chars are sent out as soon as they are printed. */
   setvbuf(stdout, NULL, _IONBF, 0);

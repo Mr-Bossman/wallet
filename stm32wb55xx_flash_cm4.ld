@@ -64,11 +64,6 @@ SPI (xr)           : ORIGIN = 0x90000000, LENGTH = 8M
 /* Define output sections */
 SECTIONS
 {
-   /DISCARD/ :
-  {
-    *(.ARM.exidx*)
-    *(.ARM.extab*)
-  }
   /* The startup code goes first into FLASH */
   .isr_vector :
   {
@@ -76,6 +71,7 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
+
   .text2 :
   {
     . = ALIGN(4);
@@ -85,6 +81,18 @@ SECTIONS
     libs/librustzcash.a(.text*)
     libs/libsnark.a(.text*)
     libs/libsodium.a(.text*)
+    libs/libsnark.a(.ARM.extab*)
+    libs/librustzcash.a(.ARM.extab*)
+    libs/libsodium.a(.ARM.extab*)
+    . = ALIGN(4);
+  } >SPI
+
+  .ARM2 :
+  {
+    . = ALIGN(4);
+    libs/librustzcash.a(.ARM.exidx*)
+    libs/libsodium.a(.ARM.exidx*)
+    libs/libsnark.a(.ARM.exidx*)
     . = ALIGN(4);
   } >SPI
   /* The program code and other data goes into FLASH */
