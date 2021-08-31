@@ -295,9 +295,9 @@ static void MX_QUADSPI_Init(void)
   hqspi.Instance = QUADSPI;
   hqspi.Init.ClockPrescaler = 255;
   hqspi.Init.FifoThreshold = 32;
-  hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_NONE;
+  hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
   hqspi.Init.FlashSize = 31;
-  hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_1_CYCLE;
+  hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_8_CYCLE;
   hqspi.Init.ClockMode = QSPI_CLOCK_MODE_0;
   if (HAL_QSPI_Init(&hqspi) != HAL_OK)
   {
@@ -308,20 +308,23 @@ static void MX_QUADSPI_Init(void)
   QSPI_MemoryMappedTypeDef s_mem_mapped_cfg;
 
   /* Configure the command for the read instruction */
+  s_command.Instruction       = 0x3b;
   s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
   s_command.AddressMode       = QSPI_ADDRESS_1_LINE;
-  s_command.AddressSize       = QSPI_ADDRESS_32_BITS;
+  s_command.AddressSize       = QSPI_ADDRESS_24_BITS;
   s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
   s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
-  s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+  s_command.DataMode          = QSPI_DATA_2_LINES;
+  s_command.DummyCycles       = 8;
+  s_command.SIOOMode          = QSPI_SIOO_INST_ONLY_FIRST_CMD;
 
   /* Configure the memory mapped mode */
-  s_mem_mapped_cfg.TimeOutActivation = QSPI_TIMEOUT_COUNTER_DISABLE;
-  s_mem_mapped_cfg.TimeOutPeriod     = 0;
+  s_mem_mapped_cfg.TimeOutActivation = QSPI_TIMEOUT_COUNTER_ENABLE;
+  s_mem_mapped_cfg.TimeOutPeriod     = 100;
 
   if (HAL_QSPI_MemoryMapped(&hqspi, &s_command, &s_mem_mapped_cfg) != HAL_OK)
   {
-    Error_Handler();;
+    Error_Handler();
   }
   /* USER CODE END QUADSPI_Init 2 */
 

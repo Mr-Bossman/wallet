@@ -23,7 +23,8 @@
             "preRestartCommands": [
                 "load",
                 "enable breakpoint",
-                "monitor reset"
+                "monitor reset",
+                "symbol-file ./build/wallet.elf"
             ],
             "showDevDebugOutput": true,
         }
