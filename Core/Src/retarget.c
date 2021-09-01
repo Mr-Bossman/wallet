@@ -14,6 +14,11 @@
 #include <stdlib.h>
 #include <unwind.h>
 
+#define STDIN_FILENO  0
+#define STDOUT_FILENO 1
+#define STDERR_FILENO 2
+
+extern QSPI_HandleTypeDef hqspi;
 
 
 _Unwind_Reason_Code unwind_backtrace_callback(struct _Unwind_Context* context, void* arg) {
@@ -24,6 +29,8 @@ _Unwind_Reason_Code unwind_backtrace_callback(struct _Unwind_Context* context, v
 
 void print_trace (void)
 {
+  printf("code %x\n", HAL_QSPI_GetState(&hqspi));
+  printf("code %lx\n", HAL_QSPI_GetError(&hqspi));
   _Unwind_Reason_Code rc = _Unwind_Backtrace(unwind_backtrace_callback, 0);
   printf("code %d\n", rc);
 }
@@ -32,9 +39,6 @@ void sig_func (int sig)
 {
     printf("exit %d\n", sig);
 }
-#define STDIN_FILENO  0
-#define STDOUT_FILENO 1
-#define STDERR_FILENO 2
 
 UART_HandleTypeDef *gHuart;
 
