@@ -206,7 +206,7 @@ secp256k1/src/libsecp256k1_la-secp256k1.o:
 
 #adding lib rust breaks it
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	$(CXX) $(OBJECTS)  libs/main.a  libs/libsnark.a  libs/librustzcash.a libs/libsodium.a $(LDFLAGS) -T$(LDSCRIPT) -o $@
+	$(CXX) $(OBJECTS)  libs/main.a  libs/libsnark.a libs/libsodium.a $(LDFLAGS) libs/librustzcash.a  -T$(LDSCRIPT) -o $@
 	$(CP) -R .text2 -R .ARM2 $@ $@_main
 	$(CP) -j .text2 -j .ARM2 $@ $@_text
 	$(SZ) $@
