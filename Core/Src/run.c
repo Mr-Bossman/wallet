@@ -10,6 +10,7 @@
 #include "eeprom.h"
 #include "Cstring_func.h"
 #include "stdbool.h"
+#include "lcd_ui.h"
 char *commands[] = {"help", "sign", "priv", "pub", "del", "sel", "signh", "signrech", "signrec"};
 
 typedef struct encrypted_data
@@ -22,10 +23,12 @@ typedef struct encrypted_data
 encrypted_data dat;
 uint32_t save(uint32_t index, encrypted_data *in)
 {
+  /* TODO: this code doesnt work as expected */
   return FLASH_WRITE_DATA(index, (uint8_t*)in, sizeof(encrypted_data));
 }
 uint32_t read(uint32_t index, encrypted_data *in)
 {
+  /* TODO: this code doesnt work as expected */
   return FLASH_READ_DATA(index,  (uint8_t*)in, sizeof(encrypted_data));
 }
 uint16_t count()
@@ -35,6 +38,7 @@ uint16_t count()
 
 uint16_t first_aval()
 {
+  /* TODO: this code doesnt work as expected */
   encrypted_data data;
   size_t i = 0;
   for (; i < count(); i++)
@@ -101,10 +105,14 @@ void help(char *command)
   printf("\n%s\n", command);
 }
 
-int get_privkey(encrypted_data *in, uint8_t *pass, uint8_t priv[32])
+int get_privkey(encrypted_data *in, uint8_t *pas, uint8_t priv[32])
 {
+  char pass[100] = {0};
+  password(pass,sizeof(pass));
   memcpy(priv, in->enc_priv, 32);
-  return decrypt(priv, 32, (uint8_t *)pass, in->sum);
+  int ret = decrypt(priv, 32, (uint8_t *)pass, in->sum);
+  memset(pass,0,sizeof(pass));
+  return ret;
 }
 
 void save_privkey(uint8_t *seed, uint8_t *pass, encrypted_data *out)

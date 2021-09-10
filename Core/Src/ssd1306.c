@@ -48,6 +48,26 @@ void lcd_printc(const char chr,const char cursor){
 
 }
 
+
+void lcd_printstr(const char *chr,char cursor){
+    for(size_t index = 0; chr[index];index++){
+        lcd_move(index&0xf,index>>4);
+        char character[8];
+        memcpy(character,font8x8_basic[chr[index]&0x7f],8);
+        if(cursor == index){
+            for(size_t i = 0;i < 8; i++)
+                character[i] |= font8x8_basic['_'][i];
+        }
+        char tmp[8] = {0};
+        for(size_t b = 0;b< 8;b++)
+            for(size_t bt = 0;bt< 8;bt++){
+                char bit = ( character[b]>> bt)&1;
+                tmp[bt] |= bit << b;
+            }
+        HAL_I2C_Mem_Write(&hi2c1,0x78,0x40,1,tmp,8,1);
+    }
+}
+
 void lcd_printmap(const char map[64][16]){
     for(uint8_t r = 0;r< 8;r++){
         lcd_move(0,r);

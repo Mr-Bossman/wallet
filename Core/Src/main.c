@@ -51,6 +51,8 @@ QSPI_HandleTypeDef hqspi;
 
 RNG_HandleTypeDef hrng;
 
+TSC_HandleTypeDef htsc;
+
 UART_HandleTypeDef huart1;
 
 /* Definitions for defaultTask */
@@ -71,6 +73,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_QUADSPI_Init(void);
 static void MX_RNG_Init(void);
+static void MX_TSC_Init(void);
 void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -114,6 +117,7 @@ int main(void)
   MX_I2C1_Init();
   MX_QUADSPI_Init();
   MX_RNG_Init();
+  MX_TSC_Init();
   /* USER CODE BEGIN 2 */
   RetargetInit(&huart1);
   /* USER CODE END 2 */
@@ -358,6 +362,49 @@ static void MX_RNG_Init(void)
 }
 
 /**
+  * @brief TSC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TSC_Init(void)
+{
+
+  /* USER CODE BEGIN TSC_Init 0 */
+
+  /* USER CODE END TSC_Init 0 */
+
+  /* USER CODE BEGIN TSC_Init 1 */
+
+  /* USER CODE END TSC_Init 1 */
+  /** Configure the TSC peripheral
+  */
+  htsc.Instance = TSC;
+  htsc.Init.CTPulseHighLength = TSC_CTPH_2CYCLES;
+  htsc.Init.CTPulseLowLength = TSC_CTPL_2CYCLES;
+  htsc.Init.SpreadSpectrum = DISABLE;
+  htsc.Init.SpreadSpectrumDeviation = 1;
+  htsc.Init.SpreadSpectrumPrescaler = TSC_SS_PRESC_DIV1;
+  htsc.Init.PulseGeneratorPrescaler = TSC_PG_PRESC_DIV4;
+  htsc.Init.MaxCountValue = TSC_MCV_8191;
+  htsc.Init.IODefaultMode = TSC_IODEF_OUT_PP_LOW;
+  htsc.Init.SynchroPinPolarity = TSC_SYNC_POLARITY_FALLING;
+  htsc.Init.AcquisitionMode = TSC_ACQ_MODE_NORMAL;
+  htsc.Init.MaxCountInterrupt = DISABLE;
+  htsc.Init.ChannelIOs = TSC_GROUP1_IO2|TSC_GROUP1_IO3|TSC_GROUP1_IO4|TSC_GROUP3_IO2
+                    |TSC_GROUP3_IO3|TSC_GROUP3_IO4;
+  htsc.Init.ShieldIOs = 0;
+  htsc.Init.SamplingIOs = TSC_GROUP1_IO1|TSC_GROUP3_IO1;
+  if (HAL_TSC_Init(&htsc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TSC_Init 2 */
+
+  /* USER CODE END TSC_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -465,6 +512,20 @@ inline uint32_t rand(){
   HAL_RNG_GenerateRandomNumber_IT(&hrng);
   return HAL_RNG_ReadLastRandomNumber(&hrng);
 }
+
+int read_pin(uint32_t grp,uint32_t io){
+  TSC_IOConfigTypeDef sel;
+  sel.ChannelIOs = io;
+  sel.ShieldIOs = 0;
+  sel.SamplingIOs = TSC_GROUP1_IO1|TSC_GROUP3_IO1;
+  HAL_TSC_IODischarge(&htsc, ENABLE);
+  HAL_TSC_IOConfig(&htsc,&sel);
+  HAL_Delay(1);
+  if (HAL_TSC_Start(&htsc) != HAL_OK) Error_Handler();
+  while (HAL_TSC_GetState(&htsc) == HAL_TSC_STATE_BUSY);
+  __HAL_TSC_CLEAR_FLAG(&htsc, (TSC_FLAG_EOA | TSC_FLAG_MCE));
+  return HAL_TSC_GroupGetValue(&htsc,grp);
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -473,7 +534,6 @@ inline uint32_t rand(){
   * @param  argument: Not used
   * @retval None
   */
-int crust();
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
@@ -512,7 +572,6 @@ void StartDefaultTask(void *argument)
       printf("\n");
       str[b - 1] = 0;
       b = 0;
-      crust();
       wallet_main(str);
     }
     puts("\r\b");
