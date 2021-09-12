@@ -11,6 +11,8 @@
 #include "Cstring_func.h"
 #include "stdbool.h"
 #include "lcd_ui.h"
+#include "ssd1306.h"
+
 char *commands[] = {"help", "sign", "priv", "pub", "del", "sel", "signh", "signrech", "signrec"};
 
 typedef struct encrypted_data
@@ -72,6 +74,49 @@ char *next_non_sp(char *p, size_t offset, size_t mlen)
   return p;
 }
 
+
+
+void del_num(int sel)
+{
+  encrypted_data data;
+  size_t index = 0;
+  size_t i =0;
+  while(1){
+    if(i >= count()){
+      return;
+    }
+    read(i++, &data);
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data))) 
+    continue;
+    if (sel == index)break;
+    index++;
+  }
+  i--;
+  memset(&data, 0xff, sizeof(encrypted_data));
+  save(i, &data);
+  //we need to resend to pc
+  return;
+}
+
+size_t pub_list(char ***strs){
+  encrypted_data data;
+  size_t index = 0;
+  *strs = malloc(count());
+  for (size_t i = 0; i < count(); i++)
+  {
+    read(i, &data);
+    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
+      continue;
+    (*strs)[index] = malloc(66);
+    for (int b = 0; b < 33; b++){
+      sprintf(((*strs)[index])+(b*2),"%02x", data.pub[b]);
+    }
+
+    index++;
+  }
+  return index;
+}
+
 // bad code
 int parse_params(char *command, char **params, int Nparams)
 {
@@ -105,13 +150,17 @@ void help(char *command)
   printf("\n%s\n", command);
 }
 
-int get_privkey(encrypted_data *in, uint8_t *pas, uint8_t priv[32])
+int get_privkey(encrypted_data *in, uint8_t priv[32])
 {
+  osThreadSuspend( lcd_task);
   char pass[100] = {0};
-  password(pass,sizeof(pass));
+  lcd_clear();
+  lcd_printstr("password",255,0);
+  password(pass,sizeof(pass),2<<4);
   memcpy(priv, in->enc_priv, 32);
   int ret = decrypt(priv, 32, (uint8_t *)pass, in->sum);
   memset(pass,0,sizeof(pass));
+  osThreadResume( lcd_task);
   return ret;
 }
 
@@ -140,6 +189,33 @@ void save_privkey(uint8_t *seed, uint8_t *pass, encrypted_data *out)
   memcpy(out->sum, sum, 32);
   memcpy(out->enc_priv, priv, 32);
   secp256k1_context_destroy(ctx);
+}
+
+void save_privkey_int(uint8_t *seed, uint8_t *pass)
+{
+  encrypted_data out;
+  uint8_t priv[32];
+  uint8_t sum[32];
+  SHA256((uint8_t *)seed, priv);
+  secp256k1_context *ctx;
+  secp256k1_pubkey pub;
+  ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
+  secp256k1_ec_pubkey_create(ctx, &pub, priv);
+  unsigned int sz = 33;
+  secp256k1_ec_pubkey_serialize(ctx, out.pub, &sz, &pub, SECP256K1_EC_COMPRESSED);
+  encrypt_raw((uint8_t *)priv, 32, (uint8_t *)pass, sum);
+  memcpy(out.sum, sum, 32);
+  memcpy(out.enc_priv, priv, 32);
+  secp256k1_context_destroy(ctx);
+
+  encrypted_data data;
+  for (size_t i = 0; i < count(); i++)
+  {
+    read(i, &data);
+    if (!memcmp(&out, &data, sizeof(encrypted_data)))
+      return;
+  }
+  save(first_aval(), &out);
 }
 
 void sign(uint8_t *message, uint8_t priv[32], uint8_t sig[64])
@@ -202,10 +278,22 @@ void signrec(uint8_t *message, uint8_t priv[32], uint8_t sig[65])
   secp256k1_context_destroy(secp256k1_context_sign);
 }
 
+
+
+
+
+
+/* paresing */
+
+
+
+
+
+
 void signrech_parse(char *command)
 {
-  char *params[2] = {0};
-  if (parse_params(command, params, 2))
+  char *params[1] = {0};
+  if (parse_params(command, params, 1))
   {
     printf("Syntax is wrong must be password then hex\n");
     return;
@@ -213,8 +301,8 @@ void signrech_parse(char *command)
 
   uint8_t priv[32];
   uint8_t sig[65];
-  get_privkey(&dat, (uint8_t *)params[0], priv);
-  signrech((uint8_t *)params[1], priv, sig);
+  get_privkey(&dat, priv);
+  signrech((uint8_t *)params[0], priv, sig);
   memset(priv, 0, 32);
   for (int i = 0; i < 65; i++)
     printf("%02x", sig[i]);
@@ -222,8 +310,8 @@ void signrech_parse(char *command)
 }
 void signrec_parse(char *command)
 {
-  char *params[2] = {0};
-  if (parse_params(command, params, 2))
+  char *params[1] = {0};
+  if (parse_params(command, params, 1))
   {
     printf("Syntax is wrong must be password then message\n");
     return;
@@ -231,8 +319,8 @@ void signrec_parse(char *command)
 
   uint8_t priv[32];
   uint8_t sig[64];
-  get_privkey(&dat, (uint8_t *)params[0], priv);
-  signrec((uint8_t *)params[1], priv, sig);
+  get_privkey(&dat, priv);
+  signrec((uint8_t *)params[0], priv, sig);
   memset(priv, 0, 32);
   for (int i = 0; i < 64; i++)
     printf("%02x", sig[i]);
@@ -241,16 +329,16 @@ void signrec_parse(char *command)
 
 void signh_parse(char *command)
 {
-  char *params[2] = {0};
-  if (parse_params(command, params, 2))
+  char *params[1] = {0};
+  if (parse_params(command, params, 1))
   {
     printf("Syntax is wrong must be password then hex\n");
     return;
   }
   uint8_t priv[32];
   uint8_t sig[64];
-  get_privkey(&dat, (uint8_t *)params[0], priv);
-  signh((uint8_t *)params[1], priv, sig);
+  get_privkey(&dat, priv);
+  signh((uint8_t *)params[0], priv, sig);
   memset(priv, 0, 32);
   for (int i = 0; i < 64; i++)
     printf("%02x", sig[i]);
@@ -259,8 +347,8 @@ void signh_parse(char *command)
 
 void sign_parse(char *command)
 {
-  char *params[2] = {0};
-  if (parse_params(command, params, 2))
+  char *params[1] = {0};
+  if (parse_params(command, params, 1))
   {
     printf("Syntax is wrong must be password then message\n");
     return;
@@ -268,8 +356,8 @@ void sign_parse(char *command)
 
   uint8_t priv[32];
   uint8_t sig[64];
-  get_privkey(&dat, (uint8_t *)params[0], priv);
-  sign((uint8_t *)params[1], priv, sig);
+  get_privkey(&dat, priv);
+  sign((uint8_t *)params[0], priv, sig);
   memset(priv, 0, 32);
   for (int i = 0; i < 64; i++)
     printf("%02x", sig[i]);
@@ -303,7 +391,7 @@ void pub_parse(char *command)
     printf("Syntax is wrong must be password then message\n");
     return;
   }
-  
+
   encrypted_data data;
   size_t index = 0;
   for (size_t i = 0; i < count(); i++)
@@ -391,6 +479,7 @@ void sel_parse(char *command)
   printf("\n");
   return;
 }
+
 int wallet_main(char *command)
 {
   size_t offset = (size_t)memchr(command, ' ', strlen(command));
@@ -402,6 +491,8 @@ int wallet_main(char *command)
   {
     if (strncmp(command, commands[i], offset - (size_t)command) == 0)
     { // bad code
+      if((offset - (size_t)command)+1 != strlen(commands[i]))
+        continue;
       break;
     }
   }

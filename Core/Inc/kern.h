@@ -1,6 +1,3 @@
-// All credit to Carmine Noviello for this code
-// https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/include/retarget/retarget.h
-
 #ifndef _RETARGET_H__
 #define _RETARGET_H__
 
@@ -15,5 +12,11 @@ int _close(int fd);
 int _lseek(int fd, int ptr, int dir);
 int _read(int fd, char* ptr, int len);
 int _fstat(int fd, struct stat* st);
+
+void* __real_realloc(void *, size_t);
+void* __wrap_realloc(void *ptr, size_t sz);
+void __real_free(void *);
+void __wrap_free(void *ptr);
+
 
 #endif //#ifndef _RETARGET_H__

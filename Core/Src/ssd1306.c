@@ -36,7 +36,7 @@ void lcd_clear(){
     lcd_move(0,0);
 }
 
-void lcd_printc(const char chr,const char cursor){
+void lcd_printc(const char chr,const size_t cursor){
     lcd_move(cursor&0xf,cursor>>4);
     char tmp[8] = {0};
     for(size_t b = 0;b< 8;b++)
@@ -48,10 +48,33 @@ void lcd_printc(const char chr,const char cursor){
 
 }
 
+void lcd_printlc(const char chr,const size_t cursor,size_t line){
+    lcd_move(cursor&0xf,line&0xf);
+    char tmp[8] = {0};
+    for(size_t b = 0;b< 8;b++)
+        for(size_t bt = 0;bt< 8;bt++){
+            char bit = (font8x8_basic[chr&0x7f][b] >> bt)&1;
+            tmp[bt] |= bit << b;
+        }
+    HAL_I2C_Mem_Write(&hi2c1,0x78,0x40,1,tmp,8,1);
 
-void lcd_printstr(const char *chr,char cursor){
+}
+void lcd_printcmap(char map[8],const size_t cursor){
+    lcd_move(cursor&0xf,cursor>>4);
+    char tmp[8] = {0};
+    for(size_t b = 0;b< 8;b++)
+        for(size_t bt = 0;bt< 8;bt++){
+            char bit = (map[b] >> bt)&1;
+            tmp[bt] |= bit << b;
+        }
+    HAL_I2C_Mem_Write(&hi2c1,0x78,0x40,1,tmp,8,1);
+
+}
+
+
+void lcd_printstr(const char *chr,size_t cursor,size_t offset){
     for(size_t index = 0; chr[index];index++){
-        lcd_move(index&0xf,index>>4);
+        lcd_move((index+offset)&0xf,(index+offset)>>4);
         char character[8];
         memcpy(character,font8x8_basic[chr[index]&0x7f],8);
         if(cursor == index){

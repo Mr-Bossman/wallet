@@ -25,9 +25,8 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "lcd_ui.h"
-#include "retarget.h"
+#include "kern.h"
 #include "run.h"
-#include "free_zero.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,6 +62,7 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 512 * 4
 };
 /* USER CODE BEGIN PV */
+osThreadId lcd_task = NULL;
 
 /* USER CODE END PV */
 
@@ -508,10 +508,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-inline uint32_t rand(){
-  HAL_RNG_GenerateRandomNumber_IT(&hrng);
-  return HAL_RNG_ReadLastRandomNumber(&hrng);
-}
+//inline uint32_t rand(){
+//  HAL_RNG_GenerateRandomNumber_IT(&hrng);
+//  return HAL_RNG_ReadLastRandomNumber(&hrng);
+//}
 
 int read_pin(uint32_t grp,uint32_t io){
   TSC_IOConfigTypeDef sel;
@@ -543,11 +543,10 @@ void StartDefaultTask(void *argument)
   const osThreadAttr_t lcd_attr = {
     .name = "lcd",
     .priority = (osPriority_t) osPriorityNormal1,
-    .stack_size = 512 * 4
+    .stack_size = 512 * 7
   };
-  osThreadId id;
-  id = osThreadNew (lcd_ui_main,(void*)&hi2c1,&lcd_attr);
-  if(id == NULL){
+  lcd_task = osThreadNew (lcd_ui_main,(void*)&hi2c1,&lcd_attr);
+  if(lcd_task == NULL){
       printf("Failed to create task!!!!!!!\n");
   }
   printf("demo program becuse i dont want to use the lcd rn\n$>");

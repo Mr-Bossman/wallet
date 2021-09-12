@@ -41,7 +41,7 @@ Core/Src/lcd_ui.c \
 Core/Src/ssd1306.c \
 Core/Src/Cstring_func.c \
 Core/Src/run.c \
-Core/Src/retarget.c \
+Core/Src/kern.c \
 Core/Src/main.c \
 Core/Src/encrypt.c \
 Core/Src/eeprom.c \

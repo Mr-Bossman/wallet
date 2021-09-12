@@ -23,7 +23,7 @@
 #include "stm32wbxx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "retarget.h"
+#include "kern.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

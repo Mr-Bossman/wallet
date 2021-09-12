@@ -1,6 +1,3 @@
-// All credit to Carmine Noviello for this code
-// https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/src/retarget/retarget.c
-
 #include <_ansi.h>
 #include <_syslist.h>
 #include <errno.h>
@@ -8,7 +5,7 @@
 #include <sys/times.h>
 #include <limits.h>
 #include <signal.h>
-#include "retarget.h"
+#include "kern.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,8 +43,6 @@ void RetargetInit(UART_HandleTypeDef *huart) {
   gHuart = huart;
   for(uint8_t i = 0;i <= 32;i++)
     signal(i,sig_func);
-  /* Disable I/O buffering for STDOUT stream, so that
-   * chars are sent out as soon as they are printed. */
   setvbuf(stdout, NULL, _IONBF, 0);
 }
 
@@ -122,4 +117,28 @@ int _fstat(int fd, struct stat* st) {
 
   errno = EBADF;
   return 0;
+}
+
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+
+/* gcc -Wl,--wrap=free -Wl,--wrap=realloc */
+
+void* __real_realloc(void *, size_t);
+
+//zero memory even on error...
+void* __wrap_realloc(void *ptr, size_t sz) {
+    memset(ptr,0,malloc_usable_size(ptr));
+    void *ret = __real_realloc(ptr,sz);
+    if(!ret)free(ptr);
+    return ret;
+}
+
+void __real_free(void *);
+
+void __wrap_free(void *ptr) {
+    memset(ptr,0,malloc_usable_size(ptr));
+    //__real_free(ptr);
+    ptr = NULL;
 }
