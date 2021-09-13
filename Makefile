@@ -219,21 +219,24 @@ secp256k1/src/libsecp256k1_la-secp256k1.o:
 
 #adding lib rust breaks it
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	$(CXX) $(OBJECTS)  libs/main.a  libs/libsnark.a libs/libsodium.a $(LDFLAGS) libs/librustzcash.a  -T$(LDSCRIPT) -o $@
-	$(CP) -R .text2 -R .ARM2 $@ $@_main
-	$(CP) -j .text2 -j .ARM2 $@ $@_text
+#$(CXX) $(OBJECTS)  libs/main.a  libs/libsnark.a libs/libsodium.a $(LDFLAGS) libs/librustzcash.a  -T$(LDSCRIPT) -o $@
+	$(CXX) $(OBJECTS) $(LDFLAGS) -T$(LDSCRIPT) -o $@
+#$(CP) -R .text2 -R .ARM2 $@ $@_main
+#$(CP) -j .text2 -j .ARM2 $@ $@_text
 	$(SZ) $@
-	$(SZ) $@_text
-	$(SZ) $@_main
+#	$(SZ) $@_text
+#	$(SZ) $@_main
 
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(HEX) -R .text2 $< $@
-	$(HEX) -j .text2 $< $@_text2
+	$(HEX) $< $@
+#	$(HEX) -R .text2 $< $@
+#	$(HEX) -j .text2 $< $@_text2
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(BIN) -R .text2 -R .ARM2 $< $@	
-	$(BIN) -j .text2 -j .ARM2 $< $@_text2
+	$(BIN) $< $@	
+#	$(BIN) -R .text2 -R .ARM2 $< $@	
+#	$(BIN) -j .text2 -j .ARM2 $< $@_text2
 	
 $(BUILD_DIR):
 	mkdir $@		

@@ -58,7 +58,7 @@ MEMORY
 FLASH (rx)                 : ORIGIN = 0x08000000, LENGTH = 512k
 RAM1 (xrw)                 : ORIGIN = 0x20000008, LENGTH = 0x2FFF8
 RAM_SHARED (xrw)           : ORIGIN = 0x20030000, LENGTH = 10K
-SPI (xr)           : ORIGIN = 0x90000000, LENGTH = 8M
+/*SPI (xr)           : ORIGIN = 0x90000000, LENGTH = 8M*/
 }
 
 /* Define output sections */
@@ -71,7 +71,7 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
-
+  /*
   .text2 :
   {
     . = ALIGN(4);
@@ -94,7 +94,7 @@ SECTIONS
     libs/libsodium.a(.ARM.exidx*)
     libs/libsnark.a(.ARM.exidx*)
     . = ALIGN(4);
-  } >SPI
+  } >SPI*/
   /* The program code and other data goes into FLASH */
   .text :
   {
