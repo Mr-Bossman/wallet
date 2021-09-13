@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "app_fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -50,6 +51,8 @@ QSPI_HandleTypeDef hqspi;
 
 RNG_HandleTypeDef hrng;
 
+SPI_HandleTypeDef hspi1;
+
 TSC_HandleTypeDef htsc;
 
 UART_HandleTypeDef huart1;
@@ -63,7 +66,6 @@ const osThreadAttr_t defaultTask_attributes = {
 };
 /* USER CODE BEGIN PV */
 osThreadId lcd_task = NULL;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,6 +76,7 @@ static void MX_I2C1_Init(void);
 static void MX_QUADSPI_Init(void);
 static void MX_RNG_Init(void);
 static void MX_TSC_Init(void);
+static void MX_SPI1_Init(void);
 void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -118,6 +121,10 @@ int main(void)
   MX_QUADSPI_Init();
   MX_RNG_Init();
   MX_TSC_Init();
+  if (MX_FATFS_Init() != APP_OK) {
+    Error_Handler();
+  }
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   RetargetInit(&huart1);
   /* USER CODE END 2 */
@@ -362,6 +369,46 @@ static void MX_RNG_Init(void)
 }
 
 /**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI1_Init(void)
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 7;
+  hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
   * @brief TSC Initialization Function
   * @param None
   * @retval None
@@ -468,7 +515,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, SD_CS_Pin|LD1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PA2 PA3 */
   GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
@@ -484,6 +531,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : SD_CS_Pin LD1_Pin */
+  GPIO_InitStruct.Pin = SD_CS_Pin|LD1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pins : PA11 PA12 */
   GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -497,13 +551,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : LD1_Pin */
-  GPIO_InitStruct.Pin = LD1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD1_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -543,12 +590,95 @@ void StartDefaultTask(void *argument)
   const osThreadAttr_t lcd_attr = {
     .name = "lcd",
     .priority = (osPriority_t) osPriorityNormal1,
-    .stack_size = 512 * 7
+    .stack_size = 512 * 8
   };
   lcd_task = osThreadNew (lcd_ui_main,(void*)&hi2c1,&lcd_attr);
   if(lcd_task == NULL){
       printf("Failed to create task!!!!!!!\n");
   }
+
+
+
+ FATFS FatFs; 	//Fatfs handle
+  FIL fil; 		//File handle
+  FRESULT fres; //Result after operations
+
+  //Open the file system
+  fres = f_mount(&FatFs, "", 1); //1=mount now
+  if (fres != FR_OK) {
+	printf("f_mount error (%i)\r\n", fres);
+	while(1);
+  }
+
+  //Let's get some statistics from the SD card
+  DWORD free_clusters, free_sectors, total_sectors;
+
+  FATFS* getFreeFs;
+
+  fres = f_getfree("", &free_clusters, &getFreeFs);
+  if (fres != FR_OK) {
+	printf("f_getfree error (%i)\r\n", fres);
+	while(1);
+  }
+
+  //Formula comes from ChaN's documentation
+  total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
+  free_sectors = free_clusters * getFreeFs->csize;
+
+  printf("SD card stats:\r\n%10lu KiB total drive space.\r\n%10lu KiB available.\r\n", total_sectors / 2, free_sectors / 2);
+
+  //Now let's try to open file "test.txt"
+  fres = f_open(&fil, "test.txt", FA_READ);
+  if (fres != FR_OK) {
+	printf("f_open error (%i)\r\n");
+	while(1);
+  }
+  printf("I was able to open 'test.txt' for reading!\r\n");
+
+  //Read 30 bytes from "test.txt" on the SD card
+  BYTE readBuf[30];
+
+  //We can either use f_read OR f_gets to get data out of files
+  //f_gets is a wrapper on f_read that does some string formatting for us
+  TCHAR* rres = f_gets((TCHAR*)readBuf, 30, &fil);
+  if(rres != 0) {
+	printf("Read string from 'test.txt' contents: %s\r\n", readBuf);
+  } else {
+	printf("f_gets error (%i)\r\n", fres);
+  }
+
+  //Be a tidy kiwi - don't forget to close your file!
+  f_close(&fil);
+
+  //Now let's try and write a file "write.txt"
+  fres = f_open(&fil, "write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+  if(fres == FR_OK) {
+	printf("I was able to open 'write.txt' for writing\r\n");
+  } else {
+	printf("f_open error (%i)\r\n", fres);
+  }
+
+  //Copy in a string
+  strncpy((char*)readBuf, "a new file is made!", 19);
+  UINT bytesWrote;
+  fres = f_write(&fil, readBuf, 19, &bytesWrote);
+  if(fres == FR_OK) {
+	printf("Wrote %i bytes to 'write.txt'!\r\n", bytesWrote);
+  } else {
+	printf("f_write error (%i)\r\n");
+  }
+
+  //Be a tidy kiwi - don't forget to close your file!
+  f_close(&fil);
+
+  //We're done, so de-mount the drive
+  f_mount(NULL, "", 0);
+
+
+
+
+
+
   printf("demo program becuse i dont want to use the lcd rn\n$>");
   char str[512] = {0};
   int b = 0;

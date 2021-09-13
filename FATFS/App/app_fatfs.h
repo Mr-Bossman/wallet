@@ -1,9 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file   app_fatfs.h
+  * @brief  Header for fatfs applications
   ******************************************************************************
   * @attention
   *
@@ -20,15 +19,13 @@
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef __APP_FATFS_H
+#define __APP_FATFS_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32wbxx_hal.h"
+#include "ff.h"
+#include "ff_gen_drv.h"
+#include "user_diskio.h" /* defines USER_Driver as external */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -51,42 +48,23 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
-
+int32_t MX_FATFS_Init(void);
+int32_t MX_FATFS_Process(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define B1_Pin GPIO_PIN_4
-#define B1_GPIO_Port GPIOC
-#define SD_CS_Pin GPIO_PIN_2
-#define SD_CS_GPIO_Port GPIOB
-#define JTMS_Pin GPIO_PIN_13
-#define JTMS_GPIO_Port GPIOA
-#define JTCK_Pin GPIO_PIN_14
-#define JTCK_GPIO_Port GPIOA
-#define B2_Pin GPIO_PIN_0
-#define B2_GPIO_Port GPIOD
-#define B3_Pin GPIO_PIN_1
-#define B3_GPIO_Port GPIOD
-#define JTDO_Pin GPIO_PIN_3
-#define JTDO_GPIO_Port GPIOB
-#define LD1_Pin GPIO_PIN_5
-#define LD1_GPIO_Port GPIOB
-#define STLINK_RX_Pin GPIO_PIN_6
-#define STLINK_RX_GPIO_Port GPIOB
-#define STLINK_TX_Pin GPIO_PIN_7
-#define STLINK_TX_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-#define SD_SPI_HANDLE hspi1
-#define SD_CS_GPIO_Port GPIOB
+#define APP_OK                      0
+#define APP_ERROR                  -1
+#define APP_SD_UNPLUGGED           -2
 /* USER CODE END Private defines */
 
-#ifdef __cplusplus
-}
-#endif
+extern FATFS USERFatFs;    /* File system object for USER logical drive */
+extern FIL USERFile;       /* File  object for USER */
+extern char USERPath[4];   /* USER logical drive path */
 
-#endif /* __MAIN_H */
+#endif /*__APP_FATFS_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
