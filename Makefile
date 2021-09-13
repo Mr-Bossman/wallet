@@ -47,6 +47,7 @@ Core/Src/encrypt.c \
 Core/Src/eeprom.c \
 Core/Src/sha256.c \
 Core/Src/aes.c \
+Core/Src/indexed_array.c \
 Core/Src/app_freertos.c \
 Core/Src/stm32wbxx_it.c \
 Core/Src/stm32wbxx_hal_msp.c \
