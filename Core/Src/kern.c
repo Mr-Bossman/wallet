@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <unwind.h>
 #include "app_fatfs.h"
+#include "Cstring_func.h"
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
@@ -44,6 +45,7 @@ void sig_func (int sig)
 FATFS FatFs;
 
 UART_HandleTypeDef *gHuart;
+uint8_t stdinbuf[400] = {0};
 
 void RetargetInit(UART_HandleTypeDef *huart) {
   gHuart = huart;
@@ -55,6 +57,15 @@ void RetargetInit(UART_HandleTypeDef *huart) {
   if (fres != FR_OK)
 	printf("f_mount error (%i)\r\n", fres);
   filenums = NewAlloc();
+  HAL_UART_Receive_DMA (gHuart, stdinbuf, sizeof(stdinbuf));
+}
+
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    stdinbuf[0] = stdinbuf[sizeof(stdinbuf)-1];
+    memset(stdinbuf+1,0,sizeof(stdinbuf)-1);
+    HAL_UART_Receive_DMA(gHuart, stdinbuf+1, sizeof(stdinbuf)-1);
 }
 
 FATFS* getFat() {
@@ -121,16 +132,17 @@ int _lseek(int fd, int ptr, int dir) {
   errno = EBADF;
   return -1;
 }
-
+static size_t read_index= 0;
 int _read(int fd, char* ptr, int len) {
-  HAL_StatusTypeDef hstatus;
-
   if (fd == STDIN_FILENO) {
-    hstatus = HAL_UART_Receive(gHuart, (uint8_t *) ptr, 1, HAL_MAX_DELAY);
-    if (hstatus == HAL_OK)
-      return 1;
-    else
-      return EIO;
+    size_t cpylen = 0;
+    while(!cpylen || cpylen == read_index)
+      cpylen = strnlen(stdinbuf, (len < sizeof(stdinbuf))?len:sizeof(stdinbuf) );
+    if(cpylen < read_index) read_index = 0;
+    memcpy(ptr,stdinbuf+read_index,cpylen-read_index);
+    size_t tmp = cpylen-read_index;
+    read_index = cpylen;
+    return tmp;
   } else if(fd-3 < filenums.size){
     FRESULT fr;
     unsigned int l;

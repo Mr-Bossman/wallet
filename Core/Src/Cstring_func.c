@@ -24,4 +24,8 @@ char* strpnlen(char* ptr,size_t len) {
     while ( i < len && *ptr++ ) ++i;
     return ptr;
 }
-
+__attribute__((weak)) size_t strnlen(char* ptr,size_t len) {
+    size_t i =0;
+    while ( i < len && *ptr++ ) ++i;
+    return i;
+}
