@@ -12,11 +12,11 @@ typedef FIL alloc_type;
 typedef struct alloc
 {
     size_t size;
-    alloc_type* data;
+    alloc_type *data;
     bool *empty;
-    alloc_type* (*get)(struct alloc* this,size_t index);
-    void (*del)(struct alloc* this,size_t index);
-    size_t (*add)(struct alloc* this);
+    alloc_type *(*get)(struct alloc *this, size_t index);
+    void (*del)(struct alloc *this, size_t index);
+    size_t (*add)(struct alloc *this);
 } Alloc;
 struct alloc NewAlloc();
 #endif

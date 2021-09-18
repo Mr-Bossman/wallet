@@ -28,5 +28,12 @@ uint64_t get_user_signature(){
 size_t pub_list(char ***strs);
 void save_privkey_int(uint8_t *seed, uint8_t *pass);
 void del_num(int sel);
-int wallet_main(char* s) ;
+int wallet_main(char *s);
+typedef struct
+{
+    uint8_t sum[32];
+    uint8_t enc_priv[32];
+    uint8_t pub[33];
+} encrypted_data;
+
 #endif

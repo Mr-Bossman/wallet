@@ -12,27 +12,49 @@
 #include "stdbool.h"
 #include "lcd_ui.h"
 #include "ssd1306.h"
+#include "run.h"
 
-char *commands[] = {"help", "sign", "priv", "pub", "del", "sel", "signh", "signrech", "signrec"};
+typedef struct {
+  const char * command;
+  void (*func)(char *);
+} command_struct;
 
-typedef struct encrypted_data
-{
-  uint8_t sum[32];
-  uint8_t enc_priv[32];
-  uint8_t pub[33];
-} encrypted_data;
+static void signrech_parse(char *command);
+static void signrec_parse(char *command);
+static void signh_parse(char *command);
+static void sign_parse(char *command);
+static void priv_parse(char *command);
+static void pub_parse(char *command);
+static void del_parse(char *command);
+static void sel_parse(char *command);
+static void help(char *command);
 
-encrypted_data dat;
+static command_struct commands[] = {
+  {"help",&help},
+  {"sign",&sign_parse},
+  {"priv",&priv_parse},
+  {"pub",&pub_parse},
+  {"del",&del_parse},
+  {"sel",&sel_parse},
+  {"signh",&signh_parse},
+  {"signrech",&signrech_parse},
+  {"signrec",&signrec_parse}
+  };
+
+static encrypted_data dat;
+
 uint32_t save(uint32_t index, encrypted_data *in)
 {
   /* TODO: this code doesnt work as expected */
-  return FLASH_WRITE_DATA(index, (uint8_t*)in, sizeof(encrypted_data));
+  return FLASH_WRITE_DATA(index, (uint8_t *)in, sizeof(encrypted_data));
 }
+
 uint32_t read(uint32_t index, encrypted_data *in)
 {
   /* TODO: this code doesnt work as expected */
-  return FLASH_READ_DATA(index,  (uint8_t*)in, sizeof(encrypted_data));
+  return FLASH_READ_DATA(index, (uint8_t *)in, sizeof(encrypted_data));
 }
+
 uint16_t count()
 {
   return FLASH_LEN_DATA();
@@ -46,13 +68,24 @@ uint16_t first_aval()
   for (; i < count(); i++)
   {
     read(i, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
+    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
       break;
   }
   return i;
 }
+
+static uint8_t hex_byte(uint8_t *str)
+{
+  char tmp[3] = {0};
+  tmp[0] = str[0];
+  tmp[1] = str[1];
+  unsigned long int ret;
+  ret = strtoul(tmp, NULL, 16);
+  return (uint8_t)ret;
+}
+
 //offset in sp
-char *next_non_sp(char *p, size_t offset, size_t mlen)
+static char *next_non_sp(char *p, size_t offset, size_t mlen)
 {
   char *kill = strpnlen(p, mlen);
   char *l = 0;
@@ -74,21 +107,22 @@ char *next_non_sp(char *p, size_t offset, size_t mlen)
   return p;
 }
 
-
-
 void del_num(int sel)
 {
   encrypted_data data;
   size_t index = 0;
-  size_t i =0;
-  while(1){
-    if(i >= count()){
+  size_t i = 0;
+  while (1)
+  {
+    if (i >= count())
+    {
       return;
     }
     read(i++, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data))) 
-    continue;
-    if (sel == index)break;
+    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
+      continue;
+    if (sel == index)
+      break;
     index++;
   }
   i--;
@@ -98,18 +132,20 @@ void del_num(int sel)
   return;
 }
 
-size_t pub_list(char ***strs){
+size_t pub_list(char ***strs)
+{
   encrypted_data data;
   size_t index = 0;
   *strs = malloc(count());
   for (size_t i = 0; i < count(); i++)
   {
     read(i, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
+    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
       continue;
     (*strs)[index] = malloc(66);
-    for (int b = 0; b < 33; b++){
-      sprintf(((*strs)[index])+(b*2),"%02x", data.pub[b]);
+    for (int b = 0; b < 33; b++)
+    {
+      sprintf(((*strs)[index]) + (b * 2), "%02x", data.pub[b]);
     }
 
     index++;
@@ -117,79 +153,6 @@ size_t pub_list(char ***strs){
   return index;
 }
 
-// bad code
-int parse_params(char *command, char **params, int Nparams)
-{
-  int i = 0;
-  char *p = next_non_sp(command, i++, 100);
-  while (p != 0)
-  {
-    p = next_non_sp(command, i++, 100);
-    if (p == strpnlen(command, 100))
-      break;
-    if (i - 2 < Nparams)
-      params[i - 2] = p - 1;
-  }
-
-  if (i - 2 != Nparams)
-    return -1;
-  for (size_t b = 0; b < Nparams; b++)
-  {
-    char *ptr = memchr(params[b], ' ', 100);
-    if(ptr)
-      *ptr = 0;
-  }
-  return 0;
-}
-
-void help(char *command)
-{
-  size_t sz = sizeof(commands) / sizeof(char *);
-  while (sz--)
-    printf("%s ", commands[sz]);
-  printf("\n%s\n", command);
-}
-
-int get_privkey(encrypted_data *in, uint8_t priv[32])
-{
-  osThreadSuspend( lcd_task);
-  char pass[100] = {0};
-  lcd_clear();
-  lcd_printstr("password",255,0);
-  password(pass,sizeof(pass),2<<4);
-  memcpy(priv, in->enc_priv, 32);
-  int ret = decrypt(priv, 32, (uint8_t *)pass, in->sum);
-  memset(pass,0,sizeof(pass));
-  osThreadResume( lcd_task);
-  return ret;
-}
-
-void save_privkey(uint8_t *seed, uint8_t *pass, encrypted_data *out)
-{
-  uint8_t priv[32];
-  uint8_t sum[32];
-  SHA256((uint8_t *)seed, priv);
-  for (int i = 0; i < 32; i++)
-    printf("%02x", priv[i]);
-  printf("\n");
-  secp256k1_context *ctx;
-  secp256k1_pubkey pub;
-  ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ec_pubkey_create(ctx, &pub, priv);
-  unsigned int sz = 33;
-  secp256k1_ec_pubkey_serialize(ctx, out->pub, &sz, &pub, SECP256K1_EC_COMPRESSED);
-
-  for (int i = 0; i < 33; i++)
-    printf("%02x", out->pub[i]);
-  printf("\n");
-  encrypt_raw((uint8_t *)priv, 32, (uint8_t *)pass, sum);
-  for (int i = 0; i < 32; i++)
-    printf("%02x", sum[i]);
-  printf("\n");
-  memcpy(out->sum, sum, 32);
-  memcpy(out->enc_priv, priv, 32);
-  secp256k1_context_destroy(ctx);
-}
 
 void save_privkey_int(uint8_t *seed, uint8_t *pass)
 {
@@ -218,25 +181,83 @@ void save_privkey_int(uint8_t *seed, uint8_t *pass)
   save(first_aval(), &out);
 }
 
-void sign(uint8_t *message, uint8_t priv[32], uint8_t sig[64])
+static int parse_params(char *command, char **params, int Nparams)
+{
+  int i = 0;
+  char *p = next_non_sp(command, i++, 100);
+  while (p != 0)
+  {
+    p = next_non_sp(command, i++, 100);
+    if (p == strpnlen(command, 100))
+      break;
+    if (i - 2 < Nparams)
+      params[i - 2] = p - 1;
+  }
+
+  if (i - 2 != Nparams)
+    return -1;
+  for (size_t b = 0; b < Nparams; b++)
+  {
+    char *ptr = memchr(params[b], ' ', 100);
+    if (ptr)
+      *ptr = 0;
+  }
+  return 0;
+}
+
+static int get_privkey(encrypted_data *in, uint8_t priv[32])
+{
+  osThreadSuspend(lcd_task);
+  char pass[100] = {0};
+  lcd_clear();
+  lcd_printstr("password", 255, 0);
+  password(pass, sizeof(pass), 2 << 4);
+  memcpy(priv, in->enc_priv, 32);
+  int ret = decrypt(priv, 32, (uint8_t *)pass, in->sum);
+  memset(pass, 0, sizeof(pass));
+  osThreadResume(lcd_task);
+  return ret;
+}
+
+static void save_privkey(uint8_t *seed, uint8_t *pass, encrypted_data *out)
+{
+  uint8_t priv[32];
+  uint8_t sum[32];
+  SHA256((uint8_t *)seed, priv);
+  for (int i = 0; i < 32; i++)
+    printf("%02x", priv[i]);
+  printf("\n");
+  secp256k1_context *ctx;
+  secp256k1_pubkey pub;
+  ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
+  secp256k1_ec_pubkey_create(ctx, &pub, priv);
+  unsigned int sz = 33;
+  secp256k1_ec_pubkey_serialize(ctx, out->pub, &sz, &pub, SECP256K1_EC_COMPRESSED);
+
+  for (int i = 0; i < 33; i++)
+    printf("%02x", out->pub[i]);
+  printf("\n");
+  encrypt_raw((uint8_t *)priv, 32, (uint8_t *)pass, sum);
+  for (int i = 0; i < 32; i++)
+    printf("%02x", sum[i]);
+  printf("\n");
+  memcpy(out->sum, sum, 32);
+  memcpy(out->enc_priv, priv, 32);
+  secp256k1_context_destroy(ctx);
+}
+
+static void sign(uint8_t *message, uint8_t priv[32], uint8_t sig[64])
 {
   uint8_t hash[32];
   SHA256((uint8_t *)message, hash);
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, NULL, NULL);
+  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature *)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
-uint8_t hex_byte(uint8_t *str)
-{
-  char tmp[3] = {0};
-  tmp[0] = str[0];
-  tmp[1] = str[1];
-  unsigned long int ret;
-  ret = strtoul(tmp, NULL, 16);
-  return (uint8_t)ret;
-}
-void signh(uint8_t *hex, uint8_t priv[32], uint8_t sig[64])
+
+
+static void signh(uint8_t *hex, uint8_t priv[32], uint8_t sig[64])
 {
   uint8_t hash[32];
   //if (strlen(hex) != 64)
@@ -248,10 +269,11 @@ void signh(uint8_t *hex, uint8_t priv[32], uint8_t sig[64])
 
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature*)sig, hash, priv, NULL, NULL);
+  secp256k1_ecdsa_sign(secp256k1_context_sign, (secp256k1_ecdsa_signature *)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
-void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sig[65])
+
+static void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sig[65])
 {
   uint8_t hash[32];
   //if (strlen(hex) != 64)
@@ -265,32 +287,34 @@ void signrech(uint8_t *hex, uint8_t priv[32], uint8_t sig[65])
   printf("\n");
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, NULL, NULL);
+  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature *)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
-void signrec(uint8_t *message, uint8_t priv[32], uint8_t sig[65])
+
+static void signrec(uint8_t *message, uint8_t priv[32], uint8_t sig[65])
 {
   uint8_t hash[32];
   SHA256((uint8_t *)message, hash);
   secp256k1_context *secp256k1_context_sign;
   secp256k1_context_sign = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
-  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature*)sig, hash, priv, NULL, NULL);
+  secp256k1_ecdsa_sign_recoverable(secp256k1_context_sign, (secp256k1_ecdsa_recoverable_signature *)sig, hash, priv, NULL, NULL);
   secp256k1_context_destroy(secp256k1_context_sign);
 }
-
 
 
 
 
 
 /* paresing */
+static void help(char *command)
+{
+  size_t sz = sizeof(commands) / sizeof(command_struct);
+  while (sz--)
+    printf("%s ", commands[sz].command);
+  printf("\n%s\n", command);
+}
 
-
-
-
-
-
-void signrech_parse(char *command)
+static void signrech_parse(char *command)
 {
   char *params[1] = {0};
   if (parse_params(command, params, 1))
@@ -308,7 +332,8 @@ void signrech_parse(char *command)
     printf("%02x", sig[i]);
   printf("\n");
 }
-void signrec_parse(char *command)
+
+static void signrec_parse(char *command)
 {
   char *params[1] = {0};
   if (parse_params(command, params, 1))
@@ -327,7 +352,7 @@ void signrec_parse(char *command)
   printf("\n");
 }
 
-void signh_parse(char *command)
+static void signh_parse(char *command)
 {
   char *params[1] = {0};
   if (parse_params(command, params, 1))
@@ -345,7 +370,7 @@ void signh_parse(char *command)
   printf("\n");
 }
 
-void sign_parse(char *command)
+static void sign_parse(char *command)
 {
   char *params[1] = {0};
   if (parse_params(command, params, 1))
@@ -363,7 +388,8 @@ void sign_parse(char *command)
     printf("%02x", sig[i]);
   printf("\n");
 }
-void priv_parse(char *command)
+
+static void priv_parse(char *command)
 {
   char *params[2] = {0};
   if (parse_params(command, params, 2))
@@ -383,10 +409,10 @@ void priv_parse(char *command)
   save(first_aval(), &dat);
 }
 
-void pub_parse(char *command)
+static void pub_parse(char *command)
 {
   char *p = next_non_sp(command, 1, strlen(command));
-  if (p == strpnlen(command,100) && p)
+  if (p == strpnlen(command, 100) && p)
   {
     printf("Syntax is wrong must be password then message\n");
     return;
@@ -397,7 +423,7 @@ void pub_parse(char *command)
   for (size_t i = 0; i < count(); i++)
   {
     read(i, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data)))
+    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
       continue;
     if (memcmp(&dat, &data, sizeof(encrypted_data)))
       printf("%u - ", index + 1);
@@ -410,7 +436,7 @@ void pub_parse(char *command)
   }
 }
 
-void del_parse(char *command)
+static void del_parse(char *command)
 {
   char *params[1] = {0};
   if (parse_params(command, params, 1))
@@ -427,16 +453,19 @@ void del_parse(char *command)
   }
   sel -= 1;
   size_t index = 0;
-  size_t i =0;
-  while(1){
-    if(i >= count()){
+  size_t i = 0;
+  while (1)
+  {
+    if (i >= count())
+    {
       printf("there is no n'th pubkey\n");
       return;
     }
     read(i++, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data))) 
-    continue;
-    if (sel == index)break;
+    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
+      continue;
+    if (sel == index)
+      break;
     index++;
   }
   i--;
@@ -444,7 +473,8 @@ void del_parse(char *command)
   save(i, &data);
   return;
 }
-void sel_parse(char *command)
+
+static void sel_parse(char *command)
 {
   char *params[1] = {0};
   if (parse_params(command, params, 1))
@@ -461,16 +491,19 @@ void sel_parse(char *command)
   }
   sel -= 1;
   size_t index = 0;
-  size_t i =0;
-  while(1){
-    if(i >= count()){
+  size_t i = 0;
+  while (1)
+  {
+    if (i >= count())
+    {
       printf("there is no n'th pubkey\n");
       return;
     }
     read(i++, &data);
-    if (chk_null((const char*)&data, sizeof(encrypted_data)) || chk_chr((const char*)&data,0xff, sizeof(encrypted_data))) 
-    continue;
-    if (sel == index)break;
+    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
+      continue;
+    if (sel == index)
+      break;
     index++;
   }
   memcpy(&dat, &data, sizeof(encrypted_data));
@@ -485,53 +518,22 @@ int wallet_main(char *command)
   size_t offset = (size_t)memchr(command, ' ', strlen(command));
   if (offset == 0)
     offset = (size_t)command + strlen(command) - 1;
-  size_t sz = sizeof(commands) / sizeof(char *);
-  int i = 0;
+  size_t sz = sizeof(commands) / sizeof(command_struct);
+  size_t i = 0;
   for (; i < sz; i++)
   {
-    if (strncmp(command, commands[i], offset - (size_t)command) == 0)
-    { // bad code
-      if((offset - (size_t)command)+1 != strlen(commands[i]))
+    if (strncmp(command, commands[i].command, offset - (size_t)command) == 0)
+    {
+      if ((offset - (size_t)command) + 1 != strlen(commands[i].command))
         continue;
+      commands[i].func(command);
       break;
     }
   }
-  if (i == sz)
+  if (i >= sz)
   {
     help("not valid cmd");
     return -1;
-  }
-  switch (i)
-  {
-  case 0:
-    help(command);
-    break;
-  case 1:
-    sign_parse(command);
-    break;
-  case 2:
-    priv_parse(command);
-    break;
-  case 3:
-    pub_parse(command);
-    break;
-  case 4:
-    del_parse(command);
-    break;
-  case 5:
-    sel_parse(command);
-    break;
-  case 6:
-    signh_parse(command);
-    break;
-  case 7:
-    signrech_parse(command);
-    break;
-  case 8:
-    signrec_parse(command);
-    break;
-  default:
-    help("baaaad ");
   }
   return 0;
 }

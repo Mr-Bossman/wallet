@@ -616,24 +616,6 @@ void StartDefaultTask(void *argument)
   if(lcd_task == NULL){
       printf("Failed to create task!!!!!!!\n");
   }
-
-   FILE *fptr = NULL;
-
-   // use appropriate location if you are using MacOS or Linux
-   fptr = fopen("/program.txt","w");
-
-   if(fptr == NULL)
-   {
-      printf("Error!");
-      exit(1);
-   }
-  int num = 1;
-
-   fprintf(fptr,"tge%d",num);
-   fclose(fptr);
-
-
-
   printf("demo program becuse i dont want to use the lcd rn\n$>");
   char str[512] = {0};
   int b = 0;
