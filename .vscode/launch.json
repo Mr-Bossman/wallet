@@ -8,7 +8,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/wallet.elf_main",
+            "executable": "./build/wallet.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",

@@ -56,11 +56,7 @@ void RetargetInit(UART_HandleTypeDef *huart)
   HAL_UART_Receive_DMA(gHuart, stdinbuf, sizeof(stdinbuf));
 }
 int mount(){
-  FRESULT fres;
-  fres = f_mount(&FatFs, "", 1);
-  if (fres != FR_OK)
-    printf("f_mount error (%i)\r\n", fres);
-  return fres;
+  return f_mount(&FatFs, "", 1);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -113,6 +109,7 @@ int _write(int fd, char *ptr, int len)
     FRESULT fr;
     unsigned int l;
     fr = f_write(filenums.get(&filenums, fd - 3), ptr, len, &l);
+    if(fr != FR_OK) return -1;
   }
   errno = EBADF;
   return -1;
@@ -126,6 +123,7 @@ int _close(int fd)
   {
     FRESULT fr;
     fr = f_close(filenums.get(&filenums, fd - 3));
+    if(fr != FR_OK) return -1;
     filenums.del(&filenums, fd - 3);
   }
 
@@ -137,8 +135,8 @@ int _lseek(int fd, int ptr, int dir)
 {
   if (fd - 3 < filenums.size)
   {
-    FRESULT fr;
-    unsigned int l;
+    //FRESULT fr;
+    //unsigned int l;
     // need to do stuff with wence https://man7.org/linux/man-pages/man2/lseek.2.html
     //fr = f_lseek(filenums.get(&filenums,fd-3)),ptr);
   }
@@ -167,6 +165,7 @@ int _read(int fd, char *ptr, int len)
     FRESULT fr;
     unsigned int l;
     fr = f_read(filenums.get(&filenums, fd - 3), ptr, len, &l);
+    if(fr != FR_OK) return -1;
   }
   errno = EBADF;
   return -1;

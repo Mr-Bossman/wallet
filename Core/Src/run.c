@@ -137,19 +137,21 @@ size_t pub_list(char ***strs)
   encrypted_data data;
   size_t index = 0;
   *strs = malloc(count());
+  char *strblk = malloc(count()*66);
+
   for (size_t i = 0; i < count(); i++)
   {
     read(i, &data);
     if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
       continue;
-    (*strs)[index] = malloc(66);
     for (int b = 0; b < 33; b++)
     {
-      sprintf(((*strs)[index]) + (b * 2), "%02x", data.pub[b]);
+      sprintf((strblk+(66*index)) + (b * 2), "%02x", data.pub[b]);// covert to base 58
     }
-
+    (*strs)[index] = (strblk+(66*index));
     index++;
   }
+  if(!index)free(*strs);
   return index;
 }
 
@@ -411,13 +413,6 @@ static void priv_parse(char *command)
 
 static void pub_parse(char *command)
 {
-  char *p = next_non_sp(command, 1, strlen(command));
-  if (p == strpnlen(command, 100) && p)
-  {
-    printf("Syntax is wrong must be password then message\n");
-    return;
-  }
-
   encrypted_data data;
   size_t index = 0;
   for (size_t i = 0; i < count(); i++)
@@ -517,14 +512,16 @@ int wallet_main(char *command)
 {
   size_t offset = (size_t)memchr(command, ' ', strlen(command));
   if (offset == 0)
-    offset = (size_t)command + strlen(command) - 1;
+    offset = strlen(command);
+  else
+    offset -= (size_t)command;
   size_t sz = sizeof(commands) / sizeof(command_struct);
   size_t i = 0;
   for (; i < sz; i++)
   {
-    if (strncmp(command, commands[i].command, offset - (size_t)command) == 0)
+    if (strncmp(command, commands[i].command, offset) == 0)
     {
-      if ((offset - (size_t)command) + 1 != strlen(commands[i].command))
+      if (offset != strlen(commands[i].command))
         continue;
       commands[i].func(command);
       break;

@@ -25,9 +25,9 @@ static void list()
     lcd_clear();
     char **lens;
     size_t len = pub_list(&lens);
+    if(!len) return;
     lists(lens, len, true);
-    for (size_t i = 0; i < len; i++)
-        free(lens[i]);
+    free(*lens);
     free(lens);
 }
 
@@ -36,10 +36,11 @@ static void del()
     lcd_clear();
     char **lens;
     size_t len = pub_list(&lens);
-    del_num(lists(lens, len, true));
-    for (size_t i = 0; i < len; i++)
-        free(lens[i]);
+    if(!len) return;
+    size_t tmp = lists(lens, len, true); // something is very wrong
+    free(*lens);
     free(lens);
+    del_num(tmp);
 }
 
 static void priv_(bool det)
@@ -125,7 +126,7 @@ static size_t menu(char **str, size_t size)
         /* end clamping*/
         for (size_t b = 0; b < size; b++)
         {
-            lcd_printlc(' ', 0, b);
+            if(b != sel)lcd_printlc(' ', 0, b);
             for (size_t i = 0; str[b][i]; i++)
             {
                 lcd_printlc(str[b][i], i + 1, b);
