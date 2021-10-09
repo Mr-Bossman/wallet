@@ -4,3 +4,6 @@
 [submodule "secp256k1/master"]
 	path = secp256k1
 	url = https://github.com/Mr-Bossman/secp256k1
+[submodule "aaFat"]
+	path = aaFat
+	url = https://github.com/Mr-Bossman/aaFat.git

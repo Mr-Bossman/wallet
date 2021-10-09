@@ -24,9 +24,9 @@ static uint32_t FLASH_READ_64(uint32_t offset, uint64_t *buf, size_t len)
 	return 0;
 }
 
-// offset in bytes from start of flash
 uint32_t FLASH_READ(uint32_t off, uint8_t *buf, size_t len)
 {
+	off += EEPROM_USE_OFFSET;
 	if (off + len > EEPROM_SIZE)
 		return -1;
 	if (len > EEPROM_PAGE_SIZE)
@@ -78,9 +78,9 @@ static uint32_t clear_page(uint64_t save[EEPROM_PAGE_SIZE], uint64_t addr)
 	return ret; // idk
 }
 
-// offset in bytes from start of flash
 uint32_t FLASH_WRITE(uint32_t offset, uint8_t *dat, size_t len)
 {
+	offset += EEPROM_USE_OFFSET;
 	uint32_t status = 0;
 	if (offset + len > EEPROM_SIZE)
 		return -1;
@@ -88,7 +88,7 @@ uint32_t FLASH_WRITE(uint32_t offset, uint8_t *dat, size_t len)
 		return -2;
 	uint32_t a = EEPROM_BASE_ADDR + offset;
 	uint32_t pg = roundto(EEPROM_PAGE_SIZE, a);
-	uint64_t *save = malloc(EEPROM_PAGE_SIZE);
+	uint64_t save[EEPROM_PAGE_SIZE]; // huge
 	clear_page(save, pg);
 	memcpy(((uint8_t *)save) + (offset % EEPROM_PAGE_SIZE), dat, len);
 	status = HAL_FLASH_GetError();
@@ -100,7 +100,34 @@ uint32_t FLASH_WRITE(uint32_t offset, uint8_t *dat, size_t len)
 		if (status)
 			break;
 	}
-	free(save);
+	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_OPTVERR);
+	status = HAL_FLASH_GetError();
+	HAL_FLASH_Lock();
+	return status;
+}
+
+uint32_t FLASH_WRITE_PAGE(uint32_t offset, uint8_t *dat, size_t len)
+{
+	offset += EEPROM_USE_OFFSET;
+	uint32_t status = 0;
+	if (offset + len > EEPROM_SIZE)
+		return -1;
+	if (len > EEPROM_PAGE_SIZE)
+		return -2;
+	uint32_t a = EEPROM_BASE_ADDR + offset;
+	uint32_t pg = roundto(EEPROM_PAGE_SIZE, a);
+	uint64_t save[EEPROM_PAGE_SIZE]; // huge
+	clear_page(save, pg);
+	memcpy(((uint8_t *)save) + (offset % EEPROM_PAGE_SIZE), dat, len);
+	status = HAL_FLASH_GetError();
+	HAL_FLASH_Unlock();
+	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_OPTVERR);
+	for (size_t i = 0; i < EEPROM_PAGE_SIZE / 8; i++)
+	{
+		status |= HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, pg + (i * 8), save[i]);
+		if (status)
+			break;
+	}
 	__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_OPTVERR);
 	status = HAL_FLASH_GetError();
 	HAL_FLASH_Lock();
@@ -111,7 +138,7 @@ uint32_t FLASH_WRITE(uint32_t offset, uint8_t *dat, size_t len)
 uint16_t FLASH_LEN_DATA()
 {
 	uint16_t i = 0;
-	uint32_t off = EEPROM_USE_OFFSET;
+	uint32_t off = 0;
 	uint16_t tmpof = 0;
 	while (1)
 	{
@@ -124,13 +151,45 @@ uint16_t FLASH_LEN_DATA()
 	return i;
 }
 
+uint32_t FLASH_LEN_BLOB(size_t index){
+    uint16_t i = 0;
+	uint32_t off = 0;
+	uint16_t tmpof = 0;
+	while (1)
+	{
+		FLASH_READ(off, (uint8_t *)&tmpof, 2);
+		off += tmpof;
+		if (tmpof == UINT16_MAX || tmpof == 0 || tmpof >= EEPROM_SIZE)
+			break;
+		if(i == index) return tmpof;
+		i++;
+	}
+	return 0;
+}
+
+uint32_t FLASH_LEN_BLOBS(size_t index){
+    uint16_t i = 0;
+	uint32_t off = 0;
+	uint16_t tmpof = 0;
+	while (1)
+	{
+		FLASH_READ(off, (uint8_t *)&tmpof, 2);
+		off += tmpof;
+		if (tmpof == UINT16_MAX || tmpof == 0 || tmpof >= EEPROM_SIZE)
+			break;
+		if(i == index) return off;
+		i++;
+	}
+	return 0;
+}
+
 //len in bytes, offset in writes
 uint16_t FLASH_READ_DATA(uint16_t offset, uint8_t *buf, uint16_t len)
 {
 	uint16_t count = FLASH_LEN_DATA();
 	if (offset >= count)
 		return count;
-	uint32_t off = EEPROM_USE_OFFSET;
+	uint32_t off = 0;
 	uint16_t tmpof = 0;
 	while (offset--)
 		FLASH_READ(off, (uint8_t *)&tmpof, 2), off += tmpof;
@@ -147,7 +206,7 @@ uint16_t FLASH_WRITE_DATA(uint16_t offset, uint8_t *buf, uint16_t len)
 	uint16_t count = FLASH_LEN_DATA();
 	if (offset > count)
 		return count;
-	uint32_t off = EEPROM_USE_OFFSET;
+	uint32_t off = 0;
 	uint16_t tmpof = 0;
 	while (offset--)
 		FLASH_READ(off, (uint8_t *)&tmpof, 4), off += tmpof;

@@ -13,6 +13,7 @@
 #include "lcd_ui.h"
 #include "ssd1306.h"
 #include "run.h"
+#include "wallet_save.h"
 
 typedef struct {
   const char * command;
@@ -42,37 +43,6 @@ static command_struct commands[] = {
   };
 
 static encrypted_data dat;
-
-uint32_t save(uint32_t index, encrypted_data *in)
-{
-  /* TODO: this code doesnt work as expected */
-  return FLASH_WRITE_DATA(index, (uint8_t *)in, sizeof(encrypted_data));
-}
-
-uint32_t read(uint32_t index, encrypted_data *in)
-{
-  /* TODO: this code doesnt work as expected */
-  return FLASH_READ_DATA(index, (uint8_t *)in, sizeof(encrypted_data));
-}
-
-uint16_t count()
-{
-  return FLASH_LEN_DATA();
-}
-
-uint16_t first_aval()
-{
-  /* TODO: this code doesnt work as expected */
-  encrypted_data data;
-  size_t i = 0;
-  for (; i < count(); i++)
-  {
-    read(i, &data);
-    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
-      break;
-  }
-  return i;
-}
 
 static uint8_t hex_byte(uint8_t *str)
 {
@@ -109,50 +79,29 @@ static char *next_non_sp(char *p, size_t offset, size_t mlen)
 
 void del_num(int sel)
 {
-  encrypted_data data;
-  size_t index = 0;
-  size_t i = 0;
-  while (1)
-  {
-    if (i >= count())
-    {
-      return;
-    }
-    read(i++, &data);
-    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
-      continue;
-    if (sel == index)
-      break;
-    index++;
-  }
-  i--;
-  memset(&data, 0xff, sizeof(encrypted_data));
-  save(i, &data);
+  del_enc(sel);
   //we need to resend to pc
   return;
 }
 
 size_t pub_list(char ***strs)
 {
-  encrypted_data data;
-  size_t index = 0;
-  *strs = malloc(count());
-  char *strblk = malloc(count()*66);
-
-  for (size_t i = 0; i < count(); i++)
+  size_t sz=size_enc();
+  char *strblk;
+  if(sz){
+    *strs = malloc(sz);
+    strblk = malloc(sz*66);
+  }
+  for (size_t i = 0; i < sz; i++)
   {
-    read(i, &data);
-    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
-      continue;
+    get_enc(i);
     for (int b = 0; b < 33; b++)
     {
-      sprintf((strblk+(66*index)) + (b * 2), "%02x", data.pub[b]);// covert to base 58
+      sprintf((strblk+(66*i)) + (b * 2), "%02x", enc_sv.pub[b]);// covert to base 58
     }
-    (*strs)[index] = (strblk+(66*index));
-    index++;
+    (*strs)[i] = (strblk+(66*i));
   }
-  if(!index)free(*strs);
-  return index;
+  return sz;
 }
 
 
@@ -173,14 +122,8 @@ void save_privkey_int(uint8_t *seed, uint8_t *pass)
   memcpy(out.enc_priv, priv, 32);
   secp256k1_context_destroy(ctx);
 
-  encrypted_data data;
-  for (size_t i = 0; i < count(); i++)
-  {
-    read(i, &data);
-    if (!memcmp(&out, &data, sizeof(encrypted_data)))
-      return;
-  }
-  save(first_aval(), &out);
+  memcpy(&enc_sv,&out,sizeof(encrypted_data));
+  add_enc();
 }
 
 static int parse_params(char *command, char **params, int Nparams)
@@ -401,33 +344,22 @@ static void priv_parse(char *command)
   }
 
   save_privkey((uint8_t *)(params[1]), (uint8_t *)params[0], &dat);
-  encrypted_data data;
-  for (size_t i = 0; i < count(); i++)
-  {
-    read(i, &data);
-    if (!memcmp(&dat, &data, sizeof(encrypted_data)))
-      return;
-  }
-  save(first_aval(), &dat);
+  memcpy(&enc_sv,&dat,sizeof(encrypted_data));
+  add_enc();
 }
 
 static void pub_parse(char *command)
 {
-  encrypted_data data;
-  size_t index = 0;
-  for (size_t i = 0; i < count(); i++)
+  for (size_t i = 0; i < size_enc(); i++)
   {
-    read(i, &data);
-    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
-      continue;
-    if (memcmp(&dat, &data, sizeof(encrypted_data)))
-      printf("%u - ", index + 1);
+    get_enc(i);
+    if (memcmp(&enc_sv, &dat, sizeof(encrypted_data)))
+      printf("%u - ", i + 1);
     else
-      printf("%u > ", index + 1);
+      printf("%u > ", i + 1);
     for (int b = 0; b < 33; b++)
-      printf("%02x", data.pub[b]);
+      printf("%02x", enc_sv.pub[b]);
     printf("\n");
-    index++;
   }
 }
 
@@ -439,7 +371,6 @@ static void del_parse(char *command)
     printf("Syntax is wrong must be id\n");
     return;
   }
-  encrypted_data data;
   int sel = atoi(params[0]);
   if (!sel)
   {
@@ -447,25 +378,12 @@ static void del_parse(char *command)
     return;
   }
   sel -= 1;
-  size_t index = 0;
-  size_t i = 0;
-  while (1)
+  if (sel >= size_enc())
   {
-    if (i >= count())
-    {
-      printf("there is no n'th pubkey\n");
-      return;
-    }
-    read(i++, &data);
-    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
-      continue;
-    if (sel == index)
-      break;
-    index++;
+    printf("there is no n'th pubkey\n");
+    return;
   }
-  i--;
-  memset(&data, 0xff, sizeof(encrypted_data));
-  save(i, &data);
+  del_enc(sel);
   return;
 }
 
@@ -477,7 +395,6 @@ static void sel_parse(char *command)
     printf("Syntax is wrong must be id\n");
     return;
   }
-  encrypted_data data;
   int sel = atoi(params[0]);
   if (!sel)
   {
@@ -485,25 +402,15 @@ static void sel_parse(char *command)
     return;
   }
   sel -= 1;
-  size_t index = 0;
-  size_t i = 0;
-  while (1)
+  if (sel >= size_enc())
   {
-    if (i >= count())
-    {
-      printf("there is no n'th pubkey\n");
-      return;
-    }
-    read(i++, &data);
-    if (chk_null((const char *)&data, sizeof(encrypted_data)) || chk_chr((const char *)&data, 0xff, sizeof(encrypted_data)))
-      continue;
-    if (sel == index)
-      break;
-    index++;
+    printf("there is no n'th pubkey\n");
+    return;
   }
-  memcpy(&dat, &data, sizeof(encrypted_data));
+  get_enc(sel);
+  memcpy(&dat,&enc_sv,sizeof(encrypted_data));
   for (int i = 0; i < 33; i++)
-    printf("%02x", data.pub[i]);
+    printf("%02x", dat.pub[i]);
   printf("\n");
   return;
 }

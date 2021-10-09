@@ -37,6 +37,8 @@ BUILD_DIR = build
 # C sources
 
 C_SOURCES =  \
+aaFat/aaFat.c \
+Core/Src/wallet_save.c \
 Core/Src/lcd_ui.c \
 Core/Src/ssd1306.c \
 Core/Src/Cstring_func.c \
@@ -154,6 +156,7 @@ AS_INCLUDES =  \
 
 # C includes
 C_INCLUDES =  \
+-IaaFat \
 -ICore/Inc \
 -ICore/Inc/font8x8 \
 -IDrivers/STM32WBxx_HAL_Driver/Inc \
